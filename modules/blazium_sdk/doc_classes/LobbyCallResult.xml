@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="LobbyCallResult" inherits="RefCounted" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../doc/class.xsd">
+	<brief_description>
+		A result from a [LobbyCallResponse].
+	</brief_description>
+	<description>
+		A result from a [LobbyCallResponse].
+	</description>
+	<tutorials>
+	</tutorials>
+	<methods>
+		<method name="get_result" qualifiers="const">
+			<return type="Variant" />
+			<description>
+				Result of the function call.
+			</description>
+		</method>
+		<method name="has_error" qualifiers="const">
+			<return type="bool" />
+			<description>
+				Returns true if there is an error.
+			</description>
+		</method>
+	</methods>
+	<members>
+		<member name="error" type="String" setter="" getter="get_error" default="&quot;&quot;">
+			Gets the error message.
+		</member>
+	</members>
+</class>

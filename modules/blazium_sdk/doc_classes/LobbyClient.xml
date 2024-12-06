@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <class name="LobbyClient" inherits="BlaziumClient" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../doc/class.xsd">
 	<brief_description>
-		A node used to connect to a blazium lobby websocket server.
+		A node used to connect to a lobby server.
 	</brief_description>
 	<description>
-		A node used to connect to a lobby server. It can be used to do matchmaking. You care do operations such as create lobbys, join lobbys, etc.
+		A node used to connect to a lobby server. It can be used to do matchmaking. You can do operations such as create lobby, join lobby, etc. The server is configurable and can either be self deployed or you can use the blazium free matchmaking server.
 	</description>
 	<tutorials>
 	</tutorials>
@@ -12,24 +12,31 @@
 		<method name="connect_to_lobby">
 			<return type="bool" />
 			<description>
-				Connect to a Blazium Lobby Server using the game_id and [member server_url].
+				Connect to a Blazium Lobby Server using the [member game_id] and [member server_url].
 			</description>
 		</method>
 		<method name="create_lobby">
 			<return type="ViewLobbyResponse" />
 			<param index="0" name="title" type="String" />
-			<param index="1" name="tags" type="String[]" default="[]" />
+			<param index="1" name="tags" type="Dictionary" default="{}" />
 			<param index="2" name="max_players" type="int" default="4" />
 			<param index="3" name="password" type="String" default="&quot;&quot;" />
 			<description>
 				Create a lobby and become host. If you are already in a lobby, you cannot create one. You need to leave first.
+				The new lobby can have a title, tags, max players and password. 0 max players means unlimited.
 				Generates [signal lobby_created] signal.
+			</description>
+		</method>
+		<method name="disconnect_from_lobby">
+			<return type="void" />
+			<description>
+				Disconnect from the lobby server.
 			</description>
 		</method>
 		<method name="is_host">
 			<return type="bool" />
 			<description>
-				Returns true if you are the host.
+				Returns true if you are the host of the current lobby.
 			</description>
 		</method>
 		<method name="join_lobby">
@@ -37,7 +44,8 @@
 			<param index="0" name="lobby_id" type="String" />
 			<param index="1" name="password" type="String" default="&quot;&quot;" />
 			<description>
-				Joint a lobby. If you are already in a lobby, you cannot join another one. You need to leave first.
+				Join a lobby. If you are already in a lobby, you cannot join another one. You need to leave first.
+				If the lobby you want to join is password protected, you need to provide the password.
 				Generates [signal lobby_joined].
 			</description>
 		</method>
@@ -58,38 +66,45 @@
 		</method>
 		<method name="list_lobbies">
 			<return type="ListLobbyResponse" />
-			<param index="0" name="title" type="String" default="&quot;&quot;" />
-			<param index="1" name="max_players" type="int" default="-1" />
-			<param index="2" name="tags" type="String[]" default="[]" />
-			<param index="3" name="start" type="int" default="0" />
-			<param index="4" name="count" type="int" default="10" />
+			<param index="0" name="tags" type="Dictionary" default="{}" />
+			<param index="1" name="start" type="int" default="0" />
+			<param index="2" name="count" type="int" default="10" />
 			<description>
-				Lists all lobbies.
+				Lists all lobbies. Lobbies that are sealed won't show in the list, except if you disconnected and trying to reconnect to a lobby.
+			</description>
+		</method>
+		<method name="notify_lobby">
+			<return type="LobbyResponse" />
+			<param index="0" name="data" type="Variant" />
+			<description>
+				Send a notification either to the host, or if you are host send data to all peers.
+				Generates [signal lobby_notified] signal.
+			</description>
+		</method>
+		<method name="notify_peer">
+			<return type="LobbyResponse" />
+			<param index="0" name="data" type="Variant" />
+			<param index="1" name="target_peer" type="String" />
+			<description>
+				Send a notification to a peer, works only if you are host.
+				Generates [signal lobby_notified] signal.
 			</description>
 		</method>
 		<method name="send_chat_message">
 			<return type="LobbyResponse" />
 			<param index="0" name="chat_message" type="String" />
 			<description>
-				Send a chat message.
+				Send a chat message. Only works if you are in a lobby.
 				Generates [signal peer_messaged].
 			</description>
 		</method>
-		<method name="send_lobby_data">
+		<method name="set_lobby_data">
 			<return type="LobbyResponse" />
-			<param index="0" name="data" type="Variant" />
+			<param index="0" name="data" type="Dictionary" />
+			<param index="1" name="is_private" type="bool" default="false" />
 			<description>
-				Send data either to the host, or if you are host send data to all peers.
-				Generates [signal received_data] signal.
-			</description>
-		</method>
-		<method name="send_lobby_data_to">
-			<return type="LobbyResponse" />
-			<param index="0" name="data" type="Variant" />
-			<param index="1" name="target_peer" type="String" />
-			<description>
-				Send data either to a peer, works only if you are host.
-				Generates [signal received_data_to] signal.
+				Set data on the lobby. Only works if you are host.
+				Generates [signal received_lobby_data].
 			</description>
 		</method>
 		<method name="set_lobby_ready">
@@ -108,12 +123,39 @@
 				Generates [signal lobby_sealed].
 			</description>
 		</method>
+		<method name="set_lobby_tags">
+			<return type="LobbyResponse" />
+			<param index="0" name="tags" type="Dictionary" />
+			<description>
+				Set tags on the lobby. Only works if you are host.
+				Generates [signal lobby_tagged].
+			</description>
+		</method>
+		<method name="set_peer_data">
+			<return type="LobbyResponse" />
+			<param index="0" name="data" type="Dictionary" />
+			<param index="1" name="target_peer" type="String" />
+			<param index="2" name="is_private" type="bool" />
+			<description>
+				Set data on the peer. Only works if you are host.
+				Generates [signal received_peer_data] signal if you are in lobby.
+			</description>
+		</method>
 		<method name="set_peer_name">
 			<return type="LobbyResponse" />
 			<param index="0" name="peer_name" type="String" />
 			<description>
 				Set your peer name.
 				Generates [signal peer_named] signal if you are in lobby.
+			</description>
+		</method>
+		<method name="set_peers_data">
+			<return type="LobbyResponse" />
+			<param index="0" name="data" type="Dictionary" />
+			<param index="1" name="is_private" type="bool" />
+			<description>
+				Set data on the peers. Only works if you are host.
+				Generates [signal received_peer_data] signal if you are in lobby.
 			</description>
 		</method>
 		<method name="view_lobby">
@@ -130,12 +172,19 @@
 			True if the client is connected, else false.
 		</member>
 		<member name="game_id" type="String" setter="set_game_id" getter="get_game_id" default="&quot;&quot;">
+			The game id.
+		</member>
+		<member name="host_data" type="Dictionary" setter="" getter="get_host_data" default="{}">
+			The current lobby private data. Only works if you are host.
 		</member>
 		<member name="lobby" type="LobbyInfo" setter="" getter="get_lobby">
 			The current lobby. Reflects changes to the lobby.
 		</member>
 		<member name="peer" type="LobbyPeer" setter="" getter="get_peer">
 			The current peer. Reflects changes to the self peer.
+		</member>
+		<member name="peer_data" type="Dictionary" setter="" getter="get_peer_data" default="{}">
+			The current peer private data.
 		</member>
 		<member name="peers" type="LobbyPeer[]" setter="" getter="get_peers" default="[]">
 			The lobby peers. Reflects changes to all peers.
@@ -181,10 +230,23 @@
 				Signal generated after you leave a lobby.
 			</description>
 		</signal>
+		<signal name="lobby_notified">
+			<param index="0" name="data" type="Object" />
+			<param index="1" name="from_peer" type="LobbyPeer" />
+			<description>
+				Signal generated after a notification is received.
+			</description>
+		</signal>
 		<signal name="lobby_sealed">
 			<param index="0" name="sealed" type="bool" />
 			<description>
 				Signal generated after the host seals the lobby.
+			</description>
+		</signal>
+		<signal name="lobby_tagged">
+			<param index="0" name="tags" type="Dictionary" />
+			<description>
+				Signal generated after the host updated the tags of the lobby
 			</description>
 		</signal>
 		<signal name="log_updated">
@@ -228,7 +290,7 @@
 		</signal>
 		<signal name="peer_ready">
 			<param index="0" name="peer" type="LobbyPeer" />
-			<param index="1" name="ready" type="bool" />
+			<param index="1" name="is_ready" type="bool" />
 			<description>
 				Signal generated after a peer is ready.
 			</description>
@@ -239,18 +301,19 @@
 				Signal generated after a peer reconnects.
 			</description>
 		</signal>
-		<signal name="received_data">
+		<signal name="received_lobby_data">
 			<param index="0" name="data" type="Object" />
-			<param index="1" name="from_peer" type="LobbyPeer" />
+			<param index="1" name="is_private" type="bool" />
 			<description>
-				Signal generated after a lobby_data call.
+				Signal generated after data is sent to the lobby.
 			</description>
 		</signal>
-		<signal name="received_data_to">
+		<signal name="received_peer_data">
 			<param index="0" name="data" type="Object" />
-			<param index="1" name="from_peer" type="LobbyPeer" />
+			<param index="1" name="to_peer" type="LobbyPeer" />
+			<param index="2" name="is_private" type="bool" />
 			<description>
-				Signal generated after a data_to call.
+				Signal generated after data is sent to peer.
 			</description>
 		</signal>
 	</signals>

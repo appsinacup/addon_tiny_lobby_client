@@ -9,6 +9,8 @@
 	<tutorials>
 	</tutorials>
 	<members>
+		<member name="data" type="Dictionary" setter="" getter="get_data" default="{}">
+		</member>
 		<member name="id" type="String" setter="" getter="get_id" default="&quot;&quot;">
 			Identifier of the peer.
 		</member>

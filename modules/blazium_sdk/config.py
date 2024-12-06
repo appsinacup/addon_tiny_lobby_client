@@ -18,6 +18,9 @@ def get_doc_classes():
         "ListLobbyResult",
         "ViewLobbyResponse",
         "ViewLobbyResult",
+        "AuthoritativeClient",
+        "LobbyCallResponse",
+        "LobbyCallResult",
     ]
 
 

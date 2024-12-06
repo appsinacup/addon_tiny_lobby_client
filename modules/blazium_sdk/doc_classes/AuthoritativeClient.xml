@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="AuthoritativeClient" inherits="LobbyClient" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../doc/class.xsd">
+	<brief_description>
+		A lobby client that is authoritative.
+	</brief_description>
+	<description>
+		A lobby client that is authoritative.
+	</description>
+	<tutorials>
+	</tutorials>
+	<methods>
+		<method name="lobby_call">
+			<return type="LobbyCallResponse" />
+			<param index="0" name="method" type="String" />
+			<param index="1" name="args" type="Array" />
+			<description>
+				Call a method on the server.
+			</description>
+		</method>
+	</methods>
+	<members>
+		<member name="server_url" type="String" setter="set_server_url" getter="get_server_url" overrides="LobbyClient" default="&quot;wss://authlobby.blazium.app/connect&quot;" />
+	</members>
+</class>

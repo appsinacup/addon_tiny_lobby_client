@@ -1,5 +1,5 @@
 /**************************************************************************/
-/*  register_types.cpp                                                    */
+/*  lobby_client.h                                                        */
 /**************************************************************************/
 /*                         This file is part of:                          */
 /*                            BLAZIUM ENGINE                              */
@@ -28,28 +28,56 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#include "register_types.h"
-#include "blazium_client.h"
-#include "lobby/authoritative_client.h"
-#include "lobby/lobby_client.h"
+#ifndef AUTHORITATIVE_CLIENT_H
+#define AUTHORITATIVE_CLIENT_H
 
-void initialize_blazium_sdk_module(ModuleInitializationLevel p_level) {
-	if (p_level == MODULE_INITIALIZATION_LEVEL_SCENE) {
-		GDREGISTER_ABSTRACT_CLASS(BlaziumClient);
-		GDREGISTER_CLASS(LobbyInfo);
-		GDREGISTER_CLASS(LobbyPeer);
-		GDREGISTER_CLASS(LobbyClient);
-		GDREGISTER_CLASS(LobbyClient::LobbyResponse::LobbyResult);
-		GDREGISTER_CLASS(LobbyClient::LobbyResponse);
-		GDREGISTER_CLASS(LobbyClient::ListLobbyResponse::ListLobbyResult);
-		GDREGISTER_CLASS(LobbyClient::ListLobbyResponse);
-		GDREGISTER_CLASS(LobbyClient::ViewLobbyResponse::ViewLobbyResult);
-		GDREGISTER_CLASS(LobbyClient::ViewLobbyResponse);
-		GDREGISTER_CLASS(AuthoritativeClient);
-		GDREGISTER_CLASS(AuthoritativeClient::LobbyCallResponse);
-		GDREGISTER_CLASS(AuthoritativeClient::LobbyCallResponse::LobbyCallResult);
+#include "lobby_client.h"
+
+class AuthoritativeClient : public LobbyClient {
+	GDCLASS(AuthoritativeClient, LobbyClient);
+
+public:
+	class LobbyCallResponse : public RefCounted {
+		GDCLASS(LobbyCallResponse, RefCounted);
+
+	protected:
+		static void _bind_methods() {
+			ADD_SIGNAL(MethodInfo("finished", PropertyInfo(Variant::OBJECT, "result", PROPERTY_HINT_RESOURCE_TYPE, "LobbyCallResult")));
+		}
+
+	public:
+		class LobbyCallResult : public RefCounted {
+			GDCLASS(LobbyCallResult, RefCounted);
+			Variant result;
+			String error;
+
+		protected:
+			static void _bind_methods() {
+				ClassDB::bind_method(D_METHOD("has_error"), &LobbyCallResult::has_error);
+				ClassDB::bind_method(D_METHOD("get_error"), &LobbyCallResult::get_error);
+				ClassDB::bind_method(D_METHOD("get_result"), &LobbyCallResult::get_result);
+				ADD_PROPERTY(PropertyInfo(Variant::STRING, "error"), "", "get_error");
+			}
+
+		public:
+			void set_error(String p_error) { this->error = p_error; }
+			void set_result(Variant p_result) { this->result = p_result; }
+
+			bool has_error() const { return !error.is_empty(); }
+			String get_error() const { return error; }
+			Variant get_result() const { return result; }
+		};
+	};
+
+protected:
+	static void _bind_methods();
+
+public:
+	Ref<LobbyCallResponse> lobby_call(const String &p_method, const Array &p_args);
+
+	AuthoritativeClient() {
+		server_url = "wss://authlobby.blazium.app/connect";
 	}
-}
+};
 
-void uninitialize_blazium_sdk_module(ModuleInitializationLevel p_level) {
-}
+#endif // AUTHORITATIVE_CLIENT_H
