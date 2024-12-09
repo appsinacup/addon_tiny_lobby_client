@@ -119,10 +119,13 @@ bool LobbyClient::connect_to_lobby() {
 	}
 	String lobby_url = get_server_url();
 	String url = lobby_url;
-	Vector<String> headers;
-	headers.push_back("GAME_ID: " + game_id);
-	headers.push_back("RECONNECTION_TOKEN: " + reconnection_token);
-	_socket->set_handshake_headers(headers);
+	PackedStringArray protocols;
+	protocols.push_back("blazium");
+	protocols.push_back(game_id);
+	if (reconnection_token != "") {
+		protocols.push_back(reconnection_token);
+	}
+	_socket->set_supported_protocols(protocols);
 	Error err = _socket->connect_to_url(url);
 	if (err != OK) {
 		set_process_internal(false);
