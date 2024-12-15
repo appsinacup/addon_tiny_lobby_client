@@ -1,5 +1,5 @@
 /**************************************************************************/
-/*  register_types.cpp                                                    */
+/*  lobby_info.h                                                          */
 /**************************************************************************/
 /*                         This file is part of:                          */
 /*                            BLAZIUM ENGINE                              */
@@ -28,47 +28,52 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#include "register_types.h"
-#include "blazium_client.h"
-#include "lobby/authoritative_client.h"
-#include "lobby/authoritative_response.h"
-#include "lobby/lobby_client.h"
-#include "lobby/lobby_info.h"
-#include "lobby/lobby_peer.h"
-#include "lobby/lobby_response.h"
-#include "login/login_client.h"
-#include "master_server/master_server_client.h"
-#include "pogr/pogr_client.h"
+#ifndef LOBBY_INFO_H
+#define LOBBY_INFO_H
 
-void initialize_blazium_sdk_module(ModuleInitializationLevel p_level) {
-	if (p_level == MODULE_INITIALIZATION_LEVEL_SCENE) {
-		GDREGISTER_ABSTRACT_CLASS(BlaziumClient);
-		GDREGISTER_CLASS(LobbyInfo);
-		GDREGISTER_CLASS(LobbyPeer);
-		GDREGISTER_CLASS(LobbyClient);
-		GDREGISTER_CLASS(LobbyResponse::LobbyResult);
-		GDREGISTER_CLASS(LobbyResponse);
-		GDREGISTER_CLASS(ListLobbyResponse::ListLobbyResult);
-		GDREGISTER_CLASS(ListLobbyResponse);
-		GDREGISTER_CLASS(ViewLobbyResponse::ViewLobbyResult);
-		GDREGISTER_CLASS(ViewLobbyResponse);
-		GDREGISTER_CLASS(AuthoritativeClient);
-		GDREGISTER_CLASS(AuthoritativeResponse);
-		GDREGISTER_CLASS(AuthoritativeResponse::AuthoritativeResult);
-		GDREGISTER_CLASS(POGRClient);
-		GDREGISTER_CLASS(POGRClient::POGRResponse);
-		GDREGISTER_CLASS(POGRClient::POGRResult);
-		GDREGISTER_CLASS(GameServerInfo);
-		GDREGISTER_CLASS(MasterServerClient);
-		GDREGISTER_CLASS(MasterServerClient::MasterServerResponse);
-		GDREGISTER_CLASS(MasterServerClient::MasterServerResult);
-		GDREGISTER_CLASS(MasterServerClient::MasterServerListResponse);
-		GDREGISTER_CLASS(MasterServerClient::MasterServerListResult);
-		GDREGISTER_CLASS(LoginClient);
-		GDREGISTER_CLASS(LoginClient::LoginResponse);
-		GDREGISTER_CLASS(LoginClient::LoginResponse::LoginResult);
-	}
-}
+#include "core/io/resource.h"
 
-void uninitialize_blazium_sdk_module(ModuleInitializationLevel p_level) {
-}
+class LobbyInfo : public Resource {
+	GDCLASS(LobbyInfo, Resource);
+	String id = "";
+	String lobby_name = "";
+	String host = "";
+	String host_name = "";
+	Dictionary tags = Dictionary();
+	Dictionary data = Dictionary();
+	int max_players = 0;
+	int players = 0;
+	bool sealed = false;
+	bool password_protected = false;
+
+protected:
+	static void _bind_methods();
+
+public:
+	void set_id(const String &p_id);
+	void set_lobby_name(const String &p_lobby_name);
+	void set_host(const String &p_host);
+	void set_host_name(const String &p_host_name);
+	void set_max_players(int p_max_players);
+	void set_players(int p_players);
+	void set_sealed(bool p_sealed);
+	void set_password_protected(bool p_password_protected);
+	void set_tags(const Dictionary &p_tags);
+	void set_data(const Dictionary &p_data);
+
+	void set_dict(const Dictionary &p_dict);
+	Dictionary get_dict() const;
+
+	Dictionary get_data() const;
+	Dictionary get_tags() const;
+	String get_id() const;
+	String get_lobby_name() const;
+	String get_host() const;
+	String get_host_name() const;
+	int get_max_players() const;
+	int get_players() const;
+	bool is_sealed() const;
+	bool is_password_protected() const;
+};
+
+#endif // LOBBY_INFO_H

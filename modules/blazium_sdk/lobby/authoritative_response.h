@@ -1,5 +1,5 @@
 /**************************************************************************/
-/*  register_types.cpp                                                    */
+/*  authoritative_response.h                                              */
 /**************************************************************************/
 /*                         This file is part of:                          */
 /*                            BLAZIUM ENGINE                              */
@@ -28,47 +28,44 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#include "register_types.h"
-#include "blazium_client.h"
-#include "lobby/authoritative_client.h"
-#include "lobby/authoritative_response.h"
-#include "lobby/lobby_client.h"
-#include "lobby/lobby_info.h"
-#include "lobby/lobby_peer.h"
-#include "lobby/lobby_response.h"
-#include "login/login_client.h"
-#include "master_server/master_server_client.h"
-#include "pogr/pogr_client.h"
+#ifndef AUTHORITATIVE_RESPONSE_H
+#define AUTHORITATIVE_RESPONSE_H
 
-void initialize_blazium_sdk_module(ModuleInitializationLevel p_level) {
-	if (p_level == MODULE_INITIALIZATION_LEVEL_SCENE) {
-		GDREGISTER_ABSTRACT_CLASS(BlaziumClient);
-		GDREGISTER_CLASS(LobbyInfo);
-		GDREGISTER_CLASS(LobbyPeer);
-		GDREGISTER_CLASS(LobbyClient);
-		GDREGISTER_CLASS(LobbyResponse::LobbyResult);
-		GDREGISTER_CLASS(LobbyResponse);
-		GDREGISTER_CLASS(ListLobbyResponse::ListLobbyResult);
-		GDREGISTER_CLASS(ListLobbyResponse);
-		GDREGISTER_CLASS(ViewLobbyResponse::ViewLobbyResult);
-		GDREGISTER_CLASS(ViewLobbyResponse);
-		GDREGISTER_CLASS(AuthoritativeClient);
-		GDREGISTER_CLASS(AuthoritativeResponse);
-		GDREGISTER_CLASS(AuthoritativeResponse::AuthoritativeResult);
-		GDREGISTER_CLASS(POGRClient);
-		GDREGISTER_CLASS(POGRClient::POGRResponse);
-		GDREGISTER_CLASS(POGRClient::POGRResult);
-		GDREGISTER_CLASS(GameServerInfo);
-		GDREGISTER_CLASS(MasterServerClient);
-		GDREGISTER_CLASS(MasterServerClient::MasterServerResponse);
-		GDREGISTER_CLASS(MasterServerClient::MasterServerResult);
-		GDREGISTER_CLASS(MasterServerClient::MasterServerListResponse);
-		GDREGISTER_CLASS(MasterServerClient::MasterServerListResult);
-		GDREGISTER_CLASS(LoginClient);
-		GDREGISTER_CLASS(LoginClient::LoginResponse);
-		GDREGISTER_CLASS(LoginClient::LoginResponse::LoginResult);
+#include "core/object/ref_counted.h"
+#include "core/variant/typed_array.h"
+#include "lobby_info.h"
+#include "lobby_peer.h"
+
+class AuthoritativeResponse : public RefCounted {
+	GDCLASS(AuthoritativeResponse, RefCounted);
+
+protected:
+	static void _bind_methods() {
+		ADD_SIGNAL(MethodInfo("finished", PropertyInfo(Variant::OBJECT, "result", PROPERTY_HINT_RESOURCE_TYPE, "AuthoritativeResult")));
 	}
-}
 
-void uninitialize_blazium_sdk_module(ModuleInitializationLevel p_level) {
-}
+public:
+	class AuthoritativeResult : public RefCounted {
+		GDCLASS(AuthoritativeResult, RefCounted);
+		Variant result;
+		String error;
+
+	protected:
+		static void _bind_methods() {
+			ClassDB::bind_method(D_METHOD("has_error"), &AuthoritativeResult::has_error);
+			ClassDB::bind_method(D_METHOD("get_error"), &AuthoritativeResult::get_error);
+			ClassDB::bind_method(D_METHOD("get_result"), &AuthoritativeResult::get_result);
+			ADD_PROPERTY(PropertyInfo(Variant::STRING, "error"), "", "get_error");
+		}
+
+	public:
+		void set_error(String p_error) { this->error = p_error; }
+		void set_result(Variant p_result) { this->result = p_result; }
+
+		bool has_error() const { return !error.is_empty(); }
+		String get_error() const { return error; }
+		Variant get_result() const { return result; }
+	};
+};
+
+#endif // AUTHORITATIVE_RESPONSE_H

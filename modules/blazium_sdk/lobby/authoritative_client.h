@@ -31,53 +31,74 @@
 #ifndef AUTHORITATIVE_CLIENT_H
 #define AUTHORITATIVE_CLIENT_H
 
+#include "authoritative_response.h"
 #include "lobby_client.h"
 
-class AuthoritativeClient : public LobbyClient {
-	GDCLASS(AuthoritativeClient, LobbyClient);
-
-public:
-	class LobbyCallResponse : public RefCounted {
-		GDCLASS(LobbyCallResponse, RefCounted);
-
-	protected:
-		static void _bind_methods() {
-			ADD_SIGNAL(MethodInfo("finished", PropertyInfo(Variant::OBJECT, "result", PROPERTY_HINT_RESOURCE_TYPE, "LobbyCallResult")));
-		}
-
-	public:
-		class LobbyCallResult : public RefCounted {
-			GDCLASS(LobbyCallResult, RefCounted);
-			Variant result;
-			String error;
-
-		protected:
-			static void _bind_methods() {
-				ClassDB::bind_method(D_METHOD("has_error"), &LobbyCallResult::has_error);
-				ClassDB::bind_method(D_METHOD("get_error"), &LobbyCallResult::get_error);
-				ClassDB::bind_method(D_METHOD("get_result"), &LobbyCallResult::get_result);
-				ADD_PROPERTY(PropertyInfo(Variant::STRING, "error"), "", "get_error");
-			}
-
-		public:
-			void set_error(String p_error) { this->error = p_error; }
-			void set_result(Variant p_result) { this->result = p_result; }
-
-			bool has_error() const { return !error.is_empty(); }
-			String get_error() const { return error; }
-			Variant get_result() const { return result; }
-		};
-	};
+class AuthoritativeClient : public BlaziumClient {
+	GDCLASS(AuthoritativeClient, BlaziumClient);
 
 protected:
+	String server_url = "wss://authlobby.blazium.app/connect";
+	String reconnection_token = "";
+	String game_id = "";
+	Ref<LobbyInfo> lobby;
+	Ref<LobbyPeer> peer;
+	TypedArray<LobbyPeer> peers = TypedArray<LobbyPeer>();
+
+	Ref<WebSocketPeer> _socket;
+	int _counter = 0;
+	bool connected = false;
+	Dictionary _commands;
+
+	void _clear_lobby();
+	void _receive_data(const Dictionary &p_data);
+	void _send_data(const Dictionary &p_data);
+	void _update_peers(Dictionary p_data_dict, TypedArray<LobbyPeer> &peers);
+	String _increment_counter();
+
+	enum CommandType {
+		LOBBY_REQUEST = 0,
+		LOBBY_VIEW,
+		LOBBY_LIST,
+		LOBBY_CALL
+	};
+
+	void _notification(int p_notification);
 	static void _bind_methods();
 
 public:
-	Ref<LobbyCallResponse> lobby_call(const String &p_method, const Array &p_args);
+	void set_server_url(const String &p_server_url);
+	String get_server_url();
+	void set_reconnection_token(const String &p_reconnection_token);
+	String get_reconnection_token();
+	void set_game_id(const String &p_game_id);
+	String get_game_id();
+	bool is_host();
+	bool get_connected();
+	void set_lobby(const Ref<LobbyInfo> &p_lobby);
+	Ref<LobbyInfo> get_lobby();
+	void set_peer(const Ref<LobbyPeer> &p_peer);
+	Ref<LobbyPeer> get_peer();
+	TypedArray<LobbyPeer> get_peers();
 
-	AuthoritativeClient() {
-		server_url = "wss://authlobby.blazium.app/connect";
-	}
+	bool connect_to_lobby();
+	void disconnect_from_lobby();
+	Ref<ViewLobbyResponse> create_lobby(const String &p_name, const Dictionary &p_tags, int p_max_players, const String &p_password);
+	Ref<ViewLobbyResponse> join_lobby(const String &p_lobby_id, const String &p_password);
+	Ref<LobbyResponse> leave_lobby();
+	Ref<ListLobbyResponse> list_lobby(const Dictionary &p_tags, int p_start, int p_count);
+	Ref<ViewLobbyResponse> view_lobby(const String &p_lobby_id, const String &p_password);
+	Ref<LobbyResponse> kick_peer(const String &p_peer_id);
+	Ref<LobbyResponse> set_lobby_tags(const Dictionary &p_tags);
+	Ref<LobbyResponse> del_lobby_tags(const TypedArray<String> &p_keys);
+	Ref<LobbyResponse> lobby_chat(const String &chat_message);
+	Ref<LobbyResponse> lobby_ready(bool p_ready);
+	Ref<LobbyResponse> set_peer_name(const String &p_peer_name);
+	Ref<LobbyResponse> seal_lobby(bool seal);
+	Ref<AuthoritativeResponse> lobby_call(const String &p_method, const Array &p_args);
+
+	AuthoritativeClient();
+	~AuthoritativeClient();
 };
 
 #endif // AUTHORITATIVE_CLIENT_H
