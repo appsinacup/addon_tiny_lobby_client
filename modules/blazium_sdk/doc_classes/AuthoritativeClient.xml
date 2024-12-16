@@ -15,8 +15,14 @@
 		- [member peer]: The current peer. Reflects changes to the self peer.
 		- [member peers]: The lobby peers. Reflects changes to all peers.
 		- [member lobby]: The lobby. Reflects changes to the lobby.
+		- [member peer_data]: The current peer private data.
+
+		[b]Note:[/b] The main difference between this service and the non authoritative [LobbyClient] are:
+		- The host cannot set any data or notify peer_disconnected.
+		- The [signal received_lobby_data] signal doesn't have the [code]is_private[/code] parameter.
 	</description>
 	<tutorials>
+		<link title="Lobby SDK Demo">https://github.com/blazium-engine/blazium-lobby-sdk</link>
 	</tutorials>
 	<methods>
 		<method name="add_lobby_tags">
@@ -151,15 +157,6 @@
 				Generates [signal peer_named] signal if you are in lobby.
 			</description>
 		</method>
-		<method name="view_lobby">
-			<return type="ViewLobbyResponse" />
-			<param index="0" name="lobby_id" type="String" default="&quot;&quot;" />
-			<param index="1" name="password" type="String" default="&quot;&quot;" />
-			<description>
-				View data from a lobby. Returns lobby settings and peers.
-				Returns a [ViewLobbyResponse] object that has a [signal ViewLobbyResponse.finished] signal that is emitted when finished.
-			</description>
-		</method>
 	</methods>
 	<members>
 		<member name="connected" type="bool" setter="" getter="get_connected" default="false">
@@ -173,6 +170,9 @@
 		</member>
 		<member name="peer" type="LobbyPeer" setter="" getter="get_peer">
 			The current peer. Reflects changes to the self peer.
+		</member>
+		<member name="peer_data" type="Dictionary" setter="" getter="get_peer_data" default="{}">
+			The current peer private data.
 		</member>
 		<member name="peers" type="LobbyPeer[]" setter="" getter="get_peers" default="[]">
 			The lobby peers. Reflects changes to all peers.
@@ -298,6 +298,7 @@
 		<signal name="received_peer_data">
 			<param index="0" name="data" type="Object" />
 			<param index="1" name="to_peer" type="LobbyPeer" />
+			<param index="2" name="is_private" type="bool" />
 			<description>
 				Signal generated after data is sent to peer.
 			</description>

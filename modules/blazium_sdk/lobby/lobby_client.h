@@ -96,7 +96,6 @@ public:
 	Ref<ViewLobbyResponse> join_lobby(const String &p_lobby_id, const String &p_password);
 	Ref<LobbyResponse> leave_lobby();
 	Ref<ListLobbyResponse> list_lobby(const Dictionary &p_tags, int p_start, int p_count);
-	Ref<ViewLobbyResponse> view_lobby(const String &p_lobby_id, const String &p_password);
 	Ref<LobbyResponse> kick_peer(const String &p_peer_id);
 	Ref<LobbyResponse> set_lobby_tags(const Dictionary &p_tags);
 	Ref<LobbyResponse> del_lobby_tags(const TypedArray<String> &p_keys);

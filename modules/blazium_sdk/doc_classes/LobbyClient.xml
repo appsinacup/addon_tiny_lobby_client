@@ -19,6 +19,7 @@
 		- [member peer_data]: The current peer private data.
 	</description>
 	<tutorials>
+		<link title="Lobby SDK Demo">https://github.com/blazium-engine/blazium-lobby-sdk</link>
 	</tutorials>
 	<methods>
 		<method name="add_lobby_data">
@@ -224,15 +225,6 @@
 				Set your peer name.
 				Returns a [LobbyResponse] object that has a [signal LobbyResponse.finished] signal that is emitted when finished.
 				Generates [signal peer_named] signal if you are in lobby.
-			</description>
-		</method>
-		<method name="view_lobby">
-			<return type="ViewLobbyResponse" />
-			<param index="0" name="lobby_id" type="String" default="&quot;&quot;" />
-			<param index="1" name="password" type="String" default="&quot;&quot;" />
-			<description>
-				View data from a lobby. Returns lobby settings and peers.
-				Returns a [ViewLobbyResponse] object that has a [signal ViewLobbyResponse.finished] signal that is emitted when finished.
 			</description>
 		</method>
 	</methods>

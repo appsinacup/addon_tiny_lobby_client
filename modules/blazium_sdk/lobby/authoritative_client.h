@@ -41,6 +41,7 @@ protected:
 	String server_url = "wss://authlobby.blazium.app/connect";
 	String reconnection_token = "";
 	String game_id = "";
+	Dictionary peer_data = Dictionary();
 	Ref<LobbyInfo> lobby;
 	Ref<LobbyPeer> peer;
 	TypedArray<LobbyPeer> peers = TypedArray<LobbyPeer>();
@@ -75,6 +76,7 @@ public:
 	String get_game_id();
 	bool is_host();
 	bool get_connected();
+	Dictionary get_peer_data();
 	void set_lobby(const Ref<LobbyInfo> &p_lobby);
 	Ref<LobbyInfo> get_lobby();
 	void set_peer(const Ref<LobbyPeer> &p_peer);
@@ -87,7 +89,6 @@ public:
 	Ref<ViewLobbyResponse> join_lobby(const String &p_lobby_id, const String &p_password);
 	Ref<LobbyResponse> leave_lobby();
 	Ref<ListLobbyResponse> list_lobby(const Dictionary &p_tags, int p_start, int p_count);
-	Ref<ViewLobbyResponse> view_lobby(const String &p_lobby_id, const String &p_password);
 	Ref<LobbyResponse> kick_peer(const String &p_peer_id);
 	Ref<LobbyResponse> set_lobby_tags(const Dictionary &p_tags);
 	Ref<LobbyResponse> del_lobby_tags(const TypedArray<String> &p_keys);
