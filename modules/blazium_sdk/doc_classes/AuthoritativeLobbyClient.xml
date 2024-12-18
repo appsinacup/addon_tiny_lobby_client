@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<class name="AuthoritativeClient" inherits="BlaziumClient" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../doc/class.xsd">
+<class name="AuthoritativeLobbyClient" inherits="BlaziumClient" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../doc/class.xsd">
 	<brief_description>
 		Node for connecting to the Blazium Lobby service. Offers authoritative lobby making features.
 	</brief_description>
 	<description>
-		The [AuthoritativeClient] node provides an interface for connecting to the Blazium Authoritative service. There is a free instance hosted on the [url=https://blazium.app]blazium.app[/url] domain that is used by default.
+		The [AuthoritativeLobbyClient] node provides an interface for connecting to the Blazium Authoritative service. There is a free instance hosted on the [url=https://blazium.app]blazium.app[/url] domain that is used by default.
 		The normal flow is as follows:
 		1. Listen to all the signals you are interested in.
 		2. Connect to the server using [method connect_to_lobby] method.
@@ -114,7 +114,7 @@
 			</description>
 		</method>
 		<method name="lobby_call">
-			<return type="AuthoritativeResponse" />
+			<return type="AuthoritativeLobbyResponse" />
 			<param index="0" name="method" type="String" />
 			<param index="1" name="args" type="Array" />
 			<description>
@@ -220,7 +220,6 @@
 		</signal>
 		<signal name="lobby_notified">
 			<param index="0" name="data" type="Object" />
-			<param index="1" name="from_peer" type="LobbyPeer" />
 			<description>
 				Signal generated after a notification is received.
 			</description>

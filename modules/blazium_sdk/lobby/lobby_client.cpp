@@ -29,7 +29,6 @@
 /**************************************************************************/
 
 #include "./lobby_client.h"
-#include "./authoritative_client.h"
 #include "lobby_info.h"
 #include "scene/main/node.h"
 LobbyClient::LobbyClient() {
@@ -168,7 +167,7 @@ void LobbyClient::disconnect_from_lobby() {
 		peer_data = Dictionary();
 		peer->set_data(Dictionary());
 		peers.clear();
-		lobby->set_data(Dictionary());
+		lobby->set_dict(Dictionary());
 		set_process_internal(false);
 		emit_signal("disconnected_from_lobby", _socket->get_close_reason());
 		emit_signal("log_updated", "disconnect_from_lobby", "Disconnected from: " + get_server_url());

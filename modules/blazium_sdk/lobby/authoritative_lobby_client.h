@@ -28,14 +28,14 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#ifndef AUTHORITATIVE_CLIENT_H
-#define AUTHORITATIVE_CLIENT_H
+#ifndef AUTHORITATIVE_LOBBY_CLIENT_H
+#define AUTHORITATIVE_LOBBY_CLIENT_H
 
-#include "authoritative_response.h"
+#include "authoritative_lobby_response.h"
 #include "lobby_client.h"
 
-class AuthoritativeClient : public BlaziumClient {
-	GDCLASS(AuthoritativeClient, BlaziumClient);
+class AuthoritativeLobbyClient : public BlaziumClient {
+	GDCLASS(AuthoritativeLobbyClient, BlaziumClient);
 
 protected:
 	String server_url = "wss://authlobby.blazium.app/connect";
@@ -96,10 +96,10 @@ public:
 	Ref<LobbyResponse> lobby_ready(bool p_ready);
 	Ref<LobbyResponse> set_peer_name(const String &p_peer_name);
 	Ref<LobbyResponse> seal_lobby(bool seal);
-	Ref<AuthoritativeResponse> lobby_call(const String &p_method, const Array &p_args);
+	Ref<AuthoritativeLobbyResponse> lobby_call(const String &p_method, const Array &p_args);
 
-	AuthoritativeClient();
-	~AuthoritativeClient();
+	AuthoritativeLobbyClient();
+	~AuthoritativeLobbyClient();
 };
 
-#endif // AUTHORITATIVE_CLIENT_H
+#endif // AUTHORITATIVE_LOBBY_CLIENT_H

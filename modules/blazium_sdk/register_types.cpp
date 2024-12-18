@@ -30,8 +30,8 @@
 
 #include "register_types.h"
 #include "blazium_client.h"
-#include "lobby/authoritative_client.h"
-#include "lobby/authoritative_response.h"
+#include "lobby/authoritative_lobby_client.h"
+#include "lobby/authoritative_lobby_response.h"
 #include "lobby/lobby_client.h"
 #include "lobby/lobby_info.h"
 #include "lobby/lobby_peer.h"
@@ -52,9 +52,9 @@ void initialize_blazium_sdk_module(ModuleInitializationLevel p_level) {
 		GDREGISTER_CLASS(ListLobbyResponse);
 		GDREGISTER_CLASS(ViewLobbyResponse::ViewLobbyResult);
 		GDREGISTER_CLASS(ViewLobbyResponse);
-		GDREGISTER_CLASS(AuthoritativeClient);
-		GDREGISTER_CLASS(AuthoritativeResponse);
-		GDREGISTER_CLASS(AuthoritativeResponse::AuthoritativeResult);
+		GDREGISTER_CLASS(AuthoritativeLobbyClient);
+		GDREGISTER_CLASS(AuthoritativeLobbyResponse);
+		GDREGISTER_CLASS(AuthoritativeLobbyResponse::AuthoritativeLobbyResult);
 		GDREGISTER_CLASS(POGRClient);
 		GDREGISTER_CLASS(POGRClient::POGRResponse);
 		GDREGISTER_CLASS(POGRClient::POGRResult);
