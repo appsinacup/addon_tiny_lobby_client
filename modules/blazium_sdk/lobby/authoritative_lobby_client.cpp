@@ -555,17 +555,21 @@ void AuthoritativeLobbyClient::_receive_data(const Dictionary &p_dict) {
 		String peer_name = data_dict.get("name", "");
 		if (peer->get_id() == peer_id) {
 			peer->set_peer_name(peer_name);
-		}
-		for (int i = 0; i < peers.size(); ++i) {
-			Ref<LobbyPeer> updated_peer = peers[i];
-			if (updated_peer->get_id() == peer_id) {
-				updated_peer->set_peer_name(peer_name);
-				// if the named peer is the host, update the host name
-				if (updated_peer->get_id() == lobby->get_host()) {
-					lobby->set_host_name(peer_name);
+			// notify self
+			emit_signal("peer_named", peer);
+		} else {
+			// another peer got named
+			for (int i = 0; i < peers.size(); ++i) {
+				Ref<LobbyPeer> updated_peer = peers[i];
+				if (updated_peer->get_id() == peer_id) {
+					updated_peer->set_peer_name(peer_name);
+					// if the named peer is the host, update the host name
+					if (updated_peer->get_id() == lobby->get_host()) {
+						lobby->set_host_name(peer_name);
+					}
+					emit_signal("peer_named", updated_peer);
+					break;
 				}
-				emit_signal("peer_named", updated_peer);
-				break;
 			}
 		}
 	} else if (command == "peer_ready") {
