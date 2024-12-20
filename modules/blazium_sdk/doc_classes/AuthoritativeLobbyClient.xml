@@ -34,6 +34,15 @@
 				Generates [signal lobby_tagged].
 			</description>
 		</method>
+		<method name="add_peer_user_data">
+			<return type="LobbyResponse" />
+			<param index="0" name="data" type="Dictionary" />
+			<description>
+				Add user data to your own peer.
+				Returns a [LobbyResponse] object that has a [signal LobbyResponse.finished] signal that is emitted when finished.
+				Generates [signal received_peer_user_data].
+			</description>
+		</method>
 		<method name="connect_to_lobby">
 			<return type="bool" />
 			<description>
@@ -61,6 +70,15 @@
 				Delete one or more keys from the lobby tags. Only works if you are host.
 				Returns a [LobbyResponse] object that has a [signal LobbyResponse.finished] signal that is emitted when finished.
 				Generates [signal lobby_tagged].
+			</description>
+		</method>
+		<method name="del_peer_user_data">
+			<return type="LobbyResponse" />
+			<param index="0" name="keys" type="String[]" />
+			<description>
+				Delete one or more keys from the peers user data.
+				Returns a [LobbyResponse] object that has a [signal LobbyResponse.finished] signal that is emitted when finished.
+				Generates [signal received_peer_user_data].
 			</description>
 		</method>
 		<method name="disconnect_from_lobby">
@@ -146,15 +164,6 @@
 				Seals the lobby. You need to be the host to do this and the lobby needs to be unsealed.
 				Returns a [LobbyResponse] object that has a [signal LobbyResponse.finished] signal that is emitted when finished.
 				Generates [signal lobby_sealed].
-			</description>
-		</method>
-		<method name="set_peer_name">
-			<return type="LobbyResponse" />
-			<param index="0" name="peer_name" type="String" />
-			<description>
-				Set your peer name.
-				Returns a [LobbyResponse] object that has a [signal LobbyResponse.finished] signal that is emitted when finished.
-				Generates [signal peer_named] signal if you are in lobby.
 			</description>
 		</method>
 	</methods>
@@ -269,12 +278,6 @@
 				Signal generated after a peer sends a chat message.
 			</description>
 		</signal>
-		<signal name="peer_named">
-			<param index="0" name="peer" type="LobbyPeer" />
-			<description>
-				Signal generated after a peer names himself.
-			</description>
-		</signal>
 		<signal name="peer_ready">
 			<param index="0" name="peer" type="LobbyPeer" />
 			<param index="1" name="is_ready" type="bool" />
@@ -300,6 +303,13 @@
 			<param index="2" name="is_private" type="bool" />
 			<description>
 				Signal generated after data is sent to peer.
+			</description>
+		</signal>
+		<signal name="received_peer_user_data">
+			<param index="0" name="peer" type="LobbyPeer" />
+			<param index="1" name="data" type="Object" />
+			<description>
+				Signal generated after user data is sent to peer.
 			</description>
 		</signal>
 	</signals>

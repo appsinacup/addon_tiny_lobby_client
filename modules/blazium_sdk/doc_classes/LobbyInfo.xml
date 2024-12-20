@@ -15,9 +15,6 @@
 		<member name="host" type="String" setter="" getter="get_host" default="&quot;&quot;">
 			The host id of the lobby.
 		</member>
-		<member name="host_name" type="String" setter="" getter="get_host_name" default="&quot;&quot;">
-			The name of the host of the lobby.
-		</member>
 		<member name="id" type="String" setter="" getter="get_id" default="&quot;&quot;">
 			The id of the lobby.
 		</member>

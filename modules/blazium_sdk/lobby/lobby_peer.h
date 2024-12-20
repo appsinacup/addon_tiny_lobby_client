@@ -36,8 +36,8 @@
 class LobbyPeer : public Resource {
 	GDCLASS(LobbyPeer, Resource);
 	String id = "";
-	String peer_name = "";
 	bool ready = false;
+	Dictionary user_data = Dictionary();
 	Dictionary data = Dictionary();
 
 protected:
@@ -45,16 +45,16 @@ protected:
 
 public:
 	void set_id(const String &p_id);
-	void set_peer_name(const String &p_name);
 	void set_ready(bool p_ready);
 	void set_data(const Dictionary &p_data);
 	void set_dict(const Dictionary &p_dict);
+	void set_user_data(const Dictionary &p_data);
 
 	Dictionary get_dict() const;
 	Dictionary get_data() const;
 	String get_id() const;
-	String get_peer_name() const;
 	bool is_ready() const;
+	Dictionary get_user_data() const;
 };
 
 #endif // LOBBY_PEER_H

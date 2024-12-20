@@ -101,10 +101,12 @@ public:
 	Ref<LobbyResponse> del_lobby_tags(const TypedArray<String> &p_keys);
 	Ref<LobbyResponse> lobby_chat(const String &chat_message);
 	Ref<LobbyResponse> lobby_ready(bool p_ready);
-	Ref<LobbyResponse> set_peer_name(const String &p_peer_name);
 	Ref<LobbyResponse> seal_lobby(bool seal);
 	Ref<LobbyResponse> lobby_notify(const Variant &p_peer_data);
 	Ref<LobbyResponse> peer_notify(const Variant &p_peer_data, const String &p_target_peer);
+
+	Ref<LobbyResponse> add_user_data(const Dictionary &p_user_data);
+	Ref<LobbyResponse> del_user_data(const TypedArray<String> &p_keys);
 
 	Ref<LobbyResponse> lobby_data(const Dictionary &p_lobby_data, bool p_is_private);
 	Ref<LobbyResponse> del_lobby_data(const TypedArray<String> &p_keys, bool p_is_private);

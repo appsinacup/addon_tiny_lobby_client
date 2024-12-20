@@ -73,7 +73,6 @@ void AuthoritativeLobbyClient::_bind_methods() {
 	// Register methods
 	ClassDB::bind_method(D_METHOD("connect_to_lobby"), &AuthoritativeLobbyClient::connect_to_lobby);
 	ClassDB::bind_method(D_METHOD("disconnect_from_lobby"), &AuthoritativeLobbyClient::disconnect_from_lobby);
-	ClassDB::bind_method(D_METHOD("set_peer_name", "peer_name"), &AuthoritativeLobbyClient::set_peer_name);
 	ClassDB::bind_method(D_METHOD("create_lobby", "title", "tags", "max_players", "password"), &AuthoritativeLobbyClient::create_lobby, DEFVAL(Dictionary()), DEFVAL(4), DEFVAL(""));
 	ClassDB::bind_method(D_METHOD("join_lobby", "lobby_id", "password"), &AuthoritativeLobbyClient::join_lobby, DEFVAL(""));
 	ClassDB::bind_method(D_METHOD("leave_lobby"), &AuthoritativeLobbyClient::leave_lobby);
@@ -85,11 +84,13 @@ void AuthoritativeLobbyClient::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("add_lobby_tags", "tags"), &AuthoritativeLobbyClient::set_lobby_tags);
 	ClassDB::bind_method(D_METHOD("del_lobby_tags", "keys"), &AuthoritativeLobbyClient::del_lobby_tags);
 	ClassDB::bind_method(D_METHOD("set_lobby_sealed", "seal"), &AuthoritativeLobbyClient::seal_lobby);
+	ClassDB::bind_method(D_METHOD("add_peer_user_data", "data"), &AuthoritativeLobbyClient::add_user_data);
+	ClassDB::bind_method(D_METHOD("del_peer_user_data", "keys"), &AuthoritativeLobbyClient::del_user_data);
 
 	// Register signals
 	ADD_SIGNAL(MethodInfo("connected_to_lobby", PropertyInfo(Variant::OBJECT, "peer", PROPERTY_HINT_RESOURCE_TYPE, "LobbyPeer"), PropertyInfo(Variant::STRING, "reconnection_token")));
 	ADD_SIGNAL(MethodInfo("disconnected_from_lobby", PropertyInfo(Variant::STRING, "reason")));
-	ADD_SIGNAL(MethodInfo("peer_named", PropertyInfo(Variant::OBJECT, "peer", PROPERTY_HINT_RESOURCE_TYPE, "LobbyPeer")));
+	ADD_SIGNAL(MethodInfo("received_peer_user_data", PropertyInfo(Variant::OBJECT, "peer", PROPERTY_HINT_RESOURCE_TYPE, "LobbyPeer"), PropertyInfo(Variant::OBJECT, "data")));
 	ADD_SIGNAL(MethodInfo("lobby_notified", PropertyInfo(Variant::OBJECT, "data")));
 	ADD_SIGNAL(MethodInfo("received_peer_data", PropertyInfo(Variant::OBJECT, "data"), PropertyInfo(Variant::OBJECT, "to_peer", PROPERTY_HINT_RESOURCE_TYPE, "LobbyPeer"), PropertyInfo(Variant::BOOL, "is_private")));
 	ADD_SIGNAL(MethodInfo("received_lobby_data", PropertyInfo(Variant::OBJECT, "data")));
@@ -283,6 +284,47 @@ Ref<LobbyResponse> AuthoritativeLobbyClient::kick_peer(const String &p_peer_id) 
 	return response;
 }
 
+Ref<LobbyResponse> AuthoritativeLobbyClient::add_user_data(const Dictionary &p_user_data) {
+	String id = _increment_counter();
+	Dictionary command;
+	command["command"] = "user_data";
+	Dictionary data_dict;
+	data_dict["user_data"] = p_user_data;
+	data_dict["id"] = id;
+	command["data"] = data_dict;
+	Array command_array;
+	Ref<LobbyResponse> response;
+	response.instantiate();
+	command_array.push_back(LOBBY_REQUEST);
+	command_array.push_back(response);
+	_commands[id] = command_array;
+	_send_data(command);
+	return response;
+}
+
+Ref<LobbyResponse> AuthoritativeLobbyClient::del_user_data(const TypedArray<String> &p_keys) {
+	String id = _increment_counter();
+	Dictionary command;
+	command["command"] = "user_data";
+	Dictionary data_dict;
+	Dictionary data_object_dict;
+	data_dict["user_data"] = data_object_dict;
+	// set null value
+	for (int i = 0; i < p_keys.size(); i++) {
+		data_object_dict[p_keys[i]] = Variant();
+	}
+	data_dict["id"] = id;
+	command["data"] = data_dict;
+	Array command_array;
+	Ref<LobbyResponse> response;
+	response.instantiate();
+	command_array.push_back(LOBBY_REQUEST);
+	command_array.push_back(response);
+	_commands[id] = command_array;
+	_send_data(command);
+	return response;
+}
+
 Ref<LobbyResponse> AuthoritativeLobbyClient::set_lobby_tags(const Dictionary &p_tags) {
 	String id = _increment_counter();
 	Dictionary command;
@@ -353,24 +395,6 @@ Ref<LobbyResponse> AuthoritativeLobbyClient::lobby_ready(bool p_ready) {
 	Dictionary data_dict;
 	command["data"] = data_dict;
 	data_dict["id"] = id;
-	Array command_array;
-	Ref<LobbyResponse> response;
-	response.instantiate();
-	command_array.push_back(LOBBY_REQUEST);
-	command_array.push_back(response);
-	_commands[id] = command_array;
-	_send_data(command);
-	return response;
-}
-
-Ref<LobbyResponse> AuthoritativeLobbyClient::set_peer_name(const String &p_peer_name) {
-	String id = _increment_counter();
-	Dictionary command;
-	command["command"] = "set_name";
-	Dictionary data_dict;
-	data_dict["name"] = p_peer_name;
-	data_dict["id"] = id;
-	command["data"] = data_dict;
 	Array command_array;
 	Ref<LobbyResponse> response;
 	response.instantiate();
@@ -550,24 +574,20 @@ void AuthoritativeLobbyClient::_receive_data(const Dictionary &p_dict) {
 				break;
 			}
 		}
-	} else if (command == "peer_name") {
+	} else if (command == "peer_user_data") {
 		String peer_id = data_dict.get("peer_id", "");
-		String peer_name = data_dict.get("name", "");
+		Dictionary peer_user_data = data_dict.get("user_data", "");
 		if (peer->get_id() == peer_id) {
-			peer->set_peer_name(peer_name);
+			peer->set_user_data(peer_user_data);
 			// notify self
-			emit_signal("peer_named", peer);
+			emit_signal("received_peer_user_data", peer, peer_user_data);
 		} else {
 			// another peer got named
 			for (int i = 0; i < peers.size(); ++i) {
 				Ref<LobbyPeer> updated_peer = peers[i];
 				if (updated_peer->get_id() == peer_id) {
-					updated_peer->set_peer_name(peer_name);
-					// if the named peer is the host, update the host name
-					if (updated_peer->get_id() == lobby->get_host()) {
-						lobby->set_host_name(peer_name);
-					}
-					emit_signal("peer_named", updated_peer);
+					updated_peer->set_user_data(peer_user_data);
+					emit_signal("received_peer_user_data", updated_peer, peer_user_data);
 					break;
 				}
 			}
@@ -602,7 +622,7 @@ void AuthoritativeLobbyClient::_receive_data(const Dictionary &p_dict) {
 		Ref<LobbyPeer> joining_peer = Ref<LobbyPeer>(memnew(LobbyPeer));
 		Dictionary peer_dict = data_dict.get("peer", Dictionary());
 		joining_peer->set_id(peer_dict.get("id", ""));
-		joining_peer->set_peer_name(peer_dict.get("name", ""));
+		joining_peer->set_user_data(peer_dict.get("user_data", ""));
 		peers.append(joining_peer);
 		sort_peers_by_id(peers);
 		lobby->set_players(peers.size());

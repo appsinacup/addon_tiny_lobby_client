@@ -90,11 +90,15 @@ public:
 	Ref<LobbyResponse> leave_lobby();
 	Ref<ListLobbyResponse> list_lobby(const Dictionary &p_tags, int p_start, int p_count);
 	Ref<LobbyResponse> kick_peer(const String &p_peer_id);
+
+	Ref<LobbyResponse> add_user_data(const Dictionary &p_user_data);
+	Ref<LobbyResponse> del_user_data(const TypedArray<String> &p_keys);
+
 	Ref<LobbyResponse> set_lobby_tags(const Dictionary &p_tags);
 	Ref<LobbyResponse> del_lobby_tags(const TypedArray<String> &p_keys);
+
 	Ref<LobbyResponse> lobby_chat(const String &chat_message);
 	Ref<LobbyResponse> lobby_ready(bool p_ready);
-	Ref<LobbyResponse> set_peer_name(const String &p_peer_name);
 	Ref<LobbyResponse> seal_lobby(bool seal);
 	Ref<AuthoritativeLobbyResponse> lobby_call(const String &p_method, const Array &p_args);
 

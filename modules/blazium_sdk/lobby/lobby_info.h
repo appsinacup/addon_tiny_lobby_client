@@ -38,7 +38,6 @@ class LobbyInfo : public Resource {
 	String id = "";
 	String lobby_name = "";
 	String host = "";
-	String host_name = "";
 	Dictionary tags = Dictionary();
 	Dictionary data = Dictionary();
 	int max_players = 0;
@@ -53,7 +52,6 @@ public:
 	void set_id(const String &p_id);
 	void set_lobby_name(const String &p_lobby_name);
 	void set_host(const String &p_host);
-	void set_host_name(const String &p_host_name);
 	void set_max_players(int p_max_players);
 	void set_players(int p_players);
 	void set_sealed(bool p_sealed);
@@ -69,7 +67,6 @@ public:
 	String get_id() const;
 	String get_lobby_name() const;
 	String get_host() const;
-	String get_host_name() const;
 	int get_max_players() const;
 	int get_players() const;
 	bool is_sealed() const;

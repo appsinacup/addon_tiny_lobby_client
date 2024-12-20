@@ -7,7 +7,6 @@ void LobbyInfo::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("is_password_protected"), &LobbyInfo::is_password_protected);
 	ClassDB::bind_method(D_METHOD("get_id"), &LobbyInfo::get_id);
 	ClassDB::bind_method(D_METHOD("get_lobby_name"), &LobbyInfo::get_lobby_name);
-	ClassDB::bind_method(D_METHOD("get_host_name"), &LobbyInfo::get_host_name);
 	ClassDB::bind_method(D_METHOD("get_players"), &LobbyInfo::get_players);
 	ClassDB::bind_method(D_METHOD("get_tags"), &LobbyInfo::get_tags);
 	ClassDB::bind_method(D_METHOD("get_data"), &LobbyInfo::get_data);
@@ -16,7 +15,6 @@ void LobbyInfo::_bind_methods() {
 	ADD_PROPERTY(PropertyInfo(Variant::STRING, "tags"), "", "get_tags");
 	ADD_PROPERTY(PropertyInfo(Variant::DICTIONARY, "data"), "", "get_data");
 	ADD_PROPERTY(PropertyInfo(Variant::STRING, "lobby_name"), "", "get_lobby_name");
-	ADD_PROPERTY(PropertyInfo(Variant::STRING, "host_name"), "", "get_host_name");
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "players"), "", "get_players");
 	ADD_PROPERTY(PropertyInfo(Variant::STRING, "host"), "", "get_host");
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "max_players"), "", "get_max_players");
@@ -27,7 +25,6 @@ void LobbyInfo::_bind_methods() {
 void LobbyInfo::set_id(const String &p_id) { id = p_id; }
 void LobbyInfo::set_lobby_name(const String &p_lobby_name) { lobby_name = p_lobby_name; }
 void LobbyInfo::set_host(const String &p_host) { host = p_host; }
-void LobbyInfo::set_host_name(const String &p_host_name) { host_name = p_host_name; }
 void LobbyInfo::set_max_players(int p_max_players) { max_players = p_max_players; }
 void LobbyInfo::set_players(int p_players) { players = p_players; }
 void LobbyInfo::set_sealed(bool p_sealed) { sealed = p_sealed; }
@@ -42,7 +39,6 @@ void LobbyInfo::set_dict(const Dictionary &p_dict) {
 	set_players(p_dict.get("players", 0));
 	set_id(p_dict.get("id", ""));
 	set_lobby_name(p_dict.get("name", ""));
-	set_host_name(p_dict.get("host_name", ""));
 	set_password_protected(p_dict.get("has_password", false));
 	set_tags(p_dict.get("tags", Dictionary()));
 	set_data(p_dict.get("public_data", Dictionary()));
@@ -55,7 +51,6 @@ Dictionary LobbyInfo::get_dict() const {
 	dict["players"] = get_players();
 	dict["id"] = get_id();
 	dict["name"] = get_lobby_name();
-	dict["host_name"] = get_host_name();
 	dict["has_password"] = is_password_protected();
 	dict["tags"] = get_tags();
 	dict["public_data"] = get_data();
@@ -67,7 +62,6 @@ Dictionary LobbyInfo::get_tags() const { return tags; }
 String LobbyInfo::get_id() const { return id; }
 String LobbyInfo::get_lobby_name() const { return lobby_name; }
 String LobbyInfo::get_host() const { return host; }
-String LobbyInfo::get_host_name() const { return host_name; }
 int LobbyInfo::get_max_players() const { return max_players; }
 int LobbyInfo::get_players() const { return players; }
 bool LobbyInfo::is_sealed() const { return sealed; }
