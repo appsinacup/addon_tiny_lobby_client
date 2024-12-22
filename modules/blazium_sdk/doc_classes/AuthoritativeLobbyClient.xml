@@ -134,7 +134,7 @@
 		<method name="lobby_call">
 			<return type="AuthoritativeLobbyResponse" />
 			<param index="0" name="method" type="String" />
-			<param index="1" name="args" type="Array" />
+			<param index="1" name="args" type="Array" default="[]" />
 			<description>
 				Call a method on the server.
 			</description>

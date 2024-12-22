@@ -76,7 +76,7 @@ void AuthoritativeLobbyClient::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("create_lobby", "title", "tags", "max_players", "password"), &AuthoritativeLobbyClient::create_lobby, DEFVAL(Dictionary()), DEFVAL(4), DEFVAL(""));
 	ClassDB::bind_method(D_METHOD("join_lobby", "lobby_id", "password"), &AuthoritativeLobbyClient::join_lobby, DEFVAL(""));
 	ClassDB::bind_method(D_METHOD("leave_lobby"), &AuthoritativeLobbyClient::leave_lobby);
-	ClassDB::bind_method(D_METHOD("lobby_call", "method", "args"), &AuthoritativeLobbyClient::lobby_call);
+	ClassDB::bind_method(D_METHOD("lobby_call", "method", "args"), &AuthoritativeLobbyClient::lobby_call, DEFVAL(Array()));
 	ClassDB::bind_method(D_METHOD("list_lobbies", "tags", "start", "count"), &AuthoritativeLobbyClient::list_lobby, DEFVAL(Dictionary()), DEFVAL(0), DEFVAL(10));
 	ClassDB::bind_method(D_METHOD("kick_peer", "peer_id"), &AuthoritativeLobbyClient::kick_peer);
 	ClassDB::bind_method(D_METHOD("send_chat_message", "chat_message"), &AuthoritativeLobbyClient::lobby_chat);
