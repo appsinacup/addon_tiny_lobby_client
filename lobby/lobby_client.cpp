@@ -611,6 +611,7 @@ void LobbyClient::_notification(int p_what) {
 					_receive_data(JSON::parse_string(packet_string));
 				}
 			} else if (state == WebSocketPeer::STATE_CLOSED) {
+				_clear_lobby();
 				emit_signal("log_updated", "error", _socket->get_close_reason());
 				emit_signal("disconnected_from_lobby", _socket->get_close_reason());
 				set_process_internal(false);
@@ -653,7 +654,7 @@ void sort_peers_by_id(TypedArray<LobbyPeer> &peers) {
 		for (int j = i + 1; j < peers.size(); ++j) {
 			Ref<LobbyPeer> peer_i = peers[i];
 			Ref<LobbyPeer> peer_j = peers[j];
-			if (peer_i->get_id().casecmp_to(peer_j->get_id()) > 0) {
+			if (peer_i->get_order_id() > peer_j->get_order_id()) {
 				Ref<LobbyPeer> temp = peers[i];
 				peers[i] = peers[j];
 				peers[j] = temp;

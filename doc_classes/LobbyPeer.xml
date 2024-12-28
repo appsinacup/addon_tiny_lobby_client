@@ -15,6 +15,9 @@
 		<member name="id" type="String" setter="" getter="get_id" default="&quot;&quot;">
 			Identifier of the peer.
 		</member>
+		<member name="order_id" type="int" setter="" getter="get_order_id" default="-1">
+			Order when the peer joined the lobby server.
+		</member>
 		<member name="ready" type="bool" setter="" getter="is_ready" default="false">
 			Whether the peer is ready.
 		</member>
