@@ -448,6 +448,7 @@ void AuthoritativeLobbyClient::_notification(int p_what) {
 					_receive_data(JSON::parse_string(packet_string));
 				}
 			} else if (state == WebSocketPeer::STATE_CLOSED) {
+				_clear_lobby();
 				emit_signal("log_updated", "error", _socket->get_close_reason());
 				emit_signal("disconnected_from_lobby", _socket->get_close_reason());
 				set_process_internal(false);
@@ -621,8 +622,7 @@ void AuthoritativeLobbyClient::_receive_data(const Dictionary &p_dict) {
 	} else if (command == "peer_joined") {
 		Ref<LobbyPeer> joining_peer = Ref<LobbyPeer>(memnew(LobbyPeer));
 		Dictionary peer_dict = data_dict.get("peer", Dictionary());
-		joining_peer->set_id(peer_dict.get("id", ""));
-		joining_peer->set_user_data(peer_dict.get("user_data", ""));
+		joining_peer->set_dict(peer_dict);
 		peers.append(joining_peer);
 		sort_peers_by_id(peers);
 		lobby->set_players(peers.size());

@@ -36,6 +36,7 @@
 class LobbyPeer : public Resource {
 	GDCLASS(LobbyPeer, Resource);
 	String id = "";
+	int order_id = -1;
 	bool ready = false;
 	Dictionary user_data = Dictionary();
 	Dictionary data = Dictionary();
@@ -44,6 +45,7 @@ protected:
 	static void _bind_methods();
 
 public:
+	void set_order_id(int p_order_id);
 	void set_id(const String &p_id);
 	void set_ready(bool p_ready);
 	void set_data(const Dictionary &p_data);
@@ -54,6 +56,7 @@ public:
 	Dictionary get_data() const;
 	String get_id() const;
 	bool is_ready() const;
+	int get_order_id() const;
 	Dictionary get_user_data() const;
 };
 
