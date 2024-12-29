@@ -44,7 +44,7 @@
 			</description>
 		</method>
 		<method name="connect_to_lobby">
-			<return type="bool" />
+			<return type="LobbyResponse" />
 			<description>
 				Connect to a Blazium Lobby Server using the [member game_id] and [member server_url].
 				Generates [signal connected_to_lobby] signal if successful.
@@ -82,7 +82,7 @@
 			</description>
 		</method>
 		<method name="disconnect_from_lobby">
-			<return type="void" />
+			<return type="LobbyResponse" />
 			<description>
 				Disconnect from the lobby server.
 				Generates [signal disconnected_from_lobby] signal.

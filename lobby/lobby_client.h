@@ -90,8 +90,8 @@ public:
 	Ref<LobbyPeer> get_peer();
 	TypedArray<LobbyPeer> get_peers();
 
-	bool connect_to_lobby();
-	void disconnect_from_lobby();
+	Ref<LobbyResponse> connect_to_lobby();
+	Ref<LobbyResponse> disconnect_from_lobby();
 	Ref<ViewLobbyResponse> create_lobby(const String &p_name, const Dictionary &p_tags, int p_max_players, const String &p_password);
 	Ref<ViewLobbyResponse> join_lobby(const String &p_lobby_id, const String &p_password);
 	Ref<LobbyResponse> leave_lobby();
