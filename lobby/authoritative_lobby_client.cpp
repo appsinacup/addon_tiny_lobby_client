@@ -123,10 +123,18 @@ Ref<LobbyPeer> AuthoritativeLobbyClient::get_peer() { return peer; }
 TypedArray<LobbyPeer> AuthoritativeLobbyClient::get_peers() { return peers; }
 Dictionary AuthoritativeLobbyClient::get_peer_data() { return peer_data; }
 
-bool AuthoritativeLobbyClient::connect_to_lobby() {
-	if (connected) {
-		return true;
+Ref<LobbyResponse> AuthoritativeLobbyClient::connect_to_lobby() {
+	Ref<LobbyResponse> response;
+	response.instantiate();
+	// if there is another command connect, finish that with error
+	if (_commands.has("connect")) {
+		Ref<LobbyResponse> old_response = _commands.get("connect", Ref<LobbyResponse>());
+		Ref<LobbyResponse::LobbyResult> result;
+		result.instantiate();
+		result->set_error("Trying to connect twice");
+		old_response->emit_signal("finished", result);
 	}
+	_commands["connect"] = response;
 	String lobby_url = get_server_url();
 	String url = lobby_url;
 	PackedStringArray protocols;
@@ -137,29 +145,36 @@ bool AuthoritativeLobbyClient::connect_to_lobby() {
 	}
 	_socket->set_supported_protocols(protocols);
 	Error err = _socket->connect_to_url(url);
-	if (err != OK) {
-		set_process_internal(false);
-		emit_signal("log_updated", "error", "Unable to connect to lobby server at: " + url);
-		connected = false;
-		return false;
-	}
 	set_process_internal(true);
+	if (err != OK) {
+		emit_signal("log_updated", "error", "Unable to connect to lobby server at: " + url);
+		return response;
+	}
 	emit_signal("log_updated", "connect_to_lobby", "Connecting to: " + url);
-	return true;
+	return response;
 }
 
-void AuthoritativeLobbyClient::disconnect_from_lobby() {
-	if (connected) {
-		_socket->close(1000, "Normal Closure");
-		connected = false;
-		peer->set_data(Dictionary());
-		peers.clear();
-		lobby->set_dict(Dictionary());
-		peer_data = Dictionary();
-		set_process_internal(false);
-		emit_signal("disconnected_from_lobby", _socket->get_close_reason());
-		emit_signal("log_updated", "disconnect_from_lobby", "Disconnected from: " + get_server_url());
+Ref<LobbyResponse> AuthoritativeLobbyClient::disconnect_from_lobby() {
+	Ref<LobbyResponse> response;
+	response.instantiate();
+	// if there is another disconnect connect, finish that with error
+	if (_commands.has("disconnect")) {
+		Ref<LobbyResponse> old_response = _commands.get("disconnect", Ref<LobbyResponse>());
+		Ref<LobbyResponse::LobbyResult> result;
+		result.instantiate();
+		result->set_error("Trying to disconnect twice");
+		old_response->emit_signal("finished", result);
 	}
+	_commands["disconnect"] = response;
+	set_process_internal(true);
+	_socket->close(1000, "Normal Closure");
+	connected = false;
+	peer_data = Dictionary();
+	peer->set_data(Dictionary());
+	peers.clear();
+	lobby->set_dict(Dictionary());
+	emit_signal("log_updated", "disconnect_from_lobby", "Disconnecting from: " + get_server_url());
+	return response;
 }
 
 String AuthoritativeLobbyClient::_increment_counter() {
@@ -433,6 +448,12 @@ void AuthoritativeLobbyClient::_notification(int p_what) {
 
 			WebSocketPeer::State state = _socket->get_ready_state();
 			if (state == WebSocketPeer::STATE_OPEN) {
+				if (_commands.has("connect")) {
+					Ref<LobbyResponse> response = _commands["connect"];
+					Ref<LobbyResponse::LobbyResult> result;
+					response->emit_signal("finished", result);
+					_commands.erase("connect");
+				}
 				if (!connected) {
 					connected = true;
 					emit_signal("log_updated", "connect_to_lobby", "Connected to: " + server_url);
@@ -448,6 +469,12 @@ void AuthoritativeLobbyClient::_notification(int p_what) {
 					_receive_data(JSON::parse_string(packet_string));
 				}
 			} else if (state == WebSocketPeer::STATE_CLOSED) {
+				if (_commands.has("disconnect")) {
+					Ref<LobbyResponse> response = _commands["disconnect"];
+					Ref<LobbyResponse::LobbyResult> result;
+					response->emit_signal("finished", result);
+					_commands.erase("disconnect");
+				}
 				_clear_lobby();
 				emit_signal("log_updated", "error", _socket->get_close_reason());
 				emit_signal("disconnected_from_lobby", _socket->get_close_reason());
@@ -480,6 +507,10 @@ void AuthoritativeLobbyClient::_update_peers(Dictionary p_data_dict, TypedArray<
 		peer_info->set_dict(peer_dict);
 		if (peer_dict.has("private_data")) {
 			peer_data = peer_dict.get("private_data", Dictionary());
+		}
+		// update self peer
+		if (peer_info->get_id() == peer->get_id()) {
+			peer->set_dict(peer_info->get_dict());
 		}
 		p_peers.push_back(peer_info);
 	}
