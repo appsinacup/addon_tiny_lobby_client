@@ -644,6 +644,10 @@ void LobbyClient::_update_peers(Dictionary p_data_dict, TypedArray<LobbyPeer> &p
 		if (peer_dict.has("private_data")) {
 			peer_data = peer_dict.get("private_data", Dictionary());
 		}
+		// update self peer
+		if (peer_info->get_id() == peer->get_id()) {
+			peer->set_dict(peer_info->get_dict());
+		}
 		p_peers.push_back(peer_info);
 	}
 }
