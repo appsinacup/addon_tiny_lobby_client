@@ -77,7 +77,7 @@ void LobbyClient::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("create_lobby", "title", "sealed", "tags", "max_players", "password"), &LobbyClient::create_lobby, DEFVAL(Dictionary()), DEFVAL(4), DEFVAL(""));
 	ClassDB::bind_method(D_METHOD("join_lobby", "lobby_id", "password"), &LobbyClient::join_lobby, DEFVAL(""));
 	ClassDB::bind_method(D_METHOD("leave_lobby"), &LobbyClient::leave_lobby);
-	ClassDB::bind_method(D_METHOD("list_lobbies", "tags", "start", "count"), &LobbyClient::list_lobby, DEFVAL(Dictionary()), DEFVAL(0), DEFVAL(10));
+	ClassDB::bind_method(D_METHOD("list_lobbies"), &LobbyClient::list_lobby);
 	ClassDB::bind_method(D_METHOD("kick_peer", "peer_id"), &LobbyClient::kick_peer);
 	ClassDB::bind_method(D_METHOD("send_chat_message", "chat_message"), &LobbyClient::lobby_chat);
 	ClassDB::bind_method(D_METHOD("set_lobby_ready", "ready"), &LobbyClient::lobby_ready);
@@ -253,19 +253,12 @@ Ref<LobbyResponse> LobbyClient::leave_lobby() {
 	return response;
 }
 
-Ref<ListLobbyResponse> LobbyClient::list_lobby(const Dictionary &p_tags, int p_start, int p_count) {
+Ref<ListLobbyResponse> LobbyClient::list_lobby() {
 	String id = _increment_counter();
 	Dictionary command;
 	command["command"] = "list_lobby";
 	Dictionary data_dict;
 	data_dict["id"] = id;
-	data_dict["start"] = p_start;
-	data_dict["count"] = p_count;
-	Dictionary filter_dict;
-	data_dict["filter"] = filter_dict;
-	if (p_tags.size() != 0) {
-		filter_dict["tags"] = p_tags;
-	}
 	command["data"] = data_dict;
 	Array command_array;
 	Ref<ListLobbyResponse> response;

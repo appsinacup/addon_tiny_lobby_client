@@ -88,7 +88,7 @@ public:
 	Ref<ViewLobbyResponse> create_lobby(const String &p_name, bool p_sealed, const Dictionary &p_tags, int p_max_players, const String &p_password);
 	Ref<ViewLobbyResponse> join_lobby(const String &p_lobby_id, const String &p_password);
 	Ref<LobbyResponse> leave_lobby();
-	Ref<ListLobbyResponse> list_lobby(const Dictionary &p_tags, int p_start, int p_count);
+	Ref<ListLobbyResponse> list_lobby();
 	Ref<LobbyResponse> kick_peer(const String &p_peer_id);
 
 	Ref<LobbyResponse> add_user_data(const Dictionary &p_user_data);
