@@ -74,7 +74,7 @@ void LobbyClient::_bind_methods() {
 	// Register methods
 	ClassDB::bind_method(D_METHOD("connect_to_lobby"), &LobbyClient::connect_to_lobby);
 	ClassDB::bind_method(D_METHOD("disconnect_from_lobby"), &LobbyClient::disconnect_from_lobby);
-	ClassDB::bind_method(D_METHOD("create_lobby", "title", "tags", "max_players", "password"), &LobbyClient::create_lobby, DEFVAL(Dictionary()), DEFVAL(4), DEFVAL(""));
+	ClassDB::bind_method(D_METHOD("create_lobby", "title", "sealed", "tags", "max_players", "password"), &LobbyClient::create_lobby, DEFVAL(Dictionary()), DEFVAL(4), DEFVAL(""));
 	ClassDB::bind_method(D_METHOD("join_lobby", "lobby_id", "password"), &LobbyClient::join_lobby, DEFVAL(""));
 	ClassDB::bind_method(D_METHOD("leave_lobby"), &LobbyClient::leave_lobby);
 	ClassDB::bind_method(D_METHOD("list_lobbies", "tags", "start", "count"), &LobbyClient::list_lobby, DEFVAL(Dictionary()), DEFVAL(0), DEFVAL(10));
@@ -195,7 +195,7 @@ String LobbyClient::_increment_counter() {
 	return String::num(_counter++);
 }
 
-Ref<ViewLobbyResponse> LobbyClient::create_lobby(const String &p_name, const Dictionary &p_tags, int p_max_players, const String &p_password) {
+Ref<ViewLobbyResponse> LobbyClient::create_lobby(const String &p_name, bool p_sealed, const Dictionary &p_tags, int p_max_players, const String &p_password) {
 	String id = _increment_counter();
 	Dictionary command;
 	command["command"] = "create_lobby";
@@ -205,6 +205,7 @@ Ref<ViewLobbyResponse> LobbyClient::create_lobby(const String &p_name, const Dic
 	data_dict["max_players"] = p_max_players;
 	data_dict["password"] = p_password;
 	data_dict["tags"] = p_tags;
+	data_dict["sealed"] = p_sealed;
 	data_dict["id"] = id;
 	Array command_array;
 	Ref<ViewLobbyResponse> response;

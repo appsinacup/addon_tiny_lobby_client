@@ -85,7 +85,7 @@ public:
 
 	Ref<LobbyResponse> connect_to_lobby();
 	Ref<LobbyResponse> disconnect_from_lobby();
-	Ref<ViewLobbyResponse> create_lobby(const String &p_name, const Dictionary &p_tags, int p_max_players, const String &p_password);
+	Ref<ViewLobbyResponse> create_lobby(const String &p_name, bool p_sealed, const Dictionary &p_tags, int p_max_players, const String &p_password);
 	Ref<ViewLobbyResponse> join_lobby(const String &p_lobby_id, const String &p_password);
 	Ref<LobbyResponse> leave_lobby();
 	Ref<ListLobbyResponse> list_lobby(const Dictionary &p_tags, int p_start, int p_count);
