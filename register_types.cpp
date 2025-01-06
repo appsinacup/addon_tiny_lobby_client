@@ -48,8 +48,6 @@ void initialize_blazium_sdk_module(ModuleInitializationLevel p_level) {
 		GDREGISTER_CLASS(LobbyClient);
 		GDREGISTER_CLASS(LobbyResponse::LobbyResult);
 		GDREGISTER_CLASS(LobbyResponse);
-		GDREGISTER_CLASS(ListLobbyResponse::ListLobbyResult);
-		GDREGISTER_CLASS(ListLobbyResponse);
 		GDREGISTER_CLASS(ViewLobbyResponse::ViewLobbyResult);
 		GDREGISTER_CLASS(ViewLobbyResponse);
 		GDREGISTER_CLASS(AuthoritativeLobbyClient);

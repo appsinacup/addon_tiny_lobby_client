@@ -51,6 +51,7 @@ protected:
 	Dictionary peer_data = Dictionary();
 	Ref<LobbyInfo> lobby;
 	Ref<LobbyPeer> peer;
+	TypedArray<LobbyInfo> lobbies = TypedArray<LobbyInfo>();
 	TypedArray<LobbyPeer> peers = TypedArray<LobbyPeer>();
 
 	Ref<WebSocketPeer> _socket;
@@ -67,7 +68,6 @@ protected:
 	enum CommandType {
 		LOBBY_REQUEST = 0,
 		LOBBY_VIEW,
-		LOBBY_LIST,
 	};
 
 	void _notification(int p_notification);
@@ -95,7 +95,7 @@ public:
 	Ref<ViewLobbyResponse> create_lobby(const String &p_name, bool p_sealed, const Dictionary &p_tags, int p_max_players, const String &p_password);
 	Ref<ViewLobbyResponse> join_lobby(const String &p_lobby_id, const String &p_password);
 	Ref<LobbyResponse> leave_lobby();
-	Ref<ListLobbyResponse> list_lobby();
+	Ref<LobbyResponse> list_lobby();
 	Ref<LobbyResponse> kick_peer(const String &p_peer_id);
 	Ref<LobbyResponse> set_lobby_tags(const Dictionary &p_tags);
 	Ref<LobbyResponse> del_lobby_tags(const TypedArray<String> &p_keys);

@@ -111,6 +111,7 @@ void LobbyClient::_bind_methods() {
 	ADD_SIGNAL(MethodInfo("lobby_left", PropertyInfo(Variant::BOOL, "kicked")));
 	ADD_SIGNAL(MethodInfo("lobby_sealed", PropertyInfo(Variant::BOOL, "sealed")));
 	ADD_SIGNAL(MethodInfo("lobby_tagged", PropertyInfo(Variant::DICTIONARY, "tags")));
+	ADD_SIGNAL(MethodInfo("lobbies_listed", PropertyInfo(Variant::ARRAY, "lobbies", PROPERTY_HINT_ARRAY_TYPE, "LobbyInfo")));
 	ADD_SIGNAL(MethodInfo("peer_joined", PropertyInfo(Variant::OBJECT, "peer", PROPERTY_HINT_RESOURCE_TYPE, "LobbyPeer")));
 	ADD_SIGNAL(MethodInfo("peer_reconnected", PropertyInfo(Variant::OBJECT, "peer", PROPERTY_HINT_RESOURCE_TYPE, "LobbyPeer")));
 	ADD_SIGNAL(MethodInfo("peer_left", PropertyInfo(Variant::OBJECT, "peer", PROPERTY_HINT_RESOURCE_TYPE, "LobbyPeer"), PropertyInfo(Variant::BOOL, "kicked")));
@@ -185,6 +186,7 @@ Ref<LobbyResponse> LobbyClient::disconnect_from_lobby() {
 	host_data = Dictionary();
 	peer_data = Dictionary();
 	peer->set_data(Dictionary());
+	lobbies.clear();
 	peers.clear();
 	lobby->set_dict(Dictionary());
 	emit_signal("log_updated", "disconnect_from_lobby", "Disconnecting from: " + get_server_url());
@@ -253,7 +255,7 @@ Ref<LobbyResponse> LobbyClient::leave_lobby() {
 	return response;
 }
 
-Ref<ListLobbyResponse> LobbyClient::list_lobby() {
+Ref<LobbyResponse> LobbyClient::list_lobby() {
 	String id = _increment_counter();
 	Dictionary command;
 	command["command"] = "list_lobby";
@@ -261,9 +263,9 @@ Ref<ListLobbyResponse> LobbyClient::list_lobby() {
 	data_dict["id"] = id;
 	command["data"] = data_dict;
 	Array command_array;
-	Ref<ListLobbyResponse> response;
+	Ref<LobbyResponse> response;
 	response.instantiate();
-	command_array.push_back(LOBBY_LIST);
+	command_array.push_back(LOBBY_REQUEST);
 	command_array.push_back(response);
 	_commands[id] = command_array;
 	_send_data(command);
@@ -691,6 +693,7 @@ void sort_peers_by_id(TypedArray<LobbyPeer> &peers) {
 void LobbyClient::_clear_lobby() {
 	lobby->set_dict(Dictionary());
 	peers.clear();
+	lobbies.clear();
 	host_data = Dictionary();
 	peer_data = Dictionary();
 	peer->set_data(Dictionary());
@@ -754,24 +757,45 @@ void LobbyClient::_receive_data(const Dictionary &p_dict) {
 	} else if (command == "lobby_list") {
 		Array arr = data_dict.get("lobbies", Array());
 		TypedArray<Dictionary> lobbies_input = arr;
-		TypedArray<LobbyInfo> lobbies_output;
 		for (int i = 0; i < lobbies_input.size(); ++i) {
 			Dictionary lobby_dict = lobbies_input[i];
+			bool updated = false;
+			if (!lobby_dict.has("name")) {
+				// lobby got removed
+				// go through every lobby and remove the one with id
+				for (int j = 0; j < lobbies.size(); ++j) {
+					Ref<LobbyInfo> lobby = lobbies[j];
+					String lobby_id = lobby_dict.get("id", "");
+					if (lobby->get_id() == lobby_id) {
+						lobbies.remove_at(j);
+						updated = true;
+						break;
+					}
+				}
+			}
+			if (updated) {
+				continue;
+			}
+			// go and see if there already is a lobby in lobbies
+			for (int j = 0; j < lobbies.size(); ++j) {
+				Ref<LobbyInfo> lobby = lobbies[j];
+				String lobby_id = lobby_dict.get("id", "");
+				if (lobby->get_id() == lobby_id) {
+					lobby->set_dict(lobby_dict);
+					updated = true;
+					break;
+				}
+			}
+			if (updated) {
+				continue;
+			}
+			// if not, add a new one
 			Ref<LobbyInfo> lobby_info;
 			lobby_info.instantiate();
 			lobby_info->set_dict(lobby_dict);
-
-			lobbies_output.push_back(lobby_info);
+			lobbies.push_front(lobby_info);
 		}
-		if (command_array.size() == 2) {
-			Ref<ListLobbyResponse> response = command_array[1];
-			if (response.is_valid()) {
-				Ref<ListLobbyResponse::ListLobbyResult> result;
-				result.instantiate();
-				result->set_lobbies(lobbies_output);
-				response->emit_signal("finished", result);
-			}
-		}
+		emit_signal("lobbies_listed", lobbies);
 	} else if (command == "peer_chat") {
 		String peer_id = data_dict.get("from_peer", "");
 		String chat_data = data_dict.get("chat_data", "");
@@ -929,15 +953,6 @@ void LobbyClient::_receive_data(const Dictionary &p_dict) {
 						result.instantiate();
 						result->set_error(message);
 						lobby_response->emit_signal("finished", result);
-					}
-				} break;
-				case LOBBY_LIST: {
-					Ref<ListLobbyResponse> list_response = command_array[1];
-					if (list_response.is_valid()) {
-						Ref<ListLobbyResponse::ListLobbyResult> result;
-						result.instantiate();
-						result->set_error(message);
-						list_response->emit_signal("finished", result);
 					}
 				} break;
 				case LOBBY_VIEW: {

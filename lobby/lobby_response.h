@@ -65,40 +65,6 @@ public:
 	};
 };
 
-class ListLobbyResponse : public RefCounted {
-	GDCLASS(ListLobbyResponse, RefCounted);
-
-protected:
-	static void _bind_methods() {
-		ADD_SIGNAL(MethodInfo("finished", PropertyInfo(Variant::OBJECT, "result", PROPERTY_HINT_RESOURCE_TYPE, "ListLobbyResult")));
-	}
-
-public:
-	class ListLobbyResult : public RefCounted {
-		GDCLASS(ListLobbyResult, RefCounted);
-
-		String error = "";
-		TypedArray<LobbyInfo> lobbies = TypedArray<LobbyInfo>();
-
-	protected:
-		static void _bind_methods() {
-			ClassDB::bind_method(D_METHOD("has_error"), &ListLobbyResult::has_error);
-			ClassDB::bind_method(D_METHOD("get_error"), &ListLobbyResult::get_error);
-			ClassDB::bind_method(D_METHOD("get_lobbies"), &ListLobbyResult::get_lobbies);
-			ADD_PROPERTY(PropertyInfo(Variant::STRING, "error"), "", "get_error");
-			ADD_PROPERTY(PropertyInfo(Variant::ARRAY, "lobbies", PROPERTY_HINT_ARRAY_TYPE, "LobbyInfo"), "", "get_lobbies");
-		}
-
-	public:
-		void set_error(const String &p_error) { this->error = p_error; }
-		void set_lobbies(const TypedArray<LobbyInfo> &p_lobbies) { this->lobbies = p_lobbies; }
-
-		bool has_error() const { return !error.is_empty(); }
-		String get_error() const { return error; }
-		TypedArray<LobbyInfo> get_lobbies() const { return lobbies; }
-	};
-};
-
 class ViewLobbyResponse : public RefCounted {
 	GDCLASS(ViewLobbyResponse, RefCounted);
 
