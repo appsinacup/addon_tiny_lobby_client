@@ -14,8 +14,6 @@ def get_doc_classes():
         "LobbyPeer",
         "LobbyResponse",
         "LobbyResult",
-        "ListLobbyResponse",
-        "ListLobbyResult",
         "ViewLobbyResponse",
         "ViewLobbyResult",
         "AuthoritativeLobbyClient",

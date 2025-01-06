@@ -53,9 +53,10 @@
 		<method name="create_lobby">
 			<return type="ViewLobbyResponse" />
 			<param index="0" name="title" type="String" />
-			<param index="1" name="tags" type="Dictionary" default="{}" />
-			<param index="2" name="max_players" type="int" default="4" />
-			<param index="3" name="password" type="String" default="&quot;&quot;" />
+			<param index="1" name="sealed" type="bool" />
+			<param index="2" name="tags" type="Dictionary" default="{}" />
+			<param index="3" name="max_players" type="int" default="4" />
+			<param index="4" name="password" type="String" default="&quot;&quot;" />
 			<description>
 				Create a lobby and become host. If you are already in a lobby, you cannot create one. You need to leave first.
 				The new lobby can have a title, tags, max players and password. 0 max players means unlimited.
@@ -123,12 +124,11 @@
 			</description>
 		</method>
 		<method name="list_lobbies">
-			<return type="ListLobbyResponse" />
-			<param index="0" name="tags" type="Dictionary" default="{}" />
-			<param index="1" name="start" type="int" default="0" />
-			<param index="2" name="count" type="int" default="10" />
+			<return type="LobbyResponse" />
 			<description>
 				Lists all lobbies. Lobbies that are sealed won't show in the list, except if you disconnected and trying to reconnect to a lobby.
+				Returns a [LobbyResponse] object that has a [signal LobbyResponse.finished] signal that is emitted when finished.
+				Generates [signal lobbies_listed].
 			</description>
 		</method>
 		<method name="lobby_call">
@@ -205,6 +205,12 @@
 			<param index="0" name="reason" type="String" />
 			<description>
 				Signal generated after you disconnect from the lobby.
+			</description>
+		</signal>
+		<signal name="lobbies_listed">
+			<param index="0" name="lobbies" type="LobbyInfo[]" />
+			<description>
+				Signal generated after the lobbies are listed, or when a new lobby is created or removed.
 			</description>
 		</signal>
 		<signal name="lobby_created">
