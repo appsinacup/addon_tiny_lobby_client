@@ -764,9 +764,9 @@ void LobbyClient::_receive_data(const Dictionary &p_dict) {
 				// lobby got removed
 				// go through every lobby and remove the one with id
 				for (int j = 0; j < lobbies.size(); ++j) {
-					Ref<LobbyInfo> lobby = lobbies[j];
 					String lobby_id = lobby_dict.get("id", "");
-					if (lobby->get_id() == lobby_id) {
+					Ref<LobbyInfo> lobby_j = lobbies[j];
+					if (lobby_j->get_id() == lobby_id) {
 						lobbies.remove_at(j);
 						updated = true;
 						break;
@@ -778,10 +778,10 @@ void LobbyClient::_receive_data(const Dictionary &p_dict) {
 			}
 			// go and see if there already is a lobby in lobbies
 			for (int j = 0; j < lobbies.size(); ++j) {
-				Ref<LobbyInfo> lobby = lobbies[j];
 				String lobby_id = lobby_dict.get("id", "");
-				if (lobby->get_id() == lobby_id) {
-					lobby->set_dict(lobby_dict);
+				Ref<LobbyInfo> lobby_j = lobbies[j];
+				if (lobby_j->get_id() == lobby_id) {
+					lobby_j->set_dict(lobby_dict);
 					updated = true;
 					break;
 				}
