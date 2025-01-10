@@ -735,8 +735,10 @@ void LobbyClient::_receive_data(const Dictionary &p_dict) {
 		reconnection_token = peer_dict.get("reconnection_token", "");
 		emit_signal("connected_to_lobby", peer, reconnection_token);
 	} else if (command == "lobby_created") {
+		lobbies.clear();
 		emit_signal("lobby_created", lobby, peers);
 	} else if (command == "joined_lobby") {
+		lobbies.clear();
 		emit_signal("lobby_joined", lobby, peers);
 	} else if (command == "lobby_left") {
 		_clear_lobby();
