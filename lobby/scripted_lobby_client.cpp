@@ -515,9 +515,10 @@ void ScriptedLobbyClient::_update_peers(Dictionary p_data_dict, TypedArray<Lobby
 void ScriptedLobbyClient::_clear_lobby() {
 	lobby->set_dict(Dictionary());
 	peers.clear();
+	lobbies.clear();
+	peer_data = Dictionary();
 	peer->set_data(Dictionary());
 	peer->set_ready(false);
-	peer_data = Dictionary();
 }
 
 void ScriptedLobbyClient::_receive_data(const Dictionary &p_dict) {
@@ -552,8 +553,10 @@ void ScriptedLobbyClient::_receive_data(const Dictionary &p_dict) {
 		reconnection_token = peer_dict.get("reconnection_token", "");
 		emit_signal("connected_to_lobby", peer, reconnection_token);
 	} else if (command == "lobby_created") {
+		lobbies.clear();
 		emit_signal("lobby_created", lobby, peers);
 	} else if (command == "joined_lobby") {
+		lobbies.clear();
 		emit_signal("lobby_joined", lobby, peers);
 	} else if (command == "lobby_left") {
 		_clear_lobby();
