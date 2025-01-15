@@ -39,9 +39,22 @@
 #include "login/login_client.h"
 #include "master_server/master_server_client.h"
 #include "pogr/pogr_client.h"
+#include "third_party_client.h"
+#include "discord/discord_embedded_app_client.h"
+#include "discord/discord_embedded_app_response.h"
+#include "jwt.h"
+
+static JWT *jwt_singleton_global = nullptr;
 
 void initialize_blazium_sdk_module(ModuleInitializationLevel p_level) {
+	if (p_level == MODULE_INITIALIZATION_LEVEL_CORE) {
+		// JWT singleton
+		jwt_singleton_global = memnew(JWT);
+		GDREGISTER_CLASS(JWT);
+		Engine::get_singleton()->add_singleton(Engine::Singleton("JWT", JWT::get_singleton()));
+	}
 	if (p_level == MODULE_INITIALIZATION_LEVEL_SCENE) {
+		// Blazium clients
 		GDREGISTER_ABSTRACT_CLASS(BlaziumClient);
 		GDREGISTER_CLASS(LobbyInfo);
 		GDREGISTER_CLASS(LobbyPeer);
@@ -65,8 +78,16 @@ void initialize_blazium_sdk_module(ModuleInitializationLevel p_level) {
 		GDREGISTER_CLASS(LoginClient);
 		GDREGISTER_CLASS(LoginClient::LoginResponse);
 		GDREGISTER_CLASS(LoginClient::LoginResponse::LoginResult);
+		// Third party clients
+		GDREGISTER_ABSTRACT_CLASS(ThirdPartyClient);
+		GDREGISTER_CLASS(DiscordEmbeddedAppClient);
+		GDREGISTER_CLASS(DiscordEmbeddedAppResponse);
+		GDREGISTER_CLASS(DiscordEmbeddedAppResponse::DiscordEmbeddedAppResult);
 	}
 }
 
 void uninitialize_blazium_sdk_module(ModuleInitializationLevel p_level) {
+	if (p_level == MODULE_INITIALIZATION_LEVEL_CORE) {
+		memdelete(jwt_singleton_global);
+	}
 }
