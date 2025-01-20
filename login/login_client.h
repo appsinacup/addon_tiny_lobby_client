@@ -108,7 +108,10 @@ protected:
 		if (action == "jwt") {
 			String jwt = p_data.get("url", "");
 			String type = p_data.get("type", "");
-			emit_signal("received_jwt", jwt, type);
+			String access_token = p_data.get("access_token", "");
+			if (p_data.has("url")) {
+				emit_signal("received_jwt", jwt, type, access_token);
+			}
 		}
 	}
 
