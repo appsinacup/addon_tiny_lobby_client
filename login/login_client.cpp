@@ -18,7 +18,7 @@ void LoginClient::_bind_methods() {
 	ADD_SIGNAL(MethodInfo("log_updated", PropertyInfo(Variant::STRING, "command"), PropertyInfo(Variant::STRING, "logs")));
 	ADD_SIGNAL(MethodInfo("disconnected_from_server", PropertyInfo(Variant::STRING, "reason")));
 	ADD_SIGNAL(MethodInfo("connected_to_server"));
-	ADD_SIGNAL(MethodInfo("received_jwt", PropertyInfo(Variant::STRING, "jwt"), PropertyInfo(Variant::STRING, "type")));
+	ADD_SIGNAL(MethodInfo("received_jwt", PropertyInfo(Variant::STRING, "jwt"), PropertyInfo(Variant::STRING, "type"), PropertyInfo(Variant::STRING, "access_token")));
 }
 
 bool LoginClient::connect_to_server() {
