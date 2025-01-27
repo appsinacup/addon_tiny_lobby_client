@@ -31,6 +31,7 @@
 #ifndef LOBBY_CLIENT_H
 #define LOBBY_CLIENT_H
 
+#include "../discord/discord_embedded_app_client.h"
 #include "../blazium_client.h"
 #include "core/io/json.h"
 #include "lobby_info.h"
@@ -44,7 +45,8 @@ class LobbyClient : public BlaziumClient {
 	GDCLASS(LobbyClient, BlaziumClient);
 
 protected:
-	String server_url = "wss://lobby.blazium.app/connect";
+	String override_discord_path = "blazium/lobby/connect";
+	String server_url;
 	String reconnection_token = "";
 	String game_id = "";
 	Dictionary host_data = Dictionary();
@@ -74,6 +76,13 @@ protected:
 	static void _bind_methods();
 
 public:
+	void set_override_discord_path(String p_path) {
+		override_discord_path = p_path;
+		if (DiscordEmbeddedAppClient::static_is_discord_environment()) {
+			server_url = "https://" + DiscordEmbeddedAppClient::static_find_client_id() + ".discordsays.com/.proxy/" + override_discord_path;
+		}
+	}
+	String get_override_discord_path() const { return override_discord_path; }
 	void set_server_url(const String &p_server_url);
 	String get_server_url();
 	void set_reconnection_token(const String &p_reconnection_token);

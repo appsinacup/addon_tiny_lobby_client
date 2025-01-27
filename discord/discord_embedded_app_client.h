@@ -2,8 +2,8 @@
 /*  discord_embedded_app_client.h                                         */
 /**************************************************************************/
 /*                         This file is part of:                          */
-/*                             GODOT ENGINE                               */
-/*                        https://godotengine.org                         */
+/*                             BLAZIUM ENGINE                             */
+/*                        https://http://blazium.app                      */
 /**************************************************************************/
 /* Copyright (c) 2024-present Blazium Engine contributors.                */
 /* Copyright (c) 2024 Dragos Daian, Randolph William Aarseth II.          */
@@ -66,6 +66,7 @@ class DiscordEmbeddedAppClient : public ThirdPartyClient {
 
 	Ref<JavaScriptObject> callback;
 	Ref<DiscordEmbeddedAppResponse> ready_response;
+	Ref<JavaScriptObject> window;
 
 	void _handle_message(Variant p_event);
 	void _handle_dispatch(Dictionary p_data);
@@ -84,10 +85,12 @@ public:
 	};
 	void subscribe_to_all_events();
 	bool is_discord_environment();
+	static bool static_is_discord_environment();
 	void close(int p_code, String p_message);
 	String get_user_id() { return user_id; }
 	String get_client_id() { return client_id; }
 	void set_client_id(String p_client_id) { return client_id = p_client_id; }
+	static String static_find_client_id();
 	String get_user_instance_id() { return user_instance_id; }
 	String get_custom_id() { return custom_id; }
 	String get_referrer_id() { return referrer_id; }

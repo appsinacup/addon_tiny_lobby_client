@@ -35,12 +35,16 @@
 		</method>
 	</methods>
 	<members>
+		<member name="discord_embedded_app/path" type="String" setter="set_override_discord_path" getter="get_override_discord_path" default="&quot;blazium/masterserver/api/v1&quot;">
+			Set to what path this client should use when connecting to the discord embedded app.
+		</member>
 		<member name="game_id" type="String" setter="set_game_id" getter="get_game_id" default="&quot;&quot;">
 			Set what game id this client should use when connecting to the server. If this is missing connection will error.
 			Can only contain alphanumeric characters.
 		</member>
 		<member name="server_url" type="String" setter="set_server_url" getter="get_server_url" default="&quot;https://masterserver.blazium.app/api/v1&quot;">
 			Set to what url this client should connect to.
+			For discord embedded app environment, replaces the url with [url=https://client_id.discordsays.com/.proxy/blazium/masterserver/api/v1]client_id.discordsays.com/.proxy/blazium/masterserver/api/v1[/url] if left default, where client_id is the client id from the discord embedded app url (automatically detected).
 		</member>
 	</members>
 </class>

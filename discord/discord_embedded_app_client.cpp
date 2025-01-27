@@ -2,8 +2,8 @@
 /*  discord_embedded_app_client.cpp                                       */
 /**************************************************************************/
 /*                         This file is part of:                          */
-/*                             GODOT ENGINE                               */
-/*                        https://godotengine.org                         */
+/*                             BLAZIUM ENGINE                             */
+/*                        https://http://blazium.app                      */
 /**************************************************************************/
 /* Copyright (c) 2024-present Blazium Engine contributors.                */
 /* Copyright (c) 2024 Dragos Daian, Randolph William Aarseth II.          */
@@ -150,6 +150,7 @@ void DiscordEmbeddedAppClient::_handle_message(Variant p_event) {
 	}
 }
 void DiscordEmbeddedAppClient::_handle_dispatch(Dictionary p_data) {
+	print_line(p_data);
 	String event = p_data["evt"];
 	emit_signal("log_updated", "handle_dispatch", event);
 	if (event == "READY") {
@@ -198,7 +199,7 @@ void DiscordEmbeddedAppClient::_send_message(int opcode, Dictionary body) {
 	data_message.push_back(body);
 	emit_signal("log_updated", "send_message", JSON::stringify(data_message));
 
-	String js_command = String("window.source.postMessage(") + JSON::stringify(data_message) + ", '*')";
+	String js_command = String("(window.parent.opener ?? window.parent).postMessage(") + JSON::stringify(data_message) + ", '*')";
 	JavaScriptBridge *singleton = JavaScriptBridge::get_singleton();
 	if (!singleton) {
 		ERR_PRINT("JavaScriptBridge not available.");
@@ -213,7 +214,7 @@ DiscordEmbeddedAppClient::DiscordEmbeddedAppClient() {
 		ERR_PRINT("JavaScriptBridge not available.");
 		return;
 	}
-	Ref<JavaScriptObject> window = singleton->get_interface("window");
+	window = singleton->get_interface("window");
 	if (!window.is_valid()) {
 		// Don't error here as we are on desktop most likely.
 		return;
@@ -225,9 +226,14 @@ DiscordEmbeddedAppClient::DiscordEmbeddedAppClient() {
 		ERR_PRINT("Callback is invalid");
 		return;
 	}
+	if (!window.is_valid()) {
+		ERR_PRINT("Window is invalid");
+		return;
+	}
 	window->call("addEventListener", "message", callback);
+
 	// update params
-	String query_parts_string = singleton->eval("window.location.search");
+	String query_parts_string = singleton->eval("window.location.search", true);
 	Vector<String> query_parts = query_parts_string.trim_prefix("?").split("&", false);
 	Dictionary query_map = {};
 	for (int i = 0; i < query_parts.size(); i++) {
@@ -252,14 +258,24 @@ DiscordEmbeddedAppClient::DiscordEmbeddedAppClient() {
 	frame_id = query_map.get("frame_id", "");
 	
 	singleton->eval("window.source = window.parent.opener ?? window.parent", true);
+	client_id = static_find_client_id();
+	_handshake();
+}
+
+String DiscordEmbeddedAppClient::static_find_client_id() {
+	JavaScriptBridge *singleton = JavaScriptBridge::get_singleton();
+	if (!singleton) {
+		ERR_PRINT("JavaScriptBridge not available.");
+		return "";
+	}
 	String host = singleton->eval("window.location.hostname");
 	PackedStringArray host_parts = host.split(".");
 	if (host_parts.size() > 0) {
-		client_id = host_parts[0]; // The first part is the client_id
+		return host_parts[0]; // The first part is the client_id
 	} else {
 		ERR_PRINT("Unable to extract client ID from host: " + host);
 	}
-	_handshake();
+	return "";
 }
 
 String _generate_nonce() {
@@ -312,6 +328,10 @@ void DiscordEmbeddedAppClient::_handshake() {
 }
 
 bool DiscordEmbeddedAppClient::is_discord_environment() {
+	return static_is_discord_environment();
+}
+
+bool DiscordEmbeddedAppClient::static_is_discord_environment() {
     JavaScriptBridge *singleton = JavaScriptBridge::get_singleton();
     if (!singleton) {
         ERR_PRINT("JavaScriptBridge singleton is invalid");
