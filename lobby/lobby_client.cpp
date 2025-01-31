@@ -83,8 +83,8 @@ void LobbyClient::_bind_methods() {
 	ADD_PROPERTY_DEFAULT("peer", Ref<LobbyPeer>());
 	ADD_PROPERTY_DEFAULT("lobby", Ref<LobbyInfo>());
 	// Register methods
-	ClassDB::bind_method(D_METHOD("connect_to_lobby"), &LobbyClient::connect_to_lobby);
-	ClassDB::bind_method(D_METHOD("disconnect_from_lobby"), &LobbyClient::disconnect_from_lobby);
+	ClassDB::bind_method(D_METHOD("connect_to_server"), &LobbyClient::connect_to_server);
+	ClassDB::bind_method(D_METHOD("disconnect_from_server"), &LobbyClient::disconnect_from_server);
 	ClassDB::bind_method(D_METHOD("create_lobby", "title", "sealed", "tags", "max_players", "password"), &LobbyClient::create_lobby, DEFVAL(Dictionary()), DEFVAL(4), DEFVAL(""));
 	ClassDB::bind_method(D_METHOD("join_lobby", "lobby_id", "password"), &LobbyClient::join_lobby, DEFVAL(""));
 	ClassDB::bind_method(D_METHOD("leave_lobby"), &LobbyClient::leave_lobby);
@@ -148,9 +148,15 @@ void LobbyClient::set_peer(const Ref<LobbyPeer> &p_peer) { this->peer = p_peer; 
 Ref<LobbyPeer> LobbyClient::get_peer() { return peer; }
 TypedArray<LobbyPeer> LobbyClient::get_peers() { return peers; }
 
-Ref<LobbyResponse> LobbyClient::connect_to_lobby() {
+Ref<LobbyResponse> LobbyClient::connect_to_server() {
 	Ref<LobbyResponse> response;
 	response.instantiate();
+	if (connected) {
+		// signal the finish deferred
+		Callable callable = callable_mp(*response, &LobbyResponse::signal_finish);
+		callable.call_deferred("Already connected to the server.");
+		return response;
+	}
 	// if there is another command connect, finish that with error
 	if (_commands.has("connect")) {
 		Ref<LobbyResponse> old_response = _commands.get("connect", Ref<LobbyResponse>());
@@ -175,13 +181,19 @@ Ref<LobbyResponse> LobbyClient::connect_to_lobby() {
 		emit_signal("log_updated", "error", "Unable to connect to lobby server at: " + url);
 		return response;
 	}
-	emit_signal("log_updated", "connect_to_lobby", "Connecting to: " + url);
+	emit_signal("log_updated", "connect_to_server", "Connecting to: " + url);
 	return response;
 }
 
-Ref<LobbyResponse> LobbyClient::disconnect_from_lobby() {
+Ref<LobbyResponse> LobbyClient::disconnect_from_server() {
 	Ref<LobbyResponse> response;
 	response.instantiate();
+	if (!connected) {
+		// signal the finish deferred
+		Callable callable = callable_mp(*response, &LobbyResponse::signal_finish);
+		callable.call_deferred("Not conneceted to the server.");
+		return response;
+	}
 	// if there is another disconnect connect, finish that with error
 	if (_commands.has("disconnect")) {
 		Ref<LobbyResponse> old_response = _commands.get("disconnect", Ref<LobbyResponse>());
@@ -200,7 +212,7 @@ Ref<LobbyResponse> LobbyClient::disconnect_from_lobby() {
 	lobbies.clear();
 	peers.clear();
 	lobby->set_dict(Dictionary());
-	emit_signal("log_updated", "disconnect_from_lobby", "Disconnecting from: " + get_server_url());
+	emit_signal("log_updated", "disconnect_from_server", "Disconnecting from: " + get_server_url());
 	return response;
 }
 
@@ -209,6 +221,14 @@ String LobbyClient::_increment_counter() {
 }
 
 Ref<ViewLobbyResponse> LobbyClient::create_lobby(const String &p_name, bool p_sealed, const Dictionary &p_tags, int p_max_players, const String &p_password) {
+	Ref<ViewLobbyResponse> response;
+	response.instantiate();
+	if (!connected) {
+		// signal the finish deferred
+		Callable callable = callable_mp(*response, &ViewLobbyResponse::signal_finish);
+		callable.call_deferred("Not conneceted to the server.");
+		return response;
+	}
 	String id = _increment_counter();
 	Dictionary command;
 	command["command"] = "create_lobby";
@@ -221,8 +241,6 @@ Ref<ViewLobbyResponse> LobbyClient::create_lobby(const String &p_name, bool p_se
 	data_dict["sealed"] = p_sealed;
 	data_dict["id"] = id;
 	Array command_array;
-	Ref<ViewLobbyResponse> response;
-	response.instantiate();
 	command_array.push_back(LOBBY_VIEW);
 	command_array.push_back(response);
 	_commands[id] = command_array;
@@ -231,6 +249,14 @@ Ref<ViewLobbyResponse> LobbyClient::create_lobby(const String &p_name, bool p_se
 }
 
 Ref<ViewLobbyResponse> LobbyClient::join_lobby(const String &p_lobby_id, const String &p_password) {
+	Ref<ViewLobbyResponse> response;
+	response.instantiate();
+	if (!connected) {
+		// signal the finish deferred
+		Callable callable = callable_mp(*response, &ViewLobbyResponse::signal_finish);
+		callable.call_deferred("Not conneceted to the server.");
+		return response;
+	}
 	String id = _increment_counter();
 	Dictionary command;
 	command["command"] = "join_lobby";
@@ -240,8 +266,6 @@ Ref<ViewLobbyResponse> LobbyClient::join_lobby(const String &p_lobby_id, const S
 	data_dict["password"] = p_password;
 	data_dict["id"] = id;
 	Array command_array;
-	Ref<ViewLobbyResponse> response;
-	response.instantiate();
 	command_array.push_back(LOBBY_VIEW);
 	command_array.push_back(response);
 	_commands[id] = command_array;
@@ -250,6 +274,14 @@ Ref<ViewLobbyResponse> LobbyClient::join_lobby(const String &p_lobby_id, const S
 }
 
 Ref<LobbyResponse> LobbyClient::leave_lobby() {
+	Ref<LobbyResponse> response;
+	response.instantiate();
+	if (!connected) {
+		// signal the finish deferred
+		Callable callable = callable_mp(*response, &LobbyResponse::signal_finish);
+		callable.call_deferred("Not conneceted to the server.");
+		return response;
+	}
 	String id = _increment_counter();
 	Dictionary command;
 	command["command"] = "leave_lobby";
@@ -257,8 +289,6 @@ Ref<LobbyResponse> LobbyClient::leave_lobby() {
 	command["data"] = data_dict;
 	data_dict["id"] = id;
 	Array command_array;
-	Ref<LobbyResponse> response;
-	response.instantiate();
 	command_array.push_back(LOBBY_REQUEST);
 	command_array.push_back(response);
 	_commands[id] = command_array;
@@ -267,6 +297,14 @@ Ref<LobbyResponse> LobbyClient::leave_lobby() {
 }
 
 Ref<LobbyResponse> LobbyClient::list_lobby() {
+	Ref<LobbyResponse> response;
+	response.instantiate();
+	if (!connected) {
+		// signal the finish deferred
+		Callable callable = callable_mp(*response, &LobbyResponse::signal_finish);
+		callable.call_deferred("Not conneceted to the server.");
+		return response;
+	}
 	String id = _increment_counter();
 	Dictionary command;
 	command["command"] = "list_lobby";
@@ -274,8 +312,6 @@ Ref<LobbyResponse> LobbyClient::list_lobby() {
 	data_dict["id"] = id;
 	command["data"] = data_dict;
 	Array command_array;
-	Ref<LobbyResponse> response;
-	response.instantiate();
 	command_array.push_back(LOBBY_REQUEST);
 	command_array.push_back(response);
 	_commands[id] = command_array;
@@ -284,6 +320,14 @@ Ref<LobbyResponse> LobbyClient::list_lobby() {
 }
 
 Ref<LobbyResponse> LobbyClient::kick_peer(const String &p_peer_id) {
+	Ref<LobbyResponse> response;
+	response.instantiate();
+	if (!connected) {
+		// signal the finish deferred
+		Callable callable = callable_mp(*response, &LobbyResponse::signal_finish);
+		callable.call_deferred("Not conneceted to the server.");
+		return response;
+	}
 	String id = _increment_counter();
 	Dictionary command;
 	command["command"] = "kick_peer";
@@ -292,8 +336,6 @@ Ref<LobbyResponse> LobbyClient::kick_peer(const String &p_peer_id) {
 	data_dict["peer_id"] = p_peer_id;
 	data_dict["id"] = id;
 	Array command_array;
-	Ref<LobbyResponse> response;
-	response.instantiate();
 	command_array.push_back(LOBBY_REQUEST);
 	command_array.push_back(response);
 	_commands[id] = command_array;
@@ -302,6 +344,14 @@ Ref<LobbyResponse> LobbyClient::kick_peer(const String &p_peer_id) {
 }
 
 Ref<LobbyResponse> LobbyClient::set_lobby_tags(const Dictionary &p_tags) {
+	Ref<LobbyResponse> response;
+	response.instantiate();
+	if (!connected) {
+		// signal the finish deferred
+		Callable callable = callable_mp(*response, &LobbyResponse::signal_finish);
+		callable.call_deferred("Not conneceted to the server.");
+		return response;
+	}
 	String id = _increment_counter();
 	Dictionary command;
 	command["command"] = "lobby_tags";
@@ -310,8 +360,6 @@ Ref<LobbyResponse> LobbyClient::set_lobby_tags(const Dictionary &p_tags) {
 	data_dict["tags"] = p_tags;
 	data_dict["id"] = id;
 	Array command_array;
-	Ref<LobbyResponse> response;
-	response.instantiate();
 	command_array.push_back(LOBBY_REQUEST);
 	command_array.push_back(response);
 	_commands[id] = command_array;
@@ -320,6 +368,14 @@ Ref<LobbyResponse> LobbyClient::set_lobby_tags(const Dictionary &p_tags) {
 }
 
 Ref<LobbyResponse> LobbyClient::del_lobby_tags(const TypedArray<String> &p_keys) {
+	Ref<LobbyResponse> response;
+	response.instantiate();
+	if (!connected) {
+		// signal the finish deferred
+		Callable callable = callable_mp(*response, &LobbyResponse::signal_finish);
+		callable.call_deferred("Not conneceted to the server.");
+		return response;
+	}
 	String id = _increment_counter();
 	Dictionary command;
 	command["command"] = "lobby_tags";
@@ -333,8 +389,6 @@ Ref<LobbyResponse> LobbyClient::del_lobby_tags(const TypedArray<String> &p_keys)
 	data_dict["tags"] = data_object_dict;
 	data_dict["id"] = id;
 	Array command_array;
-	Ref<LobbyResponse> response;
-	response.instantiate();
 	command_array.push_back(LOBBY_REQUEST);
 	command_array.push_back(response);
 	_commands[id] = command_array;
@@ -343,6 +397,14 @@ Ref<LobbyResponse> LobbyClient::del_lobby_tags(const TypedArray<String> &p_keys)
 }
 
 Ref<LobbyResponse> LobbyClient::lobby_chat(const String &p_chat_message) {
+	Ref<LobbyResponse> response;
+	response.instantiate();
+	if (!connected) {
+		// signal the finish deferred
+		Callable callable = callable_mp(*response, &LobbyResponse::signal_finish);
+		callable.call_deferred("Not conneceted to the server.");
+		return response;
+	}
 	String id = _increment_counter();
 	Dictionary command;
 	command["command"] = "chat_lobby";
@@ -351,8 +413,6 @@ Ref<LobbyResponse> LobbyClient::lobby_chat(const String &p_chat_message) {
 	data_dict["chat"] = p_chat_message;
 	data_dict["id"] = id;
 	Array command_array;
-	Ref<LobbyResponse> response;
-	response.instantiate();
 	command_array.push_back(LOBBY_REQUEST);
 	command_array.push_back(response);
 	_commands[id] = command_array;
@@ -361,6 +421,14 @@ Ref<LobbyResponse> LobbyClient::lobby_chat(const String &p_chat_message) {
 }
 
 Ref<LobbyResponse> LobbyClient::lobby_ready(bool p_ready) {
+	Ref<LobbyResponse> response;
+	response.instantiate();
+	if (!connected) {
+		// signal the finish deferred
+		Callable callable = callable_mp(*response, &LobbyResponse::signal_finish);
+		callable.call_deferred("Not conneceted to the server.");
+		return response;
+	}
 	String id = _increment_counter();
 	Dictionary command;
 	if (p_ready) {
@@ -372,8 +440,6 @@ Ref<LobbyResponse> LobbyClient::lobby_ready(bool p_ready) {
 	command["data"] = data_dict;
 	data_dict["id"] = id;
 	Array command_array;
-	Ref<LobbyResponse> response;
-	response.instantiate();
 	command_array.push_back(LOBBY_REQUEST);
 	command_array.push_back(response);
 	_commands[id] = command_array;
@@ -382,6 +448,14 @@ Ref<LobbyResponse> LobbyClient::lobby_ready(bool p_ready) {
 }
 
 Ref<LobbyResponse> LobbyClient::seal_lobby(bool seal) {
+	Ref<LobbyResponse> response;
+	response.instantiate();
+	if (!connected) {
+		// signal the finish deferred
+		Callable callable = callable_mp(*response, &LobbyResponse::signal_finish);
+		callable.call_deferred("Not conneceted to the server.");
+		return response;
+	}
 	String id = _increment_counter();
 	Dictionary command;
 	if (seal) {
@@ -393,8 +467,6 @@ Ref<LobbyResponse> LobbyClient::seal_lobby(bool seal) {
 	command["data"] = data_dict;
 	data_dict["id"] = id;
 	Array command_array;
-	Ref<LobbyResponse> response;
-	response.instantiate();
 	command_array.push_back(LOBBY_REQUEST);
 	command_array.push_back(response);
 	_commands[id] = command_array;
@@ -403,6 +475,14 @@ Ref<LobbyResponse> LobbyClient::seal_lobby(bool seal) {
 }
 
 Ref<LobbyResponse> LobbyClient::lobby_notify(const Variant &p_peer_data) {
+	Ref<LobbyResponse> response;
+	response.instantiate();
+	if (!connected) {
+		// signal the finish deferred
+		Callable callable = callable_mp(*response, &LobbyResponse::signal_finish);
+		callable.call_deferred("Not conneceted to the server.");
+		return response;
+	}
 	String id = _increment_counter();
 	Dictionary command;
 	command["command"] = "lobby_notify";
@@ -411,8 +491,6 @@ Ref<LobbyResponse> LobbyClient::lobby_notify(const Variant &p_peer_data) {
 	data_dict["id"] = id;
 	command["data"] = data_dict;
 	Array command_array;
-	Ref<LobbyResponse> response;
-	response.instantiate();
 	command_array.push_back(LOBBY_REQUEST);
 	command_array.push_back(response);
 	_commands[id] = command_array;
@@ -421,6 +499,14 @@ Ref<LobbyResponse> LobbyClient::lobby_notify(const Variant &p_peer_data) {
 }
 
 Ref<LobbyResponse> LobbyClient::peer_notify(const Variant &p_peer_data, const String &p_target_peer) {
+	Ref<LobbyResponse> response;
+	response.instantiate();
+	if (!connected) {
+		// signal the finish deferred
+		Callable callable = callable_mp(*response, &LobbyResponse::signal_finish);
+		callable.call_deferred("Not conneceted to the server.");
+		return response;
+	}
 	String id = _increment_counter();
 	Dictionary command;
 	command["command"] = "notify_to";
@@ -430,8 +516,6 @@ Ref<LobbyResponse> LobbyClient::peer_notify(const Variant &p_peer_data, const St
 	data_dict["id"] = id;
 	command["data"] = data_dict;
 	Array command_array;
-	Ref<LobbyResponse> response;
-	response.instantiate();
 	command_array.push_back(LOBBY_REQUEST);
 	command_array.push_back(response);
 	_commands[id] = command_array;
@@ -440,6 +524,14 @@ Ref<LobbyResponse> LobbyClient::peer_notify(const Variant &p_peer_data, const St
 }
 
 Ref<LobbyResponse> LobbyClient::add_user_data(const Dictionary &p_user_data) {
+	Ref<LobbyResponse> response;
+	response.instantiate();
+	if (!connected) {
+		// signal the finish deferred
+		Callable callable = callable_mp(*response, &LobbyResponse::signal_finish);
+		callable.call_deferred("Not conneceted to the server.");
+		return response;
+	}
 	String id = _increment_counter();
 	Dictionary command;
 	command["command"] = "user_data";
@@ -448,8 +540,6 @@ Ref<LobbyResponse> LobbyClient::add_user_data(const Dictionary &p_user_data) {
 	data_dict["id"] = id;
 	command["data"] = data_dict;
 	Array command_array;
-	Ref<LobbyResponse> response;
-	response.instantiate();
 	command_array.push_back(LOBBY_REQUEST);
 	command_array.push_back(response);
 	_commands[id] = command_array;
@@ -458,6 +548,14 @@ Ref<LobbyResponse> LobbyClient::add_user_data(const Dictionary &p_user_data) {
 }
 
 Ref<LobbyResponse> LobbyClient::del_user_data(const TypedArray<String> &p_keys) {
+	Ref<LobbyResponse> response;
+	response.instantiate();
+	if (!connected) {
+		// signal the finish deferred
+		Callable callable = callable_mp(*response, &LobbyResponse::signal_finish);
+		callable.call_deferred("Not conneceted to the server.");
+		return response;
+	}
 	String id = _increment_counter();
 	Dictionary command;
 	command["command"] = "user_data";
@@ -471,8 +569,6 @@ Ref<LobbyResponse> LobbyClient::del_user_data(const TypedArray<String> &p_keys) 
 	data_dict["id"] = id;
 	command["data"] = data_dict;
 	Array command_array;
-	Ref<LobbyResponse> response;
-	response.instantiate();
 	command_array.push_back(LOBBY_REQUEST);
 	command_array.push_back(response);
 	_commands[id] = command_array;
@@ -481,6 +577,14 @@ Ref<LobbyResponse> LobbyClient::del_user_data(const TypedArray<String> &p_keys) 
 }
 
 Ref<LobbyResponse> LobbyClient::lobby_data(const Dictionary &p_lobby_data, bool p_is_private) {
+	Ref<LobbyResponse> response;
+	response.instantiate();
+	if (!connected) {
+		// signal the finish deferred
+		Callable callable = callable_mp(*response, &LobbyResponse::signal_finish);
+		callable.call_deferred("Not conneceted to the server.");
+		return response;
+	}
 	String id = _increment_counter();
 	Dictionary command;
 	command["command"] = "lobby_data";
@@ -490,8 +594,6 @@ Ref<LobbyResponse> LobbyClient::lobby_data(const Dictionary &p_lobby_data, bool 
 	data_dict["id"] = id;
 	command["data"] = data_dict;
 	Array command_array;
-	Ref<LobbyResponse> response;
-	response.instantiate();
 	command_array.push_back(LOBBY_REQUEST);
 	command_array.push_back(response);
 	_commands[id] = command_array;
@@ -500,6 +602,14 @@ Ref<LobbyResponse> LobbyClient::lobby_data(const Dictionary &p_lobby_data, bool 
 }
 
 Ref<LobbyResponse> LobbyClient::del_lobby_data(const TypedArray<String> &p_keys, bool p_is_private) {
+	Ref<LobbyResponse> response;
+	response.instantiate();
+	if (!connected) {
+		// signal the finish deferred
+		Callable callable = callable_mp(*response, &LobbyResponse::signal_finish);
+		callable.call_deferred("Not conneceted to the server.");
+		return response;
+	}
 	String id = _increment_counter();
 	Dictionary command;
 	command["command"] = "lobby_data";
@@ -514,8 +624,6 @@ Ref<LobbyResponse> LobbyClient::del_lobby_data(const TypedArray<String> &p_keys,
 	data_dict["id"] = id;
 	command["data"] = data_dict;
 	Array command_array;
-	Ref<LobbyResponse> response;
-	response.instantiate();
 	command_array.push_back(LOBBY_REQUEST);
 	command_array.push_back(response);
 	_commands[id] = command_array;
@@ -524,6 +632,14 @@ Ref<LobbyResponse> LobbyClient::del_lobby_data(const TypedArray<String> &p_keys,
 }
 
 Ref<LobbyResponse> LobbyClient::set_peer_data(const Dictionary &p_peer_data, const String &p_target_peer, bool p_is_private) {
+	Ref<LobbyResponse> response;
+	response.instantiate();
+	if (!connected) {
+		// signal the finish deferred
+		Callable callable = callable_mp(*response, &LobbyResponse::signal_finish);
+		callable.call_deferred("Not conneceted to the server.");
+		return response;
+	}
 	String id = _increment_counter();
 	Dictionary command;
 	command["command"] = "data_to";
@@ -534,8 +650,6 @@ Ref<LobbyResponse> LobbyClient::set_peer_data(const Dictionary &p_peer_data, con
 	data_dict["id"] = id;
 	command["data"] = data_dict;
 	Array command_array;
-	Ref<LobbyResponse> response;
-	response.instantiate();
 	command_array.push_back(LOBBY_REQUEST);
 	command_array.push_back(response);
 	_commands[id] = command_array;
@@ -544,6 +658,14 @@ Ref<LobbyResponse> LobbyClient::set_peer_data(const Dictionary &p_peer_data, con
 }
 
 Ref<LobbyResponse> LobbyClient::del_peer_data(const TypedArray<String> &p_keys, const String &p_target_peer, bool p_is_private) {
+	Ref<LobbyResponse> response;
+	response.instantiate();
+	if (!connected) {
+		// signal the finish deferred
+		Callable callable = callable_mp(*response, &LobbyResponse::signal_finish);
+		callable.call_deferred("Not conneceted to the server.");
+		return response;
+	}
 	String id = _increment_counter();
 	Dictionary command;
 	command["command"] = "data_to";
@@ -559,8 +681,6 @@ Ref<LobbyResponse> LobbyClient::del_peer_data(const TypedArray<String> &p_keys, 
 	data_dict["id"] = id;
 	command["data"] = data_dict;
 	Array command_array;
-	Ref<LobbyResponse> response;
-	response.instantiate();
 	command_array.push_back(LOBBY_REQUEST);
 	command_array.push_back(response);
 	_commands[id] = command_array;
@@ -569,6 +689,14 @@ Ref<LobbyResponse> LobbyClient::del_peer_data(const TypedArray<String> &p_keys, 
 }
 
 Ref<LobbyResponse> LobbyClient::set_peers_data(const Dictionary &p_peer_data, bool p_is_private) {
+	Ref<LobbyResponse> response;
+	response.instantiate();
+	if (!connected) {
+		// signal the finish deferred
+		Callable callable = callable_mp(*response, &LobbyResponse::signal_finish);
+		callable.call_deferred("Not conneceted to the server.");
+		return response;
+	}
 	String id = _increment_counter();
 	Dictionary command;
 	command["command"] = "data_to_all";
@@ -578,8 +706,6 @@ Ref<LobbyResponse> LobbyClient::set_peers_data(const Dictionary &p_peer_data, bo
 	data_dict["id"] = id;
 	command["data"] = data_dict;
 	Array command_array;
-	Ref<LobbyResponse> response;
-	response.instantiate();
 	command_array.push_back(LOBBY_REQUEST);
 	command_array.push_back(response);
 	_commands[id] = command_array;
@@ -588,6 +714,14 @@ Ref<LobbyResponse> LobbyClient::set_peers_data(const Dictionary &p_peer_data, bo
 }
 
 Ref<LobbyResponse> LobbyClient::del_peers_data(const TypedArray<String> &p_keys, bool p_is_private) {
+	Ref<LobbyResponse> response;
+	response.instantiate();
+	if (!connected) {
+		// signal the finish deferred
+		Callable callable = callable_mp(*response, &LobbyResponse::signal_finish);
+		callable.call_deferred("Not conneceted to the server.");
+		return response;
+	}
 	String id = _increment_counter();
 	Dictionary command;
 	command["command"] = "data_to_all";
@@ -602,8 +736,6 @@ Ref<LobbyResponse> LobbyClient::del_peers_data(const TypedArray<String> &p_keys,
 	data_dict["id"] = id;
 	command["data"] = data_dict;
 	Array command_array;
-	Ref<LobbyResponse> response;
-	response.instantiate();
 	command_array.push_back(LOBBY_REQUEST);
 	command_array.push_back(response);
 	_commands[id] = command_array;
@@ -626,7 +758,7 @@ void LobbyClient::_notification(int p_what) {
 				}
 				if (!connected) {
 					connected = true;
-					emit_signal("log_updated", "connect_to_lobby", "Connected to: " + server_url);
+					emit_signal("log_updated", "connect_to_server", "Connected to: " + server_url);
 				}
 				while (_socket->get_available_packet_count() > 0) {
 					Vector<uint8_t> packet_buffer;

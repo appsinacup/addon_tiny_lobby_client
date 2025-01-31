@@ -63,6 +63,12 @@ public:
 		bool has_error() const { return !error.is_empty(); }
 		String get_error() const { return error; }
 	};
+	void signal_finish(String p_error) {
+		Ref<LobbyResult> result;
+		result.instantiate();
+		result->set_error(p_error);
+		emit_signal("finished", result);
+	}
 };
 
 class ViewLobbyResponse : public RefCounted {
@@ -107,6 +113,12 @@ public:
 		~ViewLobbyResult() {
 		}
 	};
+	void signal_finish(String p_error) {
+		Ref<ViewLobbyResult> result;
+		result.instantiate();
+		result->set_error(p_error);
+		emit_signal("finished", result);
+	}
 };
 
 #endif // LOBBY_RESPONSE_H
