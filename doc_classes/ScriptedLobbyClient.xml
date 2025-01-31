@@ -47,7 +47,7 @@
 			<return type="LobbyResponse" />
 			<description>
 				Connect to a Blazium Lobby Server using the [member game_id] and [member server_url].
-				Generates [signal connected_to_lobby] signal if successful.
+				Generates [signal connected_to_server] signal if successful.
 			</description>
 		</method>
 		<method name="create_lobby">
@@ -86,7 +86,7 @@
 			<return type="LobbyResponse" />
 			<description>
 				Disconnect from the lobby server.
-				Generates [signal disconnected_from_lobby] signal.
+				Generates [signal disconnected_from_server] signal.
 			</description>
 		</method>
 		<method name="is_host">
@@ -198,14 +198,14 @@
 		</member>
 	</members>
 	<signals>
-		<signal name="connected_to_lobby">
+		<signal name="connected_to_server">
 			<param index="0" name="peer" type="LobbyPeer" />
 			<param index="1" name="reconnection_token" type="String" />
 			<description>
 				Signal generated after you connect to the lobby.
 			</description>
 		</signal>
-		<signal name="disconnected_from_lobby">
+		<signal name="disconnected_from_server">
 			<param index="0" name="reason" type="String" />
 			<description>
 				Signal generated after you disconnect from the lobby.
