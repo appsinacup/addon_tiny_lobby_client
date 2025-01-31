@@ -209,6 +209,7 @@ void DiscordEmbeddedAppClient::_send_message(int opcode, Dictionary body) {
 }
 
 DiscordEmbeddedAppClient::DiscordEmbeddedAppClient() {
+	ready_response.instantiate();
 	JavaScriptBridge *singleton = JavaScriptBridge::get_singleton();
 	if (!singleton) {
 		ERR_PRINT("JavaScriptBridge not available.");
@@ -358,12 +359,6 @@ Ref<DiscordEmbeddedAppResponse> DiscordEmbeddedAppClient::is_ready() {
 		Callable callable = callable_mp(*response, &DiscordEmbeddedAppResponse::signal_finish);
 		callable.call_deferred("");
 		return response;
-	}
-	if (discord_ready) {
-		return Ref<DiscordEmbeddedAppResponse>();
-	}
-	if (!ready_response.is_valid()) {
-		ready_response.instantiate();
 	}
 	return ready_response;
 }

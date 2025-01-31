@@ -7,9 +7,9 @@
 		The [ScriptedLobbyClient] node provides an interface for connecting to the Blazium Authoritative service. There is a free instance hosted on the [url=https://blazium.app]blazium.app[/url] domain that is used by default.
 		The normal flow is as follows:
 		1. Listen to all the signals you are interested in.
-		2. Connect to the server using [method connect_to_lobby] method.
+		2. Connect to the server using [method connect_to_server] method.
 		3. Call any other methods to create, view or join lobbies, as well as add data to them.
-		4. Close the session using [method disconnect_from_lobby] method at the end of the game.
+		4. Close the session using [method disconnect_from_server] method at the end of the game.
 		[b]Note:[/b] Some methods are non blocking and can be awaited in order to get the result.
 		There are also members on this class that are automatically updated as the lobby gets updated, such as:
 		- [member peer]: The current peer. Reflects changes to the self peer.
@@ -43,7 +43,7 @@
 				Generates [signal received_peer_user_data].
 			</description>
 		</method>
-		<method name="connect_to_lobby">
+		<method name="connect_to_server">
 			<return type="LobbyResponse" />
 			<description>
 				Connect to a Blazium Lobby Server using the [member game_id] and [member server_url].
@@ -82,7 +82,7 @@
 				Generates [signal received_peer_user_data].
 			</description>
 		</method>
-		<method name="disconnect_from_lobby">
+		<method name="disconnect_from_server">
 			<return type="LobbyResponse" />
 			<description>
 				Disconnect from the lobby server.

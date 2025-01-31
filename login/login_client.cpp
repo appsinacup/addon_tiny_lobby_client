@@ -63,8 +63,7 @@ Ref<LoginClient::LoginResponse> LoginClient::connect_to_server() {
 		callable.call_deferred("Already connected to the server.");
 		return response;
 	}
-	String lobby_url = get_server_url();
-	String url = lobby_url;
+	String url = get_server_url();
 	PackedStringArray protocols;
 	protocols.push_back("blazium");
 	protocols.push_back(game_id);
@@ -72,12 +71,12 @@ Ref<LoginClient::LoginResponse> LoginClient::connect_to_server() {
 	Error err = _socket->connect_to_url(url);
 	if (err != OK) {
 		set_process_internal(false);
-		emit_signal("log_updated", "error", "Unable to connect to lobby server at: " + url);
+		emit_signal("log_updated", "error", "Unable to connect to server at: " + url);
 		connected = false;
 		return Ref<LoginResponse>();
 	}
 	set_process_internal(true);
-	emit_signal("log_updated", "connect_to_lobby", "Connecting to: " + url);
+	emit_signal("log_updated", "connect_to_server", "Connecting to: " + url);
 	connect_response = Ref<LoginResponse>();
 	connect_response.instantiate();
 	return connect_response;

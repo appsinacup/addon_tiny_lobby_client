@@ -66,6 +66,12 @@ public:
 		String get_error() const { return error; }
 		Variant get_result() const { return result; }
 	};
+	void signal_finish(String p_error) {
+		Ref<ScriptedLobbyResult> result;
+		result.instantiate();
+		result->set_error(p_error);
+		emit_signal("finished", result);
+	}
 };
 
 #endif // SCRIPTED_LOBBY_RESPONSE_H

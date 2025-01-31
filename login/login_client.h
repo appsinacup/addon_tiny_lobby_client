@@ -138,7 +138,7 @@ protected:
 							connected_result.instantiate();
 							connect_response->emit_signal("finished", connected_result);
 						}
-						emit_signal("log_updated", "connect_to_lobby", "Connected to: " + server_url);
+						emit_signal("log_updated", "connect_to_server", "Connected to: " + server_url);
 						emit_signal("connected_to_server");
 					}
 					while (_socket->get_available_packet_count() > 0) {
