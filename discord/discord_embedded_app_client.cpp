@@ -69,7 +69,7 @@ void DiscordEmbeddedAppClient::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_sdk_version"), &DiscordEmbeddedAppClient::get_sdk_version);
 	ClassDB::bind_method(D_METHOD("get_mobile_app_version"), &DiscordEmbeddedAppClient::get_mobile_app_version);
 	ClassDB::bind_method(D_METHOD("get_frame_id"), &DiscordEmbeddedAppClient::get_frame_id);
-    
+
     ADD_PROPERTY(PropertyInfo(Variant::STRING, "user_id"), "", "get_user_id");
     ADD_PROPERTY(PropertyInfo(Variant::STRING, "client_id"), "", "get_client_id");
     ADD_PROPERTY(PropertyInfo(Variant::STRING, "user_instance_id"), "", "get_user_instance_id");
@@ -221,7 +221,7 @@ DiscordEmbeddedAppClient::DiscordEmbeddedAppClient() {
 		return;
 	}
 	// this reference must be kept to keep it alive
-	
+
 	callback = singleton->create_callback(callable_mp(this, &DiscordEmbeddedAppClient::_handle_message));
 	if (!callback.is_valid()) {
 		ERR_PRINT("Callback is invalid");
@@ -257,7 +257,7 @@ DiscordEmbeddedAppClient::DiscordEmbeddedAppClient() {
 	mobile_app_version = query_map.get("mobile_app_version", "");
 
 	frame_id = query_map.get("frame_id", "");
-	
+
 	singleton->eval("window.source = window.parent.opener ?? window.parent", true);
 	client_id = static_find_client_id();
 	_handshake();
@@ -339,8 +339,8 @@ bool DiscordEmbeddedAppClient::static_is_discord_environment() {
         return false;
     }
 
-	bool is_discord = singleton->eval("window.location.hostname.includes('discord')", true);
-	return is_discord;
+	// DiscordEmbed defined in misc/dist/html/full-size.html
+	return singleton->eval("DiscordEmbed.isDiscordEmbed()", true);
 }
 
 void DiscordEmbeddedAppClient::close(int p_code, String p_message) {
