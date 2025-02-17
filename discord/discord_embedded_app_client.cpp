@@ -227,10 +227,6 @@ DiscordEmbeddedAppClient::DiscordEmbeddedAppClient() {
 		ERR_PRINT("Callback is invalid");
 		return;
 	}
-	if (!window.is_valid()) {
-		ERR_PRINT("Window is invalid");
-		return;
-	}
 	window->call("addEventListener", "message", callback);
 
 	// update params
@@ -339,8 +335,8 @@ bool DiscordEmbeddedAppClient::static_is_discord_environment() {
         return false;
     }
 
-	// DiscordEmbed defined in misc/dist/html/full-size.html
-	return singleton->eval("DiscordEmbed.isDiscordEmbed()", true);
+	// DiscordEmbed defined in platform/web/export/export_plugin.cpp
+	return singleton->eval("window.DiscordEmbed?.isDiscordEmbed() ?? false", true);
 }
 
 void DiscordEmbeddedAppClient::close(int p_code, String p_message) {

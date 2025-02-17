@@ -39,6 +39,8 @@ def get_doc_classes():
 		"DiscordEmbeddedAppClient",
 		"DiscordEmbeddedAppResponse",
 		"DiscordEmbeddedAppResult",
+		"YoutubePlayablesClient",
+		"YoutubePlayablesResponse",
 	]
 
 

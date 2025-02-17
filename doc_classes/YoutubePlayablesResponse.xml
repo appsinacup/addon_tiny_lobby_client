@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="YoutubePlayablesResponse" inherits="RefCounted" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../doc/class.xsd">
+	<brief_description>
+		Generic response from a [YoutubePlayablesClient] call.
+	</brief_description>
+	<description>
+		Generic response from a [YoutubePlayablesClient] call. Await on [signal response] signal to get the [YoutubePlayablesResponse].
+	</description>
+	<tutorials>
+	</tutorials>
+	<methods>
+		<method name="has_error" qualifiers="const">
+			<return type="bool" />
+			<description>
+				Returns [code]true[/code] if there is an error.
+			</description>
+		</method>
+	</methods>
+	<members>
+		<member name="data" type="String" setter="" getter="get_data" default="&quot;&quot;">
+			The data returned after a successful call. Used by [method YoutubePlayablesClient.get_language] and [method YoutubePlayablesClient.load_data] to get their [member data].
+		</member>
+		<member name="error" type="String" setter="" getter="get_error" default="&quot;&quot;">
+			The error message returned after an unsuccessful call.
+		</member>
+	</members>
+	<signals>
+		<signal name="response">
+			<param index="0" name="response" type="YoutubePlayablesResponse" />
+			<description>
+				Signal emitted when the request has finished.
+			</description>
+		</signal>
+	</signals>
+</class>

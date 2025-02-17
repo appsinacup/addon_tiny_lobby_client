@@ -43,6 +43,8 @@
 #include "third_party_client.h"
 #include "discord/discord_embedded_app_client.h"
 #include "discord/discord_embedded_app_response.h"
+#include "youtube/youtube_playables_client.h"
+#include "youtube/youtube_playables_response.h"
 #include "jwt.h"
 #include "env.h"
 #include "csv/resource_csv.h"
@@ -99,6 +101,8 @@ void initialize_blazium_sdk_module(ModuleInitializationLevel p_level) {
 		GDREGISTER_CLASS(DiscordEmbeddedAppClient);
 		GDREGISTER_CLASS(DiscordEmbeddedAppResponse);
 		GDREGISTER_CLASS(DiscordEmbeddedAppResponse::DiscordEmbeddedAppResult);
+		GDREGISTER_CLASS(YoutubePlayablesClient);
+		GDREGISTER_CLASS(YoutubePlayablesResponse);
 	}
 }
 
