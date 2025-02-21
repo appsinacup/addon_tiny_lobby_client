@@ -103,6 +103,7 @@ void initialize_blazium_sdk_module(ModuleInitializationLevel p_level) {
 		GDREGISTER_CLASS(DiscordEmbeddedAppResponse::DiscordEmbeddedAppResult);
 		GDREGISTER_CLASS(YoutubePlayablesClient);
 		GDREGISTER_CLASS(YoutubePlayablesResponse);
+		GDREGISTER_CLASS(YoutubePlayablesResponse::YoutubePlayablesResult);
 	}
 }
 

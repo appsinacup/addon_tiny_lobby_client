@@ -4,29 +4,13 @@
 		Generic response from a [YoutubePlayablesClient] call.
 	</brief_description>
 	<description>
-		Generic response from a [YoutubePlayablesClient] call. Await on [signal response] signal to get the [YoutubePlayablesResponse].
+		Generic response from a [YoutubePlayablesClient] call. Await on [signal finished] signal to get the [YoutubePlayablesResult].
 	</description>
 	<tutorials>
 	</tutorials>
-	<methods>
-		<method name="has_error" qualifiers="const">
-			<return type="bool" />
-			<description>
-				Returns [code]true[/code] if there is an error.
-			</description>
-		</method>
-	</methods>
-	<members>
-		<member name="data" type="String" setter="" getter="get_data" default="&quot;&quot;">
-			The data returned after a successful call. Used by [method YoutubePlayablesClient.get_language] and [method YoutubePlayablesClient.load_data] to get their [member data].
-		</member>
-		<member name="error" type="String" setter="" getter="get_error" default="&quot;&quot;">
-			The error message returned after an unsuccessful call.
-		</member>
-	</members>
 	<signals>
-		<signal name="response">
-			<param index="0" name="response" type="YoutubePlayablesResponse" />
+		<signal name="finished">
+			<param index="0" name="result" type="YoutubePlayablesResult" />
 			<description>
 				Signal emitted when the request has finished.
 			</description>

@@ -53,9 +53,9 @@ void YoutubePlayablesClient::_bind_methods() {
 	ADD_SIGNAL(MethodInfo("resume"));
 }
 
-void YoutubePlayablesClient::_emit_audio_enabled_change(Array a) {
-    audio_enabled = a[0];
-    emit_signal("audio_enabled_change", a[0]);
+void YoutubePlayablesClient::_emit_audio_enabled_change(Array p_array) {
+    audio_enabled = p_array[0];
+    emit_signal("audio_enabled_change", p_array[0]);
 }
 
 void YoutubePlayablesClient::_emit_pause() {
@@ -101,10 +101,10 @@ Ref<YoutubePlayablesResponse> YoutubePlayablesClient::load_data() {
     response.instantiate();
 
     if (is_youtube_environment()) {
-        response->create_signal_reponse_callback();
-        ytgameRef->call_deferred("loadData", response->get_signal_reponse_callback());
+        response->create_signal_finish_callback();
+        ytgameRef->call_deferred("loadData", response->get_signal_finish_callback());
     } else {
-		Callable callable = callable_mp(*response, &YoutubePlayablesResponse::_signal_response_error);
+		Callable callable = callable_mp(*response, &YoutubePlayablesResponse::_signal_finish_error);
 		callable.call_deferred("Not in Youtube Playables environment.");
     }
     return response;
@@ -115,10 +115,10 @@ Ref<YoutubePlayablesResponse> YoutubePlayablesClient::save_data(String p_data) {
     response.instantiate();
 
     if (is_youtube_environment()) {
-        response->create_signal_reponse_callback();
-        ytgameRef->call_deferred("saveData", p_data, response->get_signal_reponse_callback());
+        response->create_signal_finish_callback();
+        ytgameRef->call_deferred("saveData", p_data, response->get_signal_finish_callback());
     } else {
-		Callable callable = callable_mp(*response, &YoutubePlayablesResponse::_signal_response_error);
+		Callable callable = callable_mp(*response, &YoutubePlayablesResponse::_signal_finish_error);
 		callable.call_deferred("Not in Youtube Playables environment.");
     }
     return response;
@@ -129,10 +129,10 @@ Ref<YoutubePlayablesResponse> YoutubePlayablesClient::send_score(int32_t p_value
     response.instantiate();
 
     if (is_youtube_environment()) {
-        response->create_signal_reponse_callback();
-        ytgameRef->call_deferred("sendScore", p_value, response->get_signal_reponse_callback());
+        response->create_signal_finish_callback();
+        ytgameRef->call_deferred("sendScore", p_value, response->get_signal_finish_callback());
     } else {
-		Callable callable = callable_mp(*response, &YoutubePlayablesResponse::_signal_response_error);
+		Callable callable = callable_mp(*response, &YoutubePlayablesResponse::_signal_finish_error);
 		callable.call_deferred("Not in Youtube Playables environment.");
     }
     return response;
@@ -143,10 +143,10 @@ Ref<YoutubePlayablesResponse> YoutubePlayablesClient::open_yt_content(String p_v
     response.instantiate();
 
     if (is_youtube_environment()) {
-        response->create_signal_reponse_callback();
-        ytgameRef->call_deferred("openYTContent", p_video_id, response->get_signal_reponse_callback());
+        response->create_signal_finish_callback();
+        ytgameRef->call_deferred("openYTContent", p_video_id, response->get_signal_finish_callback());
     } else {
-		Callable callable = callable_mp(*response, &YoutubePlayablesResponse::_signal_response_error);
+		Callable callable = callable_mp(*response, &YoutubePlayablesResponse::_signal_finish_error);
 		callable.call_deferred("Not in Youtube Playables environment.");
     }
     return response;
@@ -157,10 +157,10 @@ Ref<YoutubePlayablesResponse> YoutubePlayablesClient::get_language() {
     response.instantiate();
 
     if (is_youtube_environment()) {
-        response->create_signal_reponse_callback();
-        ytgameRef->call_deferred("getLanguage", response->get_signal_reponse_callback());
+        response->create_signal_finish_callback();
+        ytgameRef->call_deferred("getLanguage", response->get_signal_finish_callback());
     } else {
-		Callable callable = callable_mp(*response, &YoutubePlayablesResponse::_signal_response_error);
+		Callable callable = callable_mp(*response, &YoutubePlayablesResponse::_signal_finish_error);
 		callable.call_deferred("Not in Youtube Playables environment.");
     }
     return response;

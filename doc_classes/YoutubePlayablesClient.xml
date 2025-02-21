@@ -51,16 +51,16 @@
 				Loads game data from the YouTube cloud in the form of a serialized string. This API is usually called before the game loads to resume the game state.
 				[codeblocks]
 				[gdscript]
-				var response: YoutubePlayablesResponse = await load_data().response
-				if response.has_error():
-				    push_error(response.error)
+				var result: YoutubePlayablesResponse = await load_data().finished
+				if result.has_error():
+				    push_error(result.error)
 				    log_error()
 				else:
-				    var data: Dictionary = JSON.parse_string(response.data)
+				    var data: Dictionary = JSON.parse_string(result.data)
 				    print("Player is at level %d." % data["player_level"])
 				[/gdscript]
 				[/codeblocks]
-				[b]Note:[/b] Signed-out players are not supported. The [member YoutubePlayablesResponse.data] will be empty.
+				[b]Note:[/b] Signed-out players are not supported. The [member YoutubePlayablesResult.data] will be empty.
 				[url=https://developers.google.com/youtube/gaming/playables/certification/requirements_integration#4_cloud_saves]Cloud saves requirements.[/url]
 			</description>
 		</method>
@@ -95,13 +95,13 @@
 				[codeblocks]
 				[gdscript]
 				var data: Dictionary = {"player_level": 42}
-				var response: YoutubePlayablesResponse = await save_data(JSON.stringify(data)).response
-				if response.has_error():
-				    push_error(response.error)
+				var result: YoutubePlayablesResult = await save_data(JSON.stringify(data)).finished
+				if result.has_error():
+				    push_error(result.error)
 				    log_error()
 				[/gdscript]
 				[/codeblocks]
-				[b]Note:[/b] Signed-out players are not supported. [YoutubePlayablesResponse] returns without errors but the data is not be saved.
+				[b]Note:[/b] Signed-out players are not supported. [signal YoutubePlayablesResponse.finished] returns without errors but the data is not be saved.
 				[url=https://developers.google.com/youtube/gaming/playables/certification/requirements_integration#4_cloud_saves]Cloud saves requirements.[/url]
 			</description>
 		</method>
