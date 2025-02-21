@@ -1,12 +1,12 @@
 /**************************************************************************/
-/*  discord_embedded_app_response.h                                       */
+/*  youtube_playable_client.h                                             */
 /**************************************************************************/
 /*                         This file is part of:                          */
 /*                             BLAZIUM ENGINE                             */
 /*                          https://blazium.app                           */
 /**************************************************************************/
 /* Copyright (c) 2024-present Blazium Engine contributors.                */
-/* Copyright (c) 2024 Dragos Daian, Randolph William Aarseth II.          */
+/* Copyright (c) 2025 Nicholas Santos Shiden.                             */
 /*                                                                        */
 /* Permission is hereby granted, free of charge, to any person obtaining  */
 /* a copy of this software and associated documentation files (the        */
@@ -28,49 +28,46 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#ifndef DISCORD_EMBEDDED_APP_RESPONSE_H
-#define DISCORD_EMBEDDED_APP_RESPONSE_H
+#ifndef YOUTUBE_PLAYABLES_CLIENT_H
+#define YOUTUBE_PLAYABLES_CLIENT_H
 
-#include "core/object/ref_counted.h"
+#include "youtube_playables_response.h"
+#include "../third_party_client.h"
+#include "scene/main/node.h"
+#include "platform/web/api/javascript_bridge_singleton.h"
 
-class DiscordEmbeddedAppResponse : public RefCounted {
-	GDCLASS(DiscordEmbeddedAppResponse, RefCounted);
+// https://developers.google.com/youtube/gaming/playables/reference/sdk
+// https://github.com/google/web-game-samples/blob/main/phaser/src/YouTubePlayables.js
+class YoutubePlayablesClient : public ThirdPartyClient {
+    GDCLASS(YoutubePlayablesClient, ThirdPartyClient);
 
+    Ref<JavaScriptObject> ytgameRef;
+
+    Ref<JavaScriptObject> on_audio_enabled_change_callback;
+    Ref<JavaScriptObject> on_pause_callback;
+    Ref<JavaScriptObject> on_resume_callback;
+
+    // Needed to have is_audio_enabled return the right value
+    bool audio_enabled = true;
 protected:
-	static void _bind_methods() {
-		ADD_SIGNAL(MethodInfo("finished", PropertyInfo(Variant::OBJECT, "result", PROPERTY_HINT_RESOURCE_TYPE, "DiscordEmbeddedAppResult")));
-	}
-
+    static void _bind_methods();
 public:
-	class DiscordEmbeddedAppResult : public RefCounted {
-		GDCLASS(DiscordEmbeddedAppResult, RefCounted);
-		String error = "";
-        Dictionary data;
+    void _emit_audio_enabled_change(Array);
+    void _emit_pause();
+    void _emit_resume();
 
-	protected:
-		static void _bind_methods() {
-            ClassDB::bind_method(D_METHOD("get_data"), &DiscordEmbeddedAppResult::get_data);
-			ClassDB::bind_method(D_METHOD("has_error"), &DiscordEmbeddedAppResult::has_error);
-			ClassDB::bind_method(D_METHOD("get_error"), &DiscordEmbeddedAppResult::get_error);
-            ADD_PROPERTY(PropertyInfo(Variant::DICTIONARY, "data"), "", "get_data");
-			ADD_PROPERTY(PropertyInfo(Variant::STRING, "error"), "", "get_error");
-		}
+    void log_error();
+    void log_warning();
+    bool is_audio_enabled();
+    bool is_youtube_environment();
+    String get_sdk_version();
+    Ref<YoutubePlayablesResponse> load_data();
+    Ref<YoutubePlayablesResponse> save_data(String);
+    Ref<YoutubePlayablesResponse> send_score(int32_t);
+    Ref<YoutubePlayablesResponse> open_yt_content(String);
+    Ref<YoutubePlayablesResponse> get_language();
 
-	public:
-		void set_error(String p_error) { this->error = p_error; }
-		bool has_error() const { return !error.is_empty(); }
-		String get_error() const { return error; }
-
-		void set_data(Dictionary p_data) { this->data = p_data; }
-		Dictionary get_data() const { return data; }
-	};
-
-	void signal_finish(String p_error) {
-		Ref<DiscordEmbeddedAppResult> result;
-		result.instantiate();
-		result->set_error(p_error);
-		emit_signal("finished", result);
-	}
+    YoutubePlayablesClient();
 };
 
-#endif // DISCORD_EMBEDDED_APP_RESPONSE_H
+#endif // YOUTUBE_PLAYABLES_CLIENT_H
