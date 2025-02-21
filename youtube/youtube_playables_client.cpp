@@ -172,18 +172,24 @@ YoutubePlayablesClient::YoutubePlayablesClient() {
         ERR_PRINT("JavaScriptBridge singleton is invalid");
         return;
     }
+
 	// YoutubePlayables defined in platform/web/export/export_plugin.cpp
-    ytgameRef = singleton->get_interface("YoutubePlayables");
-    if (ytgameRef.is_valid()) {
-        on_audio_enabled_change_callback = singleton->create_callback(Callable(this, "_emit_audio_enabled_change"));
-        on_pause_callback = singleton->create_callback(Callable(this, "_emit_pause"));
-        on_resume_callback = singleton->create_callback(Callable(this, "_emit_resume"));
-
-        ytgameRef->call("onAudioEnabledChange", on_audio_enabled_change_callback);
-        ytgameRef->call("onPause", on_pause_callback);
-        ytgameRef->call("onResume", on_resume_callback);
-
-        // Needed to have is_audio_enabled return the right value
-        audio_enabled = singleton->eval("ytgame.system.isAudioEnabled()");
+    if (!singleton->eval("window.YoutubePlayables?.isYoutubePlayables() ?? false", true)) {
+        return;
     }
+    ytgameRef = singleton->get_interface("YoutubePlayables");
+    if (!ytgameRef.is_valid()) {
+        return;
+    }
+
+    on_audio_enabled_change_callback = singleton->create_callback(Callable(this, "_emit_audio_enabled_change"));
+    on_pause_callback = singleton->create_callback(Callable(this, "_emit_pause"));
+    on_resume_callback = singleton->create_callback(Callable(this, "_emit_resume"));
+
+    ytgameRef->call("onAudioEnabledChange", on_audio_enabled_change_callback);
+    ytgameRef->call("onPause", on_pause_callback);
+    ytgameRef->call("onResume", on_resume_callback);
+
+    // Needed to have is_audio_enabled return the right value
+    audio_enabled = singleton->eval("ytgame.system.isAudioEnabled()");
 }
