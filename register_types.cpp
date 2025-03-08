@@ -115,7 +115,7 @@ void uninitialize_blazium_sdk_module(ModuleInitializationLevel p_level) {
 		memdelete(env_singleton_global);
 	}
 	if (p_level == MODULE_INITIALIZATION_LEVEL_SERVERS) {
-		if (csv_importer != nullptr) {
+		if (csv_importer.is_valid()) {
 			ResourceFormatImporter::get_singleton()->remove_importer(csv_importer);
 			csv_importer.unref();
 		}
