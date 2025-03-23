@@ -591,7 +591,18 @@ void ScriptedLobbyClient::_notification(int p_what) {
 						return;
 					}
 					String packet_string = String::utf8((const char *)packet_buffer.ptr(), packet_buffer.size());
-					_receive_data(JSON::parse_string(packet_string));
+					Variant data_parsed = JSON::parse_string(packet_string);
+					if (data_parsed.get_type() == Variant::DICTIONARY) {
+						// single data received
+						_receive_data(data_parsed);
+					} else if (data_parsed.get_type() == Variant::ARRAY) {
+						// batched data received
+						Array data_array = data_parsed;
+						for (int i = 0; i < data_array.size(); i++) {
+							Dictionary data_dict = data_array[i];
+							_receive_data(data_dict);
+						}
+					}
 				}
 			} else if (state == WebSocketPeer::STATE_CLOSED) {
 				if (_commands.has("disconnect")) {
