@@ -582,7 +582,7 @@ public:
 		body_data["code"] = p_code;
 		Ref<LoginAccessTokenResponse> response;
 		response.instantiate();
-		String access_code_route_with_path = access_code_route + "/" + p_type + "/" + p_code;
+		String access_code_route_with_path = access_code_route + "/" + p_type + "/" + p_auth_id;
 		response->post_request(http_prefix + server_url + access_code_route_with_path, body_data, this);
 		return response;
 	}
