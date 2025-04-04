@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <class name="LoginAccessTokenResult" inherits="RefCounted" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../doc/class.xsd">
 	<brief_description>
-		A result from a [LobbyAccessTokenResponse].
+		A result from a [LoginAccessTokenResponse].
 	</brief_description>
 	<description>
-		A result from a [LobbyAccessTokenResponse]. Contains access token nothing or error.
+		A result from a [LoginAccessTokenResponse]. Contains access token, nothing or error.
 	</description>
 	<tutorials>
 	</tutorials>

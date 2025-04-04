@@ -9,7 +9,7 @@
 		1. Listen to all the signals you are interested in.
 		2. Connect to the server using the [method connect_to_server] method.
 		3. Then you can request login info using the [method request_login_info] method.
-		4. Open the resulting login url received after awaiting on the [signal LoginResponse.finished] signal.
+		4. Open the resulting login url received after awaiting on the [signal LoginURLResponse.finished] signal.
 		5. Obtain the jwt from the [signal received_jwt] signal.
 		[b]Note:[/b] Some methods are non blocking and can be awaited in order to get the result.
 	</description>
