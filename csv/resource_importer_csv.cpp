@@ -29,7 +29,6 @@
 /**************************************************************************/
 
 #include "resource_importer_csv.h"
-#include "core/io/file_access.h"
 #include "core/io/resource_saver.h"
 #include "resource_csv.h"
 
@@ -94,27 +93,30 @@ Error ResourceImporterCSV::import(ResourceUID::ID p_source_id, const String &p_s
 			delimiter = "|";
 			break;
 	}
+
 	bool headers = p_options.get("headers");
 	Ref<FileAccess> f = FileAccess::open(p_source_file, FileAccess::READ);
 	ERR_FAIL_COND_V_MSG(f.is_null(), ERR_INVALID_PARAMETER, "Cannot open file from path '" + p_source_file + "'.");
 
 	Ref<CSV> csv;
 	csv.instantiate();
-	csv->headers = headers;
-	csv->delimiter = delimiter;
+
+	csv->set_headers(headers);
+	csv->set_delimiter(delimiter);
+
 	Error err = csv->load_file(p_source_file);
 	if (err != OK) {
 		ERR_PRINT("Failed to load CSV from path '" + p_source_file + "'.");
 		return err;
 	}
+
 	err = ResourceSaver::save(csv, p_save_path + ".res");
 	if (err != OK) {
 		ERR_PRINT("Failed to save CSV to path '" + p_save_path + "'.");
 		return err;
 	}
-	r_gen_files->push_back(p_save_path + ".res");
-	return OK;
-}
 
-ResourceImporterCSV::ResourceImporterCSV() {
+	r_gen_files->push_back(p_save_path + ".res");
+
+	return OK;
 }

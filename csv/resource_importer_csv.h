@@ -31,10 +31,7 @@
 #ifndef RESOURCE_IMPORTER_CSV_H
 #define RESOURCE_IMPORTER_CSV_H
 
-#include "core/io/resource.h"
 #include "core/io/resource_importer.h"
-#include "core/variant/dictionary.h"
-#include "core/variant/typed_array.h"
 
 class ResourceImporterCSV : public ResourceImporter {
 	GDCLASS(ResourceImporterCSV, ResourceImporter);
@@ -46,6 +43,7 @@ public:
 		ROW_SEPARATOR_TAB,
 		ROW_SEPARATOR_PIPE,
 	};
+
 	virtual String get_importer_name() const override;
 	virtual String get_visible_name() const override;
 	virtual void get_recognized_extensions(List<String> *p_extensions) const override;
@@ -59,8 +57,6 @@ public:
 	virtual bool get_option_visibility(const String &p_path, const String &p_option, const HashMap<StringName, Variant> &p_options) const override;
 
 	virtual Error import(ResourceUID::ID p_source_id, const String &p_source_file, const String &p_save_path, const HashMap<StringName, Variant> &p_options, List<String> *r_platform_variants, List<String> *r_gen_files = nullptr, Variant *r_metadata = nullptr) override;
-
-	ResourceImporterCSV();
 };
 
 #endif // RESOURCE_IMPORTER_CSV_H
