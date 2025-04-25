@@ -1,5 +1,5 @@
 /**************************************************************************/
-/*  resource_csv.h                                                        */
+/*  resource_csv.cpp                                                      */
 /**************************************************************************/
 /*                         This file is part of:                          */
 /*                             BLAZIUM ENGINE                             */
@@ -28,35 +28,107 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#ifndef RESOURCE_CSV_H
-#define RESOURCE_CSV_H
+#include "resource_csv.h"
+#include "core/io/file_access.h"
 
-#include "core/io/resource.h"
-#include "core/variant/typed_array.h"
+void CSV::set_headers(bool p_headers) {
+	if (headers == p_headers) {
+		return;
+	}
 
-class CSV : public Resource {
-	GDCLASS(CSV, Resource);
+	headers = p_headers;
+}
 
-private:
-	TypedArray<Dictionary> rows;
-	bool headers = false;
-	String delimiter = ",";
+bool CSV::get_headers() const {
+	return headers;
+}
 
-protected:
-	static void _bind_methods();
+void CSV::set_delimiter(const String &p_delimiter) {
+	if (delimiter == p_delimiter) {
+		return;
+	}
 
-public:
-	void set_headers(bool p_headers);
-	bool get_headers() const;
+	delimiter = p_delimiter;
+}
 
-	void set_delimiter(const String &p_delimiter);
-	String get_delimiter() const;
+String CSV::get_delimiter() const {
+	return delimiter;
+}
 
-	void set_rows(const TypedArray<Dictionary> &p_rows);
-	TypedArray<Dictionary> get_rows() const;
+void CSV::set_rows(const TypedArray<Dictionary> &p_rows) {
+	if (rows == p_rows) {
+		return;
+	}
 
-	Variant convert_to_variant(const String &p_text);
-	Error load_file(String p_path);
-};
+	rows = p_rows;
+	emit_changed();
+}
 
-#endif // RESOURCE_CSV_H
+TypedArray<Dictionary> CSV::get_rows() const {
+	return rows;
+}
+
+Variant CSV::convert_to_variant(const String &p_text) {
+	if (p_text.is_valid_float()) {
+		return p_text.to_float();
+	}
+	if (p_text.is_valid_int()) {
+		return p_text.to_int();
+	}
+	if (p_text.casecmp_to("true") == 0) {
+		return true;
+	}
+	if (p_text.casecmp_to("false") == 0) {
+		return false;
+	}
+
+	return p_text;
+}
+
+Error CSV::load_file(String p_path) {
+	if (p_path.is_empty()) {
+		return ERR_INVALID_PARAMETER;
+	}
+
+	Error err;
+	Ref<FileAccess> f = FileAccess::open(p_path, FileAccess::READ, &err);
+
+	if (err != OK) {
+		return err;
+	}
+
+	Vector<String> header = f->get_csv_line(delimiter);
+
+	if (!headers) {
+		Dictionary row;
+		for (int i = 0; i < header.size(); i++) {
+			row[i] = convert_to_variant(header[i]);
+		}
+		rows.push_back(row);
+	}
+
+	do {
+		Vector<String> line = f->get_csv_line(delimiter);
+		Dictionary row;
+		for (int i = 0; i < line.size(); i++) {
+			if (!headers) {
+				row[i] = convert_to_variant(line[i]);
+			} else {
+				row[convert_to_variant(header[i])] = convert_to_variant(line[i]);
+			}
+		}
+		if (!line.is_empty()) {
+			rows.push_back(row);
+		}
+	} while (!f->eof_reached());
+
+	f->close();
+	return OK;
+}
+
+void CSV::_bind_methods() {
+	ClassDB::bind_method(D_METHOD("set_rows", "rows"), &CSV::set_rows);
+	ClassDB::bind_method(D_METHOD("get_rows"), &CSV::get_rows);
+
+	ADD_PROPERTY(PropertyInfo(Variant::ARRAY, "rows", PROPERTY_HINT_ARRAY_TYPE, "Dictionary"), "set_rows", "get_rows");
+}
