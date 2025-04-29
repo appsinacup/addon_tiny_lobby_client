@@ -46,10 +46,10 @@ protected:
 	String websocket_prefix = "wss://";
 	String http_prefix = "https://";
 	String game_id = "";
-	String connect_route = "/connect";
-	String access_code_route = "/auth";
-	String verify_jwt_route = "/token/verify";
-	String refresh_jwt_route = "/token/refresh";
+	String connect_route = "/api/v1/connect";
+	String access_code_route = "/api/v1/auth";
+	String verify_jwt_route = "/api/v1/token/verify";
+	String refresh_jwt_route = "/api/v1/token/refresh";
 	bool connected = false;
 
 public:
@@ -392,7 +392,7 @@ protected:
 	void _receive_data(const Dictionary &p_data) {
 		String action = p_data.get("action", "error");
 		if (action == "login_url") {
-			String url = p_data.get("url", "");
+			String url = p_data.get("login_url", "");
 			String type = p_data.get("type", "");
 			Ref<LoginURLResponse::LoginURLResult> login_url_result;
 			login_url_result.instantiate();
@@ -412,10 +412,10 @@ protected:
 			emit_signal("log_updated", "request_auth_id", "Success");
 		}
 		if (action == "jwt") {
-			String jwt = p_data.get("url", "");
+			String jwt = p_data.get("jwt", "");
 			String type = p_data.get("type", "");
 			String access_token = p_data.get("access_token", "");
-			if (p_data.has("url")) {
+			if (p_data.has("jwt")) {
 				emit_signal("received_jwt", jwt, type, access_token);
 			}
 			emit_signal("log_updated", "received_jwt", "Success");
