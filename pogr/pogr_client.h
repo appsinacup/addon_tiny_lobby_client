@@ -43,7 +43,7 @@ class POGRClient : public BlaziumClient {
 
 private:
 	String session_id;
-	String POGR_URL = "https://api.pogr.io/v1/intake";
+	String pogr_url = "https://api.pogr.io/v1/intake";
 	String pogr_client_id;
 	String pogr_build;
 	Array valid_tags;
@@ -76,10 +76,12 @@ protected:
 		ClassDB::bind_method(D_METHOD("get_build_id"), &POGRClient::get_build_id);
 		ClassDB::bind_method(D_METHOD("set_build_id", "build_id"), &POGRClient::set_build_id);
 		ClassDB::bind_method(D_METHOD("get_pogr_url"), &POGRClient::get_pogr_url);
+		ClassDB::bind_method(D_METHOD("set_pogr_url", "pogr_url"), &POGRClient::set_pogr_url);
 		ClassDB::bind_method(D_METHOD("get_session_id"), &POGRClient::get_session_id);
 
 		ADD_PROPERTY(PropertyInfo(Variant::STRING, "client_id"), "set_client_id", "get_client_id");
 		ADD_PROPERTY(PropertyInfo(Variant::STRING, "build_id"), "set_build_id", "get_build_id");
+		ADD_PROPERTY(PropertyInfo(Variant::STRING, "pogr_url"), "set_pogr_url", "get_pogr_url");
 
 		ADD_SIGNAL(MethodInfo("log_updated", PropertyInfo(Variant::STRING, "command"), PropertyInfo(Variant::STRING, "logs")));
 	}
@@ -135,7 +137,7 @@ public:
 					if (!result_dict.get("success", false)) {
 						String error = result_dict.get("error", itos(p_code));
 						result->set_error(error);
-						client->emit_signal(SNAME("log_updated"), "error", result_dict);
+						client->emit_signal(SNAME("log_updated"), "error", JSON::stringify(result_dict));
 					} else {
 						result->set_result(result_str);
 						client->emit_signal(SNAME("log_updated"), request_command, JSON::stringify(result_dict.get("payload", "")));
@@ -187,7 +189,7 @@ public:
 		if (p_association_id != "") {
 			dict_data["association_id"] = p_association_id;
 		}
-		response->post_request(POGR_URL, "init", get_init_headers(), dict_data, this);
+		response->post_request(pogr_url, "init", get_init_headers(), dict_data, this);
 		return response;
 	}
 
@@ -218,7 +220,7 @@ public:
 		Dictionary data;
 		data["data"] = p_data;
 		data["tags"] = tags_data;
-		response->post_request(POGR_URL, "data", get_session_headers(), data, this);
+		response->post_request(pogr_url, "data", get_session_headers(), data, this);
 		return response;
 	}
 
@@ -231,7 +233,7 @@ public:
 			callable.call_deferred("Session id is invalid. Call init first.");
 			return response;
 		}
-		response->post_request(POGR_URL, "end", get_session_headers(), Dictionary(), this);
+		response->post_request(pogr_url, "end", get_session_headers(), Dictionary(), this);
 		return response;
 	}
 
@@ -258,7 +260,7 @@ public:
 		data["event_type"] = event_type;
 		data["sub_event"] = sub_event;
 		data["tags"] = p_tags;
-		response->post_request(POGR_URL, "event", get_session_headers(), data, this);
+		response->post_request(pogr_url, "event", get_session_headers(), data, this);
 		return response;
 	}
 
@@ -285,7 +287,7 @@ public:
 		data["service"] = p_service;
 		data["severity"] = p_severity;
 		data["type"] = p_type;
-		response->post_request(POGR_URL, "logs", get_session_headers(), data, this);
+		response->post_request(pogr_url, "logs", get_session_headers(), data, this);
 		return response;
 	}
 
@@ -309,7 +311,7 @@ public:
 		data["environment"] = p_environment;
 		data["metrics"] = p_metrics;
 		data["service"] = p_service;
-		response->post_request(POGR_URL, "metrics", get_session_headers(), data, this);
+		response->post_request(pogr_url, "metrics", get_session_headers(), data, this);
 		return response;
 	}
 
@@ -321,7 +323,7 @@ public:
 		data["cpu_usage"] = Performance::get_singleton()->get_monitor(Performance::Monitor::TIME_FPS);
 		data["dlls_loaded"] = Array();
 		data["memory_usage"] = OS::get_singleton()->get_static_memory_usage();
-		response->post_request(POGR_URL, "monitor", get_session_headers(), data, this);
+		response->post_request(pogr_url, "monitor", get_session_headers(), data, this);
 		return response;
 	}
 
@@ -329,7 +331,8 @@ public:
 	String get_build_id() const { return pogr_build; }
 	void set_client_id(String p_client_id) { pogr_client_id = p_client_id; }
 	void set_build_id(String p_build_id) { pogr_build = p_build_id; }
-	String get_pogr_url() const { return POGR_URL; }
+	String get_pogr_url() const { return pogr_url; }
+	void set_pogr_url(String p_pogr_url) { pogr_url = p_pogr_url; }
 	String get_session_id() {
 		return session_id;
 	}
