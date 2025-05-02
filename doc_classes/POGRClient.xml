@@ -75,12 +75,6 @@
 				[/codeblocks]
 			</description>
 		</method>
-		<method name="get_pogr_url" qualifiers="const">
-			<return type="String" />
-			<description>
-				Get the pogr url.
-			</description>
-		</method>
 		<method name="get_session_id">
 			<return type="String" />
 			<description>
@@ -167,6 +161,8 @@
 		</member>
 		<member name="client_id" type="String" setter="set_client_id" getter="get_client_id" default="&quot;&quot;">
 			The client ID obtained from the pogr Game Client page.
+		</member>
+		<member name="pogr_url" type="String" setter="set_pogr_url" getter="get_pogr_url" default="&quot;https://api.pogr.io/v1/intake&quot;">
 		</member>
 	</members>
 	<signals>
