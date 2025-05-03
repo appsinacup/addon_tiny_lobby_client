@@ -266,13 +266,23 @@ String DiscordEmbeddedAppClient::static_find_client_id() {
 		return "";
 	}
 	String host = singleton->eval("window.location.hostname");
-	PackedStringArray host_parts = host.split(".");
-	if (host_parts.size() > 0) {
-		return host_parts[0]; // The first part is the client_id
-	} else {
-		ERR_PRINT("Unable to extract client ID from host: " + host);
+
+	PackedStringArray host_parts_dot = host.split(".");
+	if (!host_parts_dot[0].contains("discord")) {
+		return host_parts_dot[0]; // The first part is the client_id
 	}
-	return "";
+
+	PackedStringArray host_parts_slash = host.split("/", false);
+	if (host_parts_slash.is_empty()) {
+		ERR_PRINT("Unable to extract client ID from host: " + host);
+		return "";
+	}
+
+	String possible_client_id = host_parts_slash[host_parts_slash.size() - 1];
+	if (possible_client_id.contains("?")) {
+		possible_client_id = possible_client_id.split("?")[0];
+	}
+	return possible_client_id;
 }
 
 String _generate_nonce() {
