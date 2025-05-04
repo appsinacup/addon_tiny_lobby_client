@@ -104,8 +104,8 @@ void initialize_blazium_sdk_module(ModuleInitializationLevel p_level) {
 		GDREGISTER_CLASS(LoginClient::LoginRefreshTokenResponse::LoginRefreshTokenResult);
 		GDREGISTER_CLASS(LoginClient::LoginIDResponse);
 		GDREGISTER_CLASS(LoginClient::LoginIDResponse::LoginIDResult);
-		GDREGISTER_CLASS(LoginClient::LoginAccessTokenResponse);
-		GDREGISTER_CLASS(LoginClient::LoginAccessTokenResponse::LoginAccessTokenResult);
+		GDREGISTER_CLASS(LoginClient::LoginAuthResponse);
+		GDREGISTER_CLASS(LoginClient::LoginAuthResponse::LoginAuthResult);
 		// Third party clients
 		GDREGISTER_ABSTRACT_CLASS(ThirdPartyClient);
 		GDREGISTER_CLASS(DiscordEmbeddedAppClient);
