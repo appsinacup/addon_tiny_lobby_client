@@ -50,6 +50,7 @@ protected:
 	String access_code_route = "/api/v1/auth";
 	String verify_jwt_route = "/api/v1/token/verify";
 	String refresh_jwt_route = "/api/v1/token/refresh";
+	String steam_token_route = "/api/v1/steam/auth";
 	bool connected = false;
 
 public:
@@ -178,27 +179,26 @@ public:
 		}
 	};
 
-	class LoginAccessTokenResponse : public RefCounted {
-		GDCLASS(LoginAccessTokenResponse, RefCounted);
+	class LoginAuthResponse : public RefCounted {
+		GDCLASS(LoginAuthResponse, RefCounted);
 		HTTPRequest *request;
 		LoginClient *client;
-		String request_command;
 
 	protected:
 		static void _bind_methods() {
-			ADD_SIGNAL(MethodInfo("finished", PropertyInfo(Variant::OBJECT, "result", PROPERTY_HINT_RESOURCE_TYPE, "LoginAccessTokenResult")));
+			ADD_SIGNAL(MethodInfo("finished", PropertyInfo(Variant::OBJECT, "result", PROPERTY_HINT_RESOURCE_TYPE, "LoginAuthResult")));
 		}
 
 	public:
-		class LoginAccessTokenResult : public RefCounted {
-			GDCLASS(LoginAccessTokenResult, RefCounted);
+		class LoginAuthResult : public RefCounted {
+			GDCLASS(LoginAuthResult, RefCounted);
 
 			String error = "";
 
 		protected:
 			static void _bind_methods() {
-				ClassDB::bind_method(D_METHOD("has_error"), &LoginAccessTokenResult::has_error);
-				ClassDB::bind_method(D_METHOD("get_error"), &LoginAccessTokenResult::get_error);
+				ClassDB::bind_method(D_METHOD("has_error"), &LoginAuthResult::has_error);
+				ClassDB::bind_method(D_METHOD("get_error"), &LoginAuthResult::get_error);
 				ADD_PROPERTY(PropertyInfo(Variant::STRING, "error"), "", "get_error");
 			}
 
@@ -210,7 +210,7 @@ public:
 		};
 		
 		void _on_request_completed(int p_status, int p_code, const PackedStringArray &p_headers, const PackedByteArray &p_data) {
-			Ref<LoginAccessTokenResult> result;
+			Ref<LoginAuthResult> result;
 			result.instantiate();
 			String result_str = String::utf8((const char *)p_data.ptr(), p_data.size());
 			if (p_code != 200 || result_str == "") {
@@ -218,13 +218,13 @@ public:
 				client->emit_signal(SNAME("log_updated"), "error", result_str + " " + p_code);
 				emit_signal("log_updated", "error", result_str + " " + p_code);
 			} else {
-				emit_signal("log_updated", "request_access_token", "Success");
+				emit_signal("log_updated", "request_auth", "Success");
 			}
 			emit_signal(SNAME("finished"), result);
 		}
 		
 		void signal_finish(String p_error) {
-			Ref<LoginAccessTokenResult> result;
+			Ref<LoginAuthResult> result;
 			result.instantiate();
 			result->set_error(p_error);
 			emit_signal("finished", result);
@@ -233,13 +233,13 @@ public:
 		void post_request(String p_url, Dictionary p_data, LoginClient *p_client) {
 			client = p_client;
 			p_client->add_child(request);
-			request->connect("request_completed", callable_mp(this, &LoginAccessTokenResponse::_on_request_completed));
+			request->connect("request_completed", callable_mp(this, &LoginAuthResponse::_on_request_completed));
 			request->request(p_url, Vector<String>(), HTTPClient::METHOD_POST, JSON::stringify(p_data));
 		}
-		LoginAccessTokenResponse() {
+		LoginAuthResponse() {
 			request = memnew(HTTPRequest);
 		}
-		~LoginAccessTokenResponse() {
+		~LoginAuthResponse() {
 			request->queue_free();
 		}
 	};
@@ -248,7 +248,6 @@ public:
 		GDCLASS(LoginVerifyTokenResponse, RefCounted);
 		HTTPRequest *request;
 		LoginClient *client;
-		String request_command;
 
 	protected:
 		static void _bind_methods() {
@@ -319,7 +318,6 @@ public:
 		GDCLASS(LoginRefreshTokenResponse, RefCounted);
 		HTTPRequest *request;
 		LoginClient *client;
-		String request_command;
 
 	protected:
 		static void _bind_methods() {
@@ -544,21 +542,39 @@ public:
 		return login_id_response;
 	}
 
-	Ref<LoginAccessTokenResponse> request_access_token(String p_type, String p_auth_id, String p_code) {
+	Ref<LoginAuthResponse> request_auth(String p_type, String p_auth_id, String p_code) {
 		if (!connected) {
-			Ref<LoginAccessTokenResponse> response = Ref<LoginAccessTokenResponse>();
+			Ref<LoginAuthResponse> response = Ref<LoginAuthResponse>();
 			response.instantiate();
 			// signal the finish deferred
-			Callable callable = callable_mp(*response, &LoginAccessTokenResponse::signal_finish);
+			Callable callable = callable_mp(*response, &LoginAuthResponse::signal_finish);
 			callable.call_deferred("Not connected to login server.");
 			return response;
 		}
 		Dictionary body_data;
 		body_data["code"] = p_code;
-		Ref<LoginAccessTokenResponse> response;
+		Ref<LoginAuthResponse> response;
 		response.instantiate();
 		String access_code_route_with_path = access_code_route + "/" + p_type + "/" + p_auth_id;
 		response->post_request(http_prefix + server_url + access_code_route_with_path, body_data, this);
+		return response;
+	}
+
+	Ref<LoginAuthResponse> request_steam_auth(String p_auth_id, String p_steam_ticket) {
+		if (!connected) {
+			Ref<LoginAuthResponse> response = Ref<LoginAuthResponse>();
+			response.instantiate();
+			// signal the finish deferred
+			Callable callable = callable_mp(*response, &LoginAuthResponse::signal_finish);
+			callable.call_deferred("Not connected to login server.");
+			return response;
+		}
+		Dictionary body_data;
+		body_data["ticket"] = p_steam_ticket;
+		Ref<LoginAuthResponse> response;
+		response.instantiate();
+		String steam_token_route_with_path = steam_token_route + "/" + p_auth_id;
+		response->post_request(http_prefix + server_url + steam_token_route_with_path, body_data, this);
 		return response;
 	}
 

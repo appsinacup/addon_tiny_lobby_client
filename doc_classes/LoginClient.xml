@@ -42,14 +42,14 @@
 			</description>
 		</method>
 		<method name="request_access_token">
-			<return type="LoginAccessTokenResponse" />
+			<return type="LoginAuthResponse" />
 			<param index="0" name="login_type" type="String" />
 			<param index="1" name="auth_id" type="String" />
 			<param index="2" name="code" type="String" />
 			<description>
 				Request login auth id using the login type specified, auth_id and access code.
 				Needs [method connect_to_server] to be called first.
-				Returns a [LoginAccessTokenResponse] object that has a [signal LoginAccessTokenResponse.finished] signal that is emitted when finished.
+				Returns a [LoginAuthResponse] object that has a [signal LoginAuthResponse.finished] signal that is emitted when finished.
 			</description>
 		</method>
 		<method name="request_auth_id">
