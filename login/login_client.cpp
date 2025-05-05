@@ -35,7 +35,6 @@ void LoginClient::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("request_auth_id", "login_type"), &LoginClient::request_auth_id);
 	ClassDB::bind_method(D_METHOD("request_auth", "login_type", "auth_id", "code"), &LoginClient::request_auth);
 	ClassDB::bind_method(D_METHOD("request_steam_auth", "auth_id", "steam_ticket"), &LoginClient::request_steam_auth);
-	ClassDB::bind_method(D_METHOD("refresh_jwt_token", "refresh_token"), &LoginClient::refresh_jwt_token);
 	ClassDB::bind_method(D_METHOD("verify_jwt_token", "jwt_token"), &LoginClient::verify_jwt_token);
 
 	ClassDB::bind_method(D_METHOD("set_server_url", "server_url"), &LoginClient::set_server_url);

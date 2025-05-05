@@ -32,24 +32,16 @@
 				Generates [signal disconnected_from_server] when disconnected.
 			</description>
 		</method>
-		<method name="refresh_jwt_token">
-			<return type="LoginRefreshTokenResponse" />
-			<param index="0" name="refresh_token" type="String" />
-			<description>
-				Refresh the jwt token using the refresh token.
-				Needs [method connect_to_server] to be called first.
-				Returns a [LoginRefreshTokenResponse] object that has a [signal LoginRefreshTokenResponse.finished] signal that is emitted when finished.
-			</description>
-		</method>
-		<method name="request_access_token">
+		<method name="request_auth">
 			<return type="LoginAuthResponse" />
 			<param index="0" name="login_type" type="String" />
 			<param index="1" name="auth_id" type="String" />
 			<param index="2" name="code" type="String" />
 			<description>
-				Request login auth id using the login type specified, auth_id and access code.
+				Request login auth jwt using the login type specified, auth_id and access code.
 				Needs [method connect_to_server] to be called first.
 				Returns a [LoginAuthResponse] object that has a [signal LoginAuthResponse.finished] signal that is emitted when finished.
+				Generates [signal received_jwt] when a jwt is received.
 			</description>
 		</method>
 		<method name="request_auth_id">
@@ -68,6 +60,17 @@
 				Request login info using the login type specified.
 				Needs [method connect_to_server] to be called first.
 				Returns a [LoginURLResponse] object that has a [signal LoginURLResponse.finished] signal that is emitted when finished.
+			</description>
+		</method>
+		<method name="request_steam_auth">
+			<return type="LoginAuthResponse" />
+			<param index="0" name="auth_id" type="String" />
+			<param index="1" name="steam_ticket" type="String" />
+			<description>
+				Request login auth jwt using the auth_id and steam_ticket.
+				Needs [method connect_to_server] to be called first.
+				Returns a [LoginAuthResponse] object that has a [signal LoginAuthResponse.finished] signal that is emitted when finished.
+				Generates [signal received_jwt] when a jwt is received.
 			</description>
 		</method>
 		<method name="verify_jwt_token">
