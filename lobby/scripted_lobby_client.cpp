@@ -87,6 +87,9 @@ void ScriptedLobbyClient::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("disconnect_from_server"), &ScriptedLobbyClient::disconnect_from_server);
 	ClassDB::bind_method(D_METHOD("quick_join", "title", "tags", "max_players"), &ScriptedLobbyClient::quick_join, DEFVAL(Dictionary()), DEFVAL(4));
 	ClassDB::bind_method(D_METHOD("create_lobby", "title", "sealed", "tags", "max_players", "password"), &ScriptedLobbyClient::create_lobby, DEFVAL(Dictionary()), DEFVAL(4), DEFVAL(""));
+	ClassDB::bind_method(D_METHOD("set_max_players", "max_players"), &ScriptedLobbyClient::set_max_players);
+	ClassDB::bind_method(D_METHOD("set_title", "title"), &ScriptedLobbyClient::set_title);
+	ClassDB::bind_method(D_METHOD("set_password", "password"), &ScriptedLobbyClient::set_password, DEFVAL(""));
 	ClassDB::bind_method(D_METHOD("join_lobby", "lobby_id", "password"), &ScriptedLobbyClient::join_lobby, DEFVAL(""));
 	ClassDB::bind_method(D_METHOD("leave_lobby"), &ScriptedLobbyClient::leave_lobby);
 	ClassDB::bind_method(D_METHOD("lobby_call", "method", "args"), &ScriptedLobbyClient::lobby_call, DEFVAL(Array()));
@@ -112,6 +115,9 @@ void ScriptedLobbyClient::_bind_methods() {
 	ADD_SIGNAL(MethodInfo("lobby_left", PropertyInfo(Variant::BOOL, "kicked")));
 	ADD_SIGNAL(MethodInfo("lobby_sealed", PropertyInfo(Variant::BOOL, "sealed")));
 	ADD_SIGNAL(MethodInfo("lobby_tagged", PropertyInfo(Variant::DICTIONARY, "tags")));
+	ADD_SIGNAL(MethodInfo("lobby_passworded", PropertyInfo(Variant::BOOL, "password_protected")));
+	ADD_SIGNAL(MethodInfo("lobby_resized", PropertyInfo(Variant::INT, "max_players")));
+	ADD_SIGNAL(MethodInfo("lobby_titled", PropertyInfo(Variant::STRING, "title")));
 	ADD_SIGNAL(MethodInfo("lobbies_listed", PropertyInfo(Variant::ARRAY, "lobbies", PROPERTY_HINT_ARRAY_TYPE, "LobbyInfo")));
 	ADD_SIGNAL(MethodInfo("peer_joined", PropertyInfo(Variant::OBJECT, "peer", PROPERTY_HINT_RESOURCE_TYPE, "LobbyPeer")));
 	ADD_SIGNAL(MethodInfo("peer_reconnected", PropertyInfo(Variant::OBJECT, "peer", PROPERTY_HINT_RESOURCE_TYPE, "LobbyPeer")));
@@ -254,6 +260,74 @@ Ref<ViewLobbyResponse> ScriptedLobbyClient::create_lobby(const String &p_name, b
 	data_dict["tags"] = p_tags;
 	data_dict["sealed"] = p_sealed;
 	data_dict["id"] = id;
+	Array command_array;
+	command_array.push_back(LOBBY_VIEW);
+	command_array.push_back(response);
+	_commands[id] = command_array;
+	_send_data(command);
+	return response;
+}
+
+Ref<ViewLobbyResponse> ScriptedLobbyClient::set_password(const String &p_password) {
+	Ref<ViewLobbyResponse> response;
+	response.instantiate();
+	if (!connected) {
+		// signal the finish deferred
+		Callable callable = callable_mp(*response, &ViewLobbyResponse::signal_finish);
+		callable.call_deferred("Not connected to the server.");
+		return response;
+	}
+	String id = _increment_counter();
+	Dictionary command;
+	command["command"] = "lobby_password";
+	Dictionary data_dict;
+	command["data"] = data_dict;
+	data_dict["password"] = p_password;
+	Array command_array;
+	command_array.push_back(LOBBY_VIEW);
+	command_array.push_back(response);
+	_commands[id] = command_array;
+	_send_data(command);
+	return response;
+}
+
+Ref<ViewLobbyResponse> ScriptedLobbyClient::set_title(const String &p_title) {
+	Ref<ViewLobbyResponse> response;
+	response.instantiate();
+	if (!connected) {
+		// signal the finish deferred
+		Callable callable = callable_mp(*response, &ViewLobbyResponse::signal_finish);
+		callable.call_deferred("Not connected to the server.");
+		return response;
+	}
+	String id = _increment_counter();
+	Dictionary command;
+	command["command"] = "lobby_title";
+	Dictionary data_dict;
+	command["data"] = data_dict;
+	data_dict["name"] = p_title;
+	Array command_array;
+	command_array.push_back(LOBBY_VIEW);
+	command_array.push_back(response);
+	_commands[id] = command_array;
+	_send_data(command);
+	return response;
+}
+Ref<ViewLobbyResponse> ScriptedLobbyClient::set_max_players(int p_max_players) {
+	Ref<ViewLobbyResponse> response;
+	response.instantiate();
+	if (!connected) {
+		// signal the finish deferred
+		Callable callable = callable_mp(*response, &ViewLobbyResponse::signal_finish);
+		callable.call_deferred("Not connected to the server.");
+		return response;
+	}
+	String id = _increment_counter();
+	Dictionary command;
+	command["command"] = "lobby_max_players";
+	Dictionary data_dict;
+	command["data"] = data_dict;
+	data_dict["max_players"] = p_max_players;
 	Array command_array;
 	command_array.push_back(LOBBY_VIEW);
 	command_array.push_back(response);
@@ -714,7 +788,6 @@ void ScriptedLobbyClient::_receive_data(const Dictionary &p_dict) {
 		_clear_lobby();
 		emit_signal("lobby_left", true);
 	} else if (command == "lobby_sealed") {
-		Dictionary lobby_dict = data_dict.get("lobby", Dictionary());
 		lobby->set_sealed(true);
 		emit_signal("lobby_sealed", true);
 	} else if (command == "lobby_unsealed") {
@@ -723,6 +796,15 @@ void ScriptedLobbyClient::_receive_data(const Dictionary &p_dict) {
 	} else if (command == "lobby_tags") {
 		lobby->set_tags(data_dict.get("tags", Dictionary()));
 		emit_signal("lobby_tagged", lobby->get_tags());
+	} else if (command == "lobby_max_players") {
+		lobby->set_max_players(data_dict.get("max_players", 0));
+		emit_signal("lobby_resized", lobby->get_max_players());
+	} else if (command == "lobby_password") {
+		lobby->set_password_protected(data_dict.get("password_protected", false));
+		emit_signal("lobby_passworded", lobby->is_password_protected());
+	} else if (command == "lobby_title") {
+		lobby->set_name(data_dict.get("lobby_name", ""));
+		emit_signal("lobby_titled", lobby->get_name());
 	} else if (command == "lobby_list") {
 		Array arr = data_dict.get("lobbies", Array());
 		TypedArray<Dictionary> lobbies_input = arr;
