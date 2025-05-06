@@ -48,8 +48,7 @@ protected:
 	String game_id = "";
 	String connect_route = "/api/v1/connect";
 	String access_code_route = "/api/v1/auth";
-	String verify_jwt_route = "/api/v1/token/verify";
-	String refresh_jwt_route = "/api/v1/token/refresh";
+	String verify_jwt_route = "/api/v1/private/profile";
 	String steam_token_route = "/api/v1/steam/auth";
 	bool connected = false;
 
@@ -284,8 +283,10 @@ public:
 			} else {
 				if (result_str != "") {
 					Dictionary result_dict = JSON::parse_string(result_str);
-					// TODO
-					print_line(result_dict);
+					bool result_success = result_dict.get("success", false);
+					if (!result_success) {
+						result->set_error("Request failed with success false");
+					}
 				}
 			}
 			emit_signal(SNAME("finished"), result);
@@ -302,7 +303,7 @@ public:
 			client = p_client;
 			p_client->add_child(request);
 			Vector<String> headers;
-			headers.append("JWT_TOKEN: " + p_jwt);
+			headers.append("SESSION: " + p_jwt);
 			request->connect("request_completed", callable_mp(this, &LoginVerifyTokenResponse::_on_request_completed));
 			request->request(p_url, headers, HTTPClient::METHOD_GET);
 		}
@@ -310,73 +311,6 @@ public:
 			request = memnew(HTTPRequest);
 		}
 		~LoginVerifyTokenResponse() {
-			request->queue_free();
-		}
-	};
-
-	class LoginRefreshTokenResponse : public RefCounted {
-		GDCLASS(LoginRefreshTokenResponse, RefCounted);
-		HTTPRequest *request;
-		LoginClient *client;
-
-	protected:
-		static void _bind_methods() {
-			ADD_SIGNAL(MethodInfo("finished", PropertyInfo(Variant::OBJECT, "result", PROPERTY_HINT_RESOURCE_TYPE, "LoginRefreshTokenResult")));
-		}
-
-	public:
-		class LoginRefreshTokenResult : public RefCounted {
-			GDCLASS(LoginRefreshTokenResult, RefCounted);
-
-			String error = "";
-
-		protected:
-			static void _bind_methods() {
-				ClassDB::bind_method(D_METHOD("has_error"), &LoginRefreshTokenResult::has_error);
-				ClassDB::bind_method(D_METHOD("get_error"), &LoginRefreshTokenResult::get_error);
-				ADD_PROPERTY(PropertyInfo(Variant::STRING, "error"), "", "get_error");
-			}
-
-		public:
-			void set_error(String p_error) { this->error = p_error; }
-
-			bool has_error() const { return !error.is_empty(); }
-			String get_error() const { return error; }
-		};
-		
-		void _on_request_completed(int p_status, int p_code, const PackedStringArray &p_headers, const PackedByteArray &p_data) {
-			Ref<LoginRefreshTokenResult> result;
-			result.instantiate();
-			String result_str = String::utf8((const char *)p_data.ptr(), p_data.size());
-			if (p_code != 200 || result_str == "") {
-				result->set_error("Request failed with code: " + String::num(p_code) + " " + result_str);
-				client->emit_signal(SNAME("log_updated"), "error", result_str + " " + p_code);
-			} else {
-				if (result_str != "") {
-					Dictionary result_dict = JSON::parse_string(result_str);
-					print_line(result_dict);
-				}
-			}
-			emit_signal(SNAME("finished"), result);
-		}
-		
-		void signal_finish(String p_error) {
-			Ref<LoginRefreshTokenResult> result;
-			result.instantiate();
-			result->set_error(p_error);
-			emit_signal("finished", result);
-		}
-
-		void post_request(String p_url, Dictionary p_data, LoginClient *p_client) {
-			client = p_client;
-			p_client->add_child(request);
-			request->connect("request_completed", callable_mp(this, &LoginRefreshTokenResponse::_on_request_completed));
-			request->request(p_url, Vector<String>(), HTTPClient::METHOD_POST, JSON::stringify(p_data));
-		}
-		LoginRefreshTokenResponse() {
-			request = memnew(HTTPRequest);
-		}
-		~LoginRefreshTokenResponse() {
 			request->queue_free();
 		}
 	};
@@ -590,23 +524,6 @@ public:
 		Ref<LoginVerifyTokenResponse> response;
 		response.instantiate();
 		response->get_request(http_prefix + server_url + verify_jwt_route, p_jwt, this);
-		return response;
-	}
-
-	Ref<LoginRefreshTokenResponse> refresh_jwt_token(String p_refresh_token) {
-		if (!connected) {
-			Ref<LoginRefreshTokenResponse> response = Ref<LoginRefreshTokenResponse>();
-			response.instantiate();
-			// signal the finish deferred
-			Callable callable = callable_mp(*response, &LoginRefreshTokenResponse::signal_finish);
-			callable.call_deferred("Not connected to login server.");
-			return response;
-		}
-		Dictionary body_data;
-		body_data["refresh_token"] = p_refresh_token;
-		Ref<LoginRefreshTokenResponse> response;
-		response.instantiate();
-		response->post_request(http_prefix + server_url + refresh_jwt_route, body_data, this);
 		return response;
 	}
 

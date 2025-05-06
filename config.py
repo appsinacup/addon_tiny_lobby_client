@@ -39,8 +39,6 @@ def get_doc_classes():
 		"LoginConnectResult",
 		"LoginVerifyTokenResponse",
 		"LoginVerifyTokenResult",
-		"LoginRefreshTokenResponse",
-		"LoginRefreshTokenResult",
 		"LoginIDResponse",
 		"LoginIDResult",
 		"LoginAuthResponse",
