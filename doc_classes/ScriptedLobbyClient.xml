@@ -210,6 +210,36 @@
 				Generates [signal lobby_sealed].
 			</description>
 		</method>
+		<method name="set_max_players">
+			<return type="ViewLobbyResponse" />
+			<param index="0" name="max_players" type="int" />
+			<description>
+				Set the max players of the lobby. You need to be the host to do this.
+				Needs [method connect_to_server] to be called first.
+				Returns a [ViewLobbyResponse] object that has a [signal ViewLobbyResponse.finished] signal that is emitted when finished.
+				Generates [signal lobby_resized].
+			</description>
+		</method>
+		<method name="set_password">
+			<return type="ViewLobbyResponse" />
+			<param index="0" name="password" type="String" default="&quot;&quot;" />
+			<description>
+				Set the password of the lobby. You need to be the host to do this.
+				Needs [method connect_to_server] to be called first.
+				Returns a [ViewLobbyResponse] object that has a [signal ViewLobbyResponse.finished] signal that is emitted when finished.
+				Generates [signal lobby_passworded].
+			</description>
+		</method>
+		<method name="set_title">
+			<return type="ViewLobbyResponse" />
+			<param index="0" name="title" type="String" />
+			<description>
+				Set the title of the lobby. You need to be the host to do this.
+				Needs [method connect_to_server] to be called first.
+				Returns a [ViewLobbyResponse] object that has a [signal ViewLobbyResponse.finished] signal that is emitted when finished.
+				Generates [signal lobby_titled].
+			</description>
+		</method>
 	</methods>
 	<members>
 		<member name="connected" type="bool" setter="" getter="get_connected" default="false">
@@ -287,6 +317,18 @@
 				Signal generated after a notification is received.
 			</description>
 		</signal>
+		<signal name="lobby_passworded">
+			<param index="0" name="password_protected" type="bool" />
+			<description>
+				Signal generated after the host changes the lobby password.
+			</description>
+		</signal>
+		<signal name="lobby_resized">
+			<param index="0" name="max_players" type="int" />
+			<description>
+				Signal generated after the host changes the lobby max players.
+			</description>
+		</signal>
 		<signal name="lobby_sealed">
 			<param index="0" name="sealed" type="bool" />
 			<description>
@@ -297,6 +339,12 @@
 			<param index="0" name="tags" type="Dictionary" />
 			<description>
 				Signal generated after the host updated the tags of the lobby
+			</description>
+		</signal>
+		<signal name="lobby_titled">
+			<param index="0" name="title" type="String" />
+			<description>
+				Signal generated after the host changes the lobby title.
 			</description>
 		</signal>
 		<signal name="log_updated">
