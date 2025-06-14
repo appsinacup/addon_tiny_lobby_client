@@ -61,8 +61,25 @@ void LobbyInfo::set_sealed(bool p_sealed) { sealed = p_sealed; }
 void LobbyInfo::set_password_protected(bool p_password_protected) { password_protected = p_password_protected; }
 void LobbyInfo::set_tags(const Dictionary &p_tags) { tags = p_tags; }
 void LobbyInfo::set_data(const Dictionary &p_data) { data = p_data; }
-
-void LobbyInfo::set_dict(const Dictionary &p_dict) {
+void LobbyInfo::set_delta_tags(const Dictionary &p_delta_tags) {
+	for (const Variant &key : p_delta_tags.keys()) {
+		if (p_delta_tags[key].get_type() == Variant::NIL) {
+			tags.erase(key);
+		} else {
+			tags[key] = p_delta_tags[key];
+		}
+	}
+}
+void LobbyInfo::set_delta_data(const Dictionary &p_delta_data) {
+	for (const Variant &key : p_delta_data.keys()) {
+		if (p_delta_data[key].get_type() == Variant::NIL) {
+			data.erase(key);
+		} else {
+			data[key] = p_delta_data[key];
+		}
+	}
+}
+void LobbyInfo::set_dict(const Dictionary &p_dict, bool p_delta_update) {
 	set_host(p_dict.get("host", ""));
 	set_max_players(p_dict.get("max_players", 0));
 	set_sealed(p_dict.get("sealed", false));
@@ -70,8 +87,13 @@ void LobbyInfo::set_dict(const Dictionary &p_dict) {
 	set_id(p_dict.get("id", ""));
 	set_lobby_name(p_dict.get("name", ""));
 	set_password_protected(p_dict.get("has_password", false));
-	set_tags(p_dict.get("tags", Dictionary()));
-	set_data(p_dict.get("public_data", Dictionary()));
+	if (!p_delta_update) {
+		set_tags(p_dict.get("tags", Dictionary()));
+		set_data(p_dict.get("public_data", Dictionary()));
+	} else {
+		set_delta_tags(p_dict.get("tags", Dictionary()));
+		set_delta_data(p_dict.get("public_data", Dictionary()));
+	}
 }
 Dictionary LobbyInfo::get_dict() const {
 	Dictionary dict;

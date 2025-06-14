@@ -57,9 +57,11 @@ public:
 	void set_sealed(bool p_sealed);
 	void set_password_protected(bool p_password_protected);
 	void set_tags(const Dictionary &p_tags);
+	void set_delta_tags(const Dictionary &p_delta_tags);
 	void set_data(const Dictionary &p_data);
+	void set_delta_data(const Dictionary &p_delta_data);
 
-	void set_dict(const Dictionary &p_dict);
+	void set_dict(const Dictionary &p_dict, bool p_delta_update);
 	Dictionary get_dict() const;
 
 	Dictionary get_data() const;

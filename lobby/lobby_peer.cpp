@@ -50,11 +50,29 @@ void LobbyPeer::_bind_methods() {
 void LobbyPeer::set_id(const String &p_id) { id = p_id; }
 void LobbyPeer::set_order_id(int p_order_id) { order_id = p_order_id; }
 void LobbyPeer::set_user_data(const Dictionary &p_user_data) { user_data = p_user_data; }
+void LobbyPeer::set_delta_user_data(const Dictionary &p_user_data) {
+	for (const Variant &key : p_user_data.keys()) {
+		if (p_user_data[key].get_type() == Variant::NIL) {
+			user_data.erase(key);
+		} else {
+			user_data[key] = p_user_data[key];
+		}
+	}
+}
 void LobbyPeer::set_ready(bool p_ready) { ready = p_ready; }
 void LobbyPeer::set_disconnected(bool p_disconnected) { disconnected = p_disconnected; }
 void LobbyPeer::set_data(const Dictionary &p_data) { data = p_data; }
+void LobbyPeer::set_delta_data(const Dictionary &p_data) {
+	for (const Variant &key : p_data.keys()) {
+		if (p_data[key].get_type() == Variant::NIL) {
+			data.erase(key);
+		} else {
+			data[key] = p_data[key];
+		}
+	}
+}
 void LobbyPeer::set_platform(const String &p_platform) { platform = p_platform; }
-void LobbyPeer::set_dict(const Dictionary &p_dict) {
+void LobbyPeer::set_dict(const Dictionary &p_dict, bool p_delta_update) {
 	if (p_dict.has("id")) {
 		set_id(p_dict.get("id", ""));
 	}
@@ -67,11 +85,20 @@ void LobbyPeer::set_dict(const Dictionary &p_dict) {
 	if (p_dict.has("ready")) {
 		set_ready(p_dict.get("ready", false));
 	}
-	if (p_dict.has("user_data")) {
-		set_user_data(p_dict.get("user_data", Dictionary()));
-	}
-	if (p_dict.has("public_data")) {
-		set_data(p_dict.get("public_data", Dictionary()));
+	if (!p_delta_update) {
+		if (p_dict.has("user_data")) {
+			set_user_data(p_dict.get("user_data", Dictionary()));
+		}
+		if (p_dict.has("public_data")) {
+			set_data(p_dict.get("public_data", Dictionary()));
+		}
+	} else {
+		if (p_dict.has("user_data")) {
+			set_delta_user_data(p_dict.get("user_data", Dictionary()));
+		}
+		if (p_dict.has("public_data")) {
+			set_delta_data(p_dict.get("public_data", Dictionary()));
+		}
 	}
 	if (p_dict.has("is_disconnected")) {
 		set_disconnected(p_dict.get("is_disconnected", false));
