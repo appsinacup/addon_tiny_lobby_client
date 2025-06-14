@@ -53,8 +53,10 @@ public:
 	void set_platform(const String &p_platform);
 	void set_disconnected(bool p_disconnected);
 	void set_data(const Dictionary &p_data);
-	void set_dict(const Dictionary &p_dict);
+	void set_delta_data(const Dictionary &p_delta_data);
+	void set_dict(const Dictionary &p_dict, bool p_delta_update);
 	void set_user_data(const Dictionary &p_data);
+	void set_delta_user_data(const Dictionary &p_delta_data);
 
 	Dictionary get_dict() const;
 	Dictionary get_data() const;
