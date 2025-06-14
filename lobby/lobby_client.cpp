@@ -1209,7 +1209,7 @@ void LobbyClient::_receive_data(const Dictionary &p_dict) {
 		} else {
 			lobby->set_delta_data(lobby_data);
 		}
-		emit_signal("received_lobby_data", lobby_data, is_private);
+		emit_signal("received_lobby_data", lobby->get_data(), is_private);
 		// nothing for now
 	} else if (command == "data_to") {
 		String target_peer_id = data_dict.get("target_peer", "");

@@ -128,7 +128,7 @@ void ScriptedLobbyClient::_bind_methods() {
 	ADD_SIGNAL(MethodInfo("log_updated", PropertyInfo(Variant::STRING, "command"), PropertyInfo(Variant::STRING, "logs")));
 }
 
-void LobbyClient::set_delta_peer_data(const Dictionary &p_peer_data) {
+void ScriptedLobbyClient::set_delta_peer_data(const Dictionary &p_peer_data) {
 	for (const Variant &key : p_peer_data.keys()) {
 		if (p_peer_data[key].get_type() == Variant::NIL) {
 			peer_data.erase(key);
@@ -967,7 +967,7 @@ void ScriptedLobbyClient::_receive_data(const Dictionary &p_dict) {
 	} else if (command == "lobby_data") {
 		Dictionary lobby_data = data_dict.get("lobby_data", Dictionary());
 		lobby->set_delta_data(lobby_data);
-		emit_signal("received_lobby_data", lobby_data);
+		emit_signal("received_lobby_data", lobby->get_data());
 		// nothing for now
 	} else if (command == "data_to") {
 		String target_peer_id = data_dict.get("target_peer", "");

@@ -83,8 +83,8 @@ public:
 			server_url = "wss://" + DiscordEmbeddedAppClient::static_find_client_id() + ".discordsays.com/.proxy/" + override_discord_path;
 		}
 	}
-	void set_delta_host_data(const Dictionary &p_host_data);
 	void set_delta_peer_data(const Dictionary &p_peer_data);
+	void set_delta_host_data(const Dictionary &p_host_data);
 	String get_override_discord_path() const { return override_discord_path; }
 	void set_server_url(const String &p_server_url);
 	String get_server_url();
