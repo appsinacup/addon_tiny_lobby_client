@@ -816,7 +816,7 @@ void ScriptedLobbyClient::_receive_data(const Dictionary &p_dict) {
 		lobby->set_password_protected(data_dict.get("password_protected", false));
 		emit_signal("lobby_passworded", lobby->is_password_protected());
 	} else if (command == "lobby_titled") {
-		lobby->set_name(data_dict.get("lobby_title", ""));
+		lobby->set_lobby_name(data_dict.get("lobby_title", ""));
 		emit_signal("lobby_titled", lobby->get_name());
 	} else if (command == "lobby_list") {
 		Array arr = data_dict.get("lobbies", Array());
@@ -1070,22 +1070,32 @@ void ScriptedLobbyClient::_receive_data(const Dictionary &p_dict) {
 				}
 			} break;
 			case LOBBY_VIEW: {
-				Dictionary lobby_dict = data_dict.get("lobby", Dictionary());
-
-				// Iterate through peers and populate arrays
-				TypedArray<LobbyPeer> peers_info;
-				_update_peers(data_dict, peers_info);
-				sort_peers_by_id(peers_info);
-				Ref<LobbyInfo> lobby_info = Ref<LobbyInfo>(memnew(LobbyInfo));
-				lobby_info->set_dict(lobby_dict, true);
-				// notify
 				Ref<ViewLobbyResponse> response = command_array[1];
-				if (response.is_valid()) {
-					Ref<ViewLobbyResponse::ViewLobbyResult> result;
-					result.instantiate();
-					result->set_peers(peers_info);
-					result->set_lobby(lobby_info);
-					response->emit_signal("finished", result);
+				if (data_dict.has("lobby")) {
+					Dictionary lobby_dict = data_dict.get("lobby", Dictionary());
+
+					// Iterate through peers and populate arrays
+					TypedArray<LobbyPeer> peers_info;
+					_update_peers(data_dict, peers_info);
+					sort_peers_by_id(peers_info);
+					Ref<LobbyInfo> lobby_info = Ref<LobbyInfo>(memnew(LobbyInfo));
+					lobby_info->set_dict(lobby_dict, false);
+					if (response.is_valid()) {
+						Ref<ViewLobbyResponse::ViewLobbyResult> result;
+						result.instantiate();
+						result->set_peers(peers_info);
+						result->set_lobby(lobby_info);
+						response->emit_signal("finished", result);
+					}
+				} else {
+					// if not, use current lobby and peers
+					if (response.is_valid()) {
+						Ref<ViewLobbyResponse::ViewLobbyResult> result;
+						result.instantiate();
+						result->set_peers(peers);
+						result->set_lobby(lobby);
+						response->emit_signal("finished", result);
+					}
 				}
 			} break;
 		}
