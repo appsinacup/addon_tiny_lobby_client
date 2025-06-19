@@ -806,14 +806,14 @@ void ScriptedLobbyClient::_receive_data(const Dictionary &p_dict) {
 	} else if (command == "lobby_tags") {
 		lobby->set_delta_tags(data_dict.get("tags", Dictionary()));
 		emit_signal("lobby_tagged", lobby->get_tags());
-	} else if (command == "lobby_max_players") {
+	} else if (command == "lobby_resized") {
 		lobby->set_max_players(data_dict.get("max_players", 0));
 		emit_signal("lobby_resized", lobby->get_max_players());
-	} else if (command == "lobby_password") {
+	} else if (command == "lobby_passworded") {
 		lobby->set_password_protected(data_dict.get("password_protected", false));
 		emit_signal("lobby_passworded", lobby->is_password_protected());
-	} else if (command == "lobby_title") {
-		lobby->set_name(data_dict.get("lobby_name", ""));
+	} else if (command == "lobby_titled") {
+		lobby->set_name(data_dict.get("lobby_title", ""));
 		emit_signal("lobby_titled", lobby->get_name());
 	} else if (command == "lobby_list") {
 		Array arr = data_dict.get("lobbies", Array());
@@ -1054,7 +1054,7 @@ void ScriptedLobbyClient::_receive_data(const Dictionary &p_dict) {
 			}
 		}
 	} else {
-		emit_signal("log_updated", "error", "Unknown command received.");
+		emit_signal("log_updated", "error", "Unknown command received. " + command + " with message: " + message);
 	}
 	if (command_array.size() == 2 && command != "error") {
 		int command_type = command_array[0];

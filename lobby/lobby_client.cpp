@@ -1041,7 +1041,7 @@ void LobbyClient::_receive_data(const Dictionary &p_dict) {
 	} else if (command == "lobby_password") {
 		lobby->set_password_protected(data_dict.get("password_protected", false));
 		emit_signal("lobby_passworded", lobby->is_password_protected());
-	} else if (command == "lobby_title") {
+	} else if (command == "lobby_titled") {
 		lobby->set_name(data_dict.get("lobby_name", ""));
 		emit_signal("lobby_titled", lobby->get_name());
 	} else if (command == "lobby_list") {
@@ -1275,7 +1275,7 @@ void LobbyClient::_receive_data(const Dictionary &p_dict) {
 			}
 		}
 	} else {
-		emit_signal("log_updated", "error", "Unknown command received.");
+		emit_signal("log_updated", "error", "Unknown command received. " + command + " with message: " + message);
 	}
 	if (command_array.size() == 2 && command != "error") {
 		int command_type = command_array[0];
