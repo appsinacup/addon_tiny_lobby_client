@@ -292,6 +292,7 @@ Ref<ViewLobbyResponse> ScriptedLobbyClient::set_password(const String &p_passwor
 	Dictionary data_dict;
 	command["data"] = data_dict;
 	data_dict["password"] = p_password;
+	data_dict["id"] = id;
 	Array command_array;
 	command_array.push_back(LOBBY_VIEW);
 	command_array.push_back(response);
@@ -315,6 +316,7 @@ Ref<ViewLobbyResponse> ScriptedLobbyClient::set_title(const String &p_title) {
 	Dictionary data_dict;
 	command["data"] = data_dict;
 	data_dict["name"] = p_title;
+	data_dict["id"] = id;
 	Array command_array;
 	command_array.push_back(LOBBY_VIEW);
 	command_array.push_back(response);
@@ -337,6 +339,7 @@ Ref<ViewLobbyResponse> ScriptedLobbyClient::set_max_players(int p_max_players) {
 	Dictionary data_dict;
 	command["data"] = data_dict;
 	data_dict["max_players"] = p_max_players;
+	data_dict["id"] = id;
 	Array command_array;
 	command_array.push_back(LOBBY_VIEW);
 	command_array.push_back(response);
