@@ -36,12 +36,12 @@ LobbyClient::LobbyClient() {
 	if (DiscordEmbeddedAppClient::static_is_discord_environment()) {
 		server_url = "wss://" + DiscordEmbeddedAppClient::static_find_client_id() + ".discordsays.com/.proxy/" + override_discord_path;
 	} else {
-		server_url = "wss://lobby.blazium.app/connect";
+		server_url = "wss://lobby.appsinacup.com/connect";
 	}
 	lobby.instantiate();
 	peer.instantiate();
 	empty_peer.instantiate();
-	_socket = Ref<WebSocketPeer>(new WebSocketPeer());
+	_socket = Ref<WebSocketPeer>(memnew(WebSocketPeer));
 	set_process_internal(false);
 }
 
@@ -196,7 +196,7 @@ Ref<LobbyResponse> LobbyClient::connect_to_server() {
 	String lobby_url = get_server_url();
 	String url = lobby_url;
 	PackedStringArray protocols;
-	protocols.push_back("blazium");
+	protocols.push_back("appsinacup");
 	protocols.push_back(game_id);
 	if (reconnection_token != "") {
 		protocols.push_back(reconnection_token);

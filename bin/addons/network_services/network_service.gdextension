@@ -3,7 +3,7 @@ entry_symbol = "network_services_init"
 compatibility_minimum = "4.3"
 
 [libraries]
-macos.debug.universal = "res://addons/network_services/libnetwork_services.macos.template_debug.dev.niversal.framework"
+macos.debug.universal = "res://addons/network_services/libnetwork_services.macos.template_debug.dev.universal.framework"
 macos.release.universal = "res://addons/network_services/libnetwork_services.macos.template_release.universal.framework"
 windows.debug.x86_64 = "res://addons/network_services/network_services.windows.template_debug.x86_64.dll"
 windows.release.x86_64 = "res://addons/network_services/network_services.windows.template_release.x86_64.dll"
@@ -17,3 +17,10 @@ ios.debug.arm64 = "res://addons/network_services/libnetwork_services.ios.templat
 ios.release.arm64 = "res://addons/network_services/libnetwork_services.ios.template_release.arm64.dylib"
 web.debug.wasm32 = "res://addons/network_services/libnetwork_services.web.template_debug.wasm32.wasm"
 web.release.wasm32 = "res://addons/network_services/libnetwork_services.web.template_release.wasm32.wasm"
+
+[icons]
+
+DiscordEmbeddedAppClient = "res://addons/network_services/icons/DiscordEmbeddedAppClient.svg"
+LobbyClient = "res://addons/network_services/icons/LobbyClient.svg"
+LoginClient = "res://addons/network_services/icons/LoginClient.svg"
+ScriptedLobbyClient = "res://addons/network_services/icons/ScriptedLobbyClient.svg"

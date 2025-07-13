@@ -49,7 +49,7 @@ class LoginClient : public NetworkClient {
 	GDCLASS(LoginClient, NetworkClient);
 
 protected:
-	String override_discord_path = "discord/login";
+	String override_discord_path = "appsinacup/login";
 	String server_url;
 	String websocket_prefix = "wss://";
 	String http_prefix = "https://";
@@ -536,7 +536,7 @@ public:
 		} else {
 			server_url = "login.appsinacup.app";
 		}
-		_socket = Ref<WebSocketPeer>(new WebSocketPeer());
+		_socket = Ref<WebSocketPeer>(memnew(WebSocketPeer));
 		set_process_internal(false);
 		login_id_response.instantiate();
 		login_url_response.instantiate();

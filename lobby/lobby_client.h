@@ -47,7 +47,7 @@ class LobbyClient : public NetworkClient {
 	GDCLASS(LobbyClient, NetworkClient);
 
 protected:
-	String override_discord_path = "blazium/lobby/connect";
+	String override_discord_path = "appsinacup/lobby/connect";
 	String server_url;
 	String reconnection_token = "";
 	String game_id = "";

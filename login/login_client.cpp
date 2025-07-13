@@ -78,7 +78,7 @@ Ref<LoginClient::LoginConnectResponse> LoginClient::connect_to_server() {
 	}
 	String url = get_server_url();
 	PackedStringArray protocols;
-	protocols.push_back("blazium");
+	protocols.push_back("appsinacup");
 	protocols.push_back(game_id);
 	_socket->set_supported_protocols(protocols);
 	String connect_url = websocket_prefix + url + connect_route;
