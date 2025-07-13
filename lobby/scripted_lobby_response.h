@@ -31,10 +31,16 @@
 #ifndef SCRIPTED_LOBBY_RESPONSE_H
 #define SCRIPTED_LOBBY_RESPONSE_H
 
-#include "core/object/ref_counted.h"
-#include "core/variant/typed_array.h"
 #include "lobby_info.h"
 #include "lobby_peer.h"
+
+#include <godot_cpp/classes/ref_counted.hpp>
+#include <godot_cpp/core/class_db.hpp>
+#include <godot_cpp/variant/variant.hpp>
+#include <godot_cpp/variant/string.hpp>
+#include <godot_cpp/variant/dictionary.hpp>
+#include <godot_cpp/variant/typed_array.hpp>
+using namespace godot;
 
 class ScriptedLobbyResponse : public RefCounted {
 	GDCLASS(ScriptedLobbyResponse, RefCounted);

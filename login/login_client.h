@@ -31,17 +31,25 @@
 #ifndef LOGIN_CLIENT_H
 #define LOGIN_CLIENT_H
 
-#include "../blazium_client.h"
+#include "../network_client.h"
 #include "../discord/discord_embedded_app_client.h"
-#include "core/io/json.h"
-#include "modules/websocket/websocket_peer.h"
-#include "scene/main/http_request.h"
+#include <godot_cpp/classes/ref_counted.hpp>
+#include <godot_cpp/classes/http_request.hpp>
+#include <godot_cpp/classes/json.hpp>
+#include <godot_cpp/variant/callable.hpp>
+#include <godot_cpp/variant/dictionary.hpp>
+#include <godot_cpp/variant/packed_byte_array.hpp>
+#include <godot_cpp/variant/packed_string_array.hpp>
+#include <godot_cpp/variant/string.hpp>
+#include <godot_cpp/core/class_db.hpp>
+#include <godot_cpp/classes/web_socket_peer.hpp>
+using namespace godot;
 
-class LoginClient : public BlaziumClient {
-	GDCLASS(LoginClient, BlaziumClient);
+class LoginClient : public NetworkClient {
+	GDCLASS(LoginClient, NetworkClient);
 
 protected:
-	String override_discord_path = "blazium/login";
+	String override_discord_path = "discord/login";
 	String server_url;
 	String websocket_prefix = "wss://";
 	String http_prefix = "https://";
@@ -84,7 +92,7 @@ public:
 			Ref<LoginConnectResult> result;
 			result.instantiate();
 			result->set_error(p_error);
-			emit_signal("finished", result);
+			this->emit_signal("finished", result);
 		}
 	};
 
@@ -214,12 +222,12 @@ public:
 			String result_str = String::utf8((const char *)p_data.ptr(), p_data.size());
 			if (p_code != 200 || result_str == "") {
 				result->set_error("Request failed with code: " + String::num(p_code) + " " + result_str);
-				client->emit_signal(SNAME("log_updated"), "error", result_str + " " + p_code);
+				client->emit_signal("log_updated", "error", result_str + " " + p_code);
 				emit_signal("log_updated", "error", result_str + " " + p_code);
 			} else {
 				emit_signal("log_updated", "request_auth", "Success");
 			}
-			emit_signal(SNAME("finished"), result);
+			emit_signal("finished", result);
 		}
 		
 		void signal_finish(String p_error) {
@@ -233,7 +241,7 @@ public:
 			client = p_client;
 			p_client->add_child(request);
 			request->connect("request_completed", callable_mp(this, &LoginAuthResponse::_on_request_completed));
-			request->request(p_url, Vector<String>(), HTTPClient::METHOD_POST, JSON::stringify(p_data));
+			request->request(p_url, PackedStringArray(), HTTPClient::METHOD_POST, JSON::stringify(p_data));
 		}
 		LoginAuthResponse() {
 			request = memnew(HTTPRequest);
@@ -279,7 +287,7 @@ public:
 			String result_str = String::utf8((const char *)p_data.ptr(), p_data.size());
 			if (p_code != 200 || result_str == "") {
 				result->set_error("Request failed with code: " + String::num(p_code) + " " + result_str);
-				client->emit_signal(SNAME("log_updated"), "error", result_str + " " + p_code);
+				client->emit_signal("log_updated", "error", result_str + " " + p_code);
 			} else {
 				if (result_str != "") {
 					Dictionary result_dict = JSON::parse_string(result_str);
@@ -289,7 +297,7 @@ public:
 					}
 				}
 			}
-			emit_signal(SNAME("finished"), result);
+			emit_signal("finished", result);
 		}
 		
 		void signal_finish(String p_error) {
@@ -302,7 +310,7 @@ public:
 		void get_request(String p_url, String p_jwt, LoginClient *p_client) {
 			client = p_client;
 			p_client->add_child(request);
-			Vector<String> headers;
+			PackedStringArray headers;
 			headers.append("SESSION: " + p_jwt);
 			request->connect("request_completed", callable_mp(this, &LoginVerifyTokenResponse::_on_request_completed));
 			request->request(p_url, headers, HTTPClient::METHOD_GET);
@@ -376,7 +384,7 @@ protected:
 				_socket->poll();
 
 				WebSocketPeer::State state = _socket->get_ready_state();
-				if (state == WebSocketPeer::STATE_OPEN) {
+				if (state == WebSocketPeer::State::STATE_OPEN) {
 					if (!connected) {
 						connected = true;
 						if (connect_response.is_valid()) {
@@ -389,16 +397,11 @@ protected:
 						emit_signal("connected_to_server");
 					}
 					while (_socket->get_available_packet_count() > 0) {
-						Vector<uint8_t> packet_buffer;
-						Error err = _socket->get_packet_buffer(packet_buffer);
-						if (err != OK) {
-							emit_signal("log_updated", "error", "Unable to get packet.");
-							return;
-						}
+						PackedByteArray packet_buffer = _socket->get_packet();
 						String packet_string = String::utf8((const char *)packet_buffer.ptr(), packet_buffer.size());
 						_receive_data(JSON::parse_string(packet_string));
 					}
-				} else if (state == WebSocketPeer::STATE_CLOSED) {
+				} else if (state == WebSocketPeer::State::STATE_CLOSED) {
 					emit_signal("disconnected_from_server", _socket->get_close_reason());
 					set_process_internal(false);
 					connected = false;
@@ -409,7 +412,7 @@ protected:
 	static void _bind_methods();
 
 	void _send_data(const Dictionary &p_data_dict) {
-		if (_socket->get_ready_state() != WebSocketPeer::STATE_OPEN) {
+		if (_socket->get_ready_state() != WebSocketPeer::State::STATE_OPEN) {
 			emit_signal("log_updated", "error", "Socket is not ready.");
 			return;
 		}
@@ -531,9 +534,9 @@ public:
 		if (DiscordEmbeddedAppClient::static_is_discord_environment()) {
 			server_url = DiscordEmbeddedAppClient::static_find_client_id() + ".discordsays.com/.proxy/" + override_discord_path;
 		} else {
-			server_url = "login.blazium.app";
+			server_url = "login.appsinacup.app";
 		}
-		_socket = Ref<WebSocketPeer>(WebSocketPeer::create());
+		_socket = Ref<WebSocketPeer>(new WebSocketPeer());
 		set_process_internal(false);
 		login_id_response.instantiate();
 		login_url_response.instantiate();

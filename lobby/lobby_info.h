@@ -31,7 +31,11 @@
 #ifndef LOBBY_INFO_H
 #define LOBBY_INFO_H
 
-#include "core/io/resource.h"
+#include <godot_cpp/classes/resource.hpp>
+#include <godot_cpp/core/class_db.hpp>
+#include <godot_cpp/variant/dictionary.hpp>
+#include <godot_cpp/variant/string.hpp>
+using namespace godot;
 
 class LobbyInfo : public Resource {
 	GDCLASS(LobbyInfo, Resource);

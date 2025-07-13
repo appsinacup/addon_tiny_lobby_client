@@ -31,10 +31,13 @@
 #ifndef LOBBY_RESPONSE_H
 #define LOBBY_RESPONSE_H
 
-#include "core/object/ref_counted.h"
-#include "core/variant/typed_array.h"
+#include <godot_cpp/classes/ref_counted.hpp>
+#include <godot_cpp/variant/dictionary.hpp>
+#include <godot_cpp/variant/typed_array.hpp>
 #include "lobby_info.h"
 #include "lobby_peer.h"
+
+using namespace godot;
 
 class LobbyResponse : public RefCounted {
 	GDCLASS(LobbyResponse, RefCounted);
@@ -95,7 +98,6 @@ public:
 			ADD_PROPERTY(PropertyInfo(Variant::ARRAY, "peers", PROPERTY_HINT_ARRAY_TYPE, "LobbyPeer"), "", "get_peers");
 			ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "lobby", PROPERTY_HINT_RESOURCE_TYPE, "LobbyInfo"), "", "get_lobby");
 			ADD_PROPERTY(PropertyInfo(Variant::STRING, "error"), "", "get_error");
-			ADD_PROPERTY_DEFAULT("lobby", Ref<LobbyInfo>());
 		}
 
 	public:

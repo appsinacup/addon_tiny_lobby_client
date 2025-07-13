@@ -32,9 +32,12 @@
 #define DISCORD_EMBEDDED_APP_CLIENT_H
 
 #include "../third_party_client.h"
-#include "platform/web/api/javascript_bridge_singleton.h"
-#include "scene/main/node.h"
 #include "discord_embedded_app_response.h"
+#include <godot_cpp/classes/java_script_object.hpp>
+#include <godot_cpp/variant/variant.hpp>
+#include <godot_cpp/variant/dictionary.hpp>
+#include <godot_cpp/variant/string.hpp>
+using namespace godot;
 
 // From https://github.com/discord/embedded-app-sdk/blob/main/src/Discord.ts v1.9.0
 class DiscordEmbeddedAppClient : public ThirdPartyClient {
@@ -89,7 +92,7 @@ public:
 	void close(int p_code, String p_message);
 	String get_user_id() { return user_id; }
 	String get_client_id() { return client_id; }
-	void set_client_id(String p_client_id) { return client_id = p_client_id; }
+	void set_client_id(String p_client_id) { client_id = p_client_id; }
 	static String static_find_client_id();
 	String get_user_instance_id() { return user_instance_id; }
 	String get_custom_id() { return custom_id; }

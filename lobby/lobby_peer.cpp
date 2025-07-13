@@ -51,7 +51,9 @@ void LobbyPeer::set_id(const String &p_id) { id = p_id; }
 void LobbyPeer::set_order_id(int p_order_id) { order_id = p_order_id; }
 void LobbyPeer::set_user_data(const Dictionary &p_user_data) { user_data = p_user_data; }
 void LobbyPeer::set_delta_user_data(const Dictionary &p_user_data) {
-	for (const Variant &key : p_user_data.keys()) {
+	Array keys = p_user_data.keys();
+	for (int i = 0; i < keys.size(); i++) {
+		Variant key = keys[i];
 		if (p_user_data[key].get_type() == Variant::NIL) {
 			user_data.erase(key);
 		} else {
@@ -63,7 +65,9 @@ void LobbyPeer::set_ready(bool p_ready) { ready = p_ready; }
 void LobbyPeer::set_disconnected(bool p_disconnected) { disconnected = p_disconnected; }
 void LobbyPeer::set_data(const Dictionary &p_data) { data = p_data; }
 void LobbyPeer::set_delta_data(const Dictionary &p_data) {
-	for (const Variant &key : p_data.keys()) {
+	Array keys = p_data.keys();
+	for (int i = 0; i < keys.size(); i++) {
+		Variant key = keys[i];
 		if (p_data[key].get_type() == Variant::NIL) {
 			data.erase(key);
 		} else {

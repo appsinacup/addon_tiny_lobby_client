@@ -29,8 +29,9 @@
 /**************************************************************************/
 
 #include "discord_embedded_app_client.h"
-#include "platform/web/api/javascript_bridge_singleton.h"
-#include "core/io/json.h"
+#include <godot_cpp/core/class_db.hpp>
+#include <godot_cpp/classes/java_script_bridge.hpp>
+#include <godot_cpp/classes/json.hpp>
 
 void DiscordEmbeddedAppClient::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("close", "code", "message"), &DiscordEmbeddedAppClient::close);
@@ -231,7 +232,7 @@ DiscordEmbeddedAppClient::DiscordEmbeddedAppClient() {
 
 	// update params
 	String query_parts_string = singleton->eval("window.location.search", true);
-	Vector<String> query_parts = query_parts_string.trim_prefix("?").split("&", false);
+	PackedStringArray query_parts = query_parts_string.trim_prefix("?").split("&", false);
 	Dictionary query_map = {};
 	for (int i = 0; i < query_parts.size(); i++) {
 		String part = query_parts[i];

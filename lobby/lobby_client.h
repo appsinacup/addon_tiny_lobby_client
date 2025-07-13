@@ -32,17 +32,19 @@
 #define LOBBY_CLIENT_H
 
 #include "../discord/discord_embedded_app_client.h"
-#include "../blazium_client.h"
-#include "core/io/json.h"
+#include "../network_client.h"
+#include <godot_cpp/classes/json.hpp>
 #include "lobby_info.h"
 #include "lobby_peer.h"
 #include "lobby_response.h"
-#include "modules/websocket/websocket_peer.h"
+#include <godot_cpp/classes/web_socket_peer.hpp>
+
+using namespace godot;
 
 void sort_peers_by_id(TypedArray<LobbyPeer> &peers);
 
-class LobbyClient : public BlaziumClient {
-	GDCLASS(LobbyClient, BlaziumClient);
+class LobbyClient : public NetworkClient {
+	GDCLASS(LobbyClient, NetworkClient);
 
 protected:
 	String override_discord_path = "blazium/lobby/connect";

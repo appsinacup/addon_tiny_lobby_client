@@ -1,5 +1,7 @@
 __pycache__
 *.o
+*.os
 *.obj
 *.tmp
 .DS_Store
+.sconsign.dblite

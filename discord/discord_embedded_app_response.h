@@ -31,7 +31,12 @@
 #ifndef DISCORD_EMBEDDED_APP_RESPONSE_H
 #define DISCORD_EMBEDDED_APP_RESPONSE_H
 
-#include "core/object/ref_counted.h"
+#include <godot_cpp/classes/ref_counted.hpp>
+#include <godot_cpp/core/class_db.hpp>
+#include <godot_cpp/variant/dictionary.hpp>
+#include <godot_cpp/variant/variant.hpp>
+#include <godot_cpp/variant/string.hpp>
+using namespace godot;
 
 class DiscordEmbeddedAppResponse : public RefCounted {
 	GDCLASS(DiscordEmbeddedAppResponse, RefCounted);

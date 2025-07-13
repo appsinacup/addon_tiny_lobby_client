@@ -30,7 +30,6 @@
 
 #include "./lobby_client.h"
 #include "lobby_info.h"
-#include "scene/main/node.h"
 #include "../discord/discord_embedded_app_client.h"
 
 LobbyClient::LobbyClient() {
@@ -42,7 +41,7 @@ LobbyClient::LobbyClient() {
 	lobby.instantiate();
 	peer.instantiate();
 	empty_peer.instantiate();
-	_socket = Ref<WebSocketPeer>(WebSocketPeer::create());
+	_socket = Ref<WebSocketPeer>(new WebSocketPeer());
 	set_process_internal(false);
 }
 
@@ -80,9 +79,6 @@ void LobbyClient::_bind_methods() {
 	ADD_PROPERTY(PropertyInfo(Variant::ARRAY, "peers", PROPERTY_HINT_ARRAY_TYPE, "LobbyPeer"), "", "get_peers");
 	ADD_PROPERTY(PropertyInfo(Variant::DICTIONARY, "host_data"), "", "get_host_data");
 	ADD_PROPERTY(PropertyInfo(Variant::DICTIONARY, "peer_data"), "", "get_peer_data");
-	ADD_PROPERTY_DEFAULT("peers", TypedArray<LobbyPeer>());
-	ADD_PROPERTY_DEFAULT("peer", Ref<LobbyPeer>());
-	ADD_PROPERTY_DEFAULT("lobby", Ref<LobbyInfo>());
 	// Register methods
 	ClassDB::bind_method(D_METHOD("connect_to_server"), &LobbyClient::connect_to_server);
 	ClassDB::bind_method(D_METHOD("disconnect_from_server"), &LobbyClient::disconnect_from_server);
@@ -142,7 +138,9 @@ void LobbyClient::_bind_methods() {
 }
 
 void LobbyClient::set_delta_host_data(const Dictionary &p_host_data) {
-	for (const Variant &key : p_host_data.keys()) {
+	Array keys = p_host_data.keys();
+	for (int i = 0; i < keys.size(); i++) {
+		Variant key = keys[i];
 		if (p_host_data[key].get_type() == Variant::NIL) {
 			host_data.erase(key);
 		} else {
@@ -151,7 +149,9 @@ void LobbyClient::set_delta_host_data(const Dictionary &p_host_data) {
 	}
 }
 void LobbyClient::set_delta_peer_data(const Dictionary &p_peer_data) {
-	for (const Variant &key : p_peer_data.keys()) {
+	Array keys = p_peer_data.keys();
+	for (int i = 0; i < keys.size(); i++) {
+		Variant key = keys[i];
 		if (p_peer_data[key].get_type() == Variant::NIL) {
 			peer_data.erase(key);
 		} else {
@@ -881,12 +881,7 @@ void LobbyClient::_notification(int p_what) {
 					emit_signal("log_updated", "connect_to_server", "Connected to: " + server_url);
 				}
 				while (_socket->get_available_packet_count() > 0) {
-					Vector<uint8_t> packet_buffer;
-					Error err = _socket->get_packet_buffer(packet_buffer);
-					if (err != OK) {
-						emit_signal("log_updated", "error", "Unable to get packet.");
-						return;
-					}
+					PackedByteArray packet_buffer = _socket->get_packet();
 					String packet_string = String::utf8((const char *)packet_buffer.ptr(), packet_buffer.size());
 					Variant data_parsed = JSON::parse_string(packet_string);
 					if (data_parsed.get_type() == Variant::DICTIONARY) {

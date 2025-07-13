@@ -35,8 +35,8 @@
 #include "scripted_lobby_response.h"
 #include "lobby_client.h"
 
-class ScriptedLobbyClient : public BlaziumClient {
-	GDCLASS(ScriptedLobbyClient, BlaziumClient);
+class ScriptedLobbyClient : public NetworkClient {
+	GDCLASS(ScriptedLobbyClient, NetworkClient);
 
 protected:
 	String override_discord_path = "blazium/scriptedlobby/connect";

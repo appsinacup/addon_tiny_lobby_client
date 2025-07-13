@@ -28,9 +28,9 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#include "core/io/resource_importer.h"
 #include "register_types.h"
-#include "blazium_client.h"
+#include "network_client.h"
+#include "third_party_client.h"
 #include "lobby/scripted_lobby_client.h"
 #include "lobby/scripted_lobby_response.h"
 #include "lobby/lobby_client.h"
@@ -38,42 +38,28 @@
 #include "lobby/lobby_peer.h"
 #include "lobby/lobby_response.h"
 #include "login/login_client.h"
-#include "master_server/master_server_client.h"
-#include "pogr/pogr_client.h"
 #include "third_party_client.h"
 #include "discord/discord_embedded_app_client.h"
 #include "discord/discord_embedded_app_response.h"
-#include "youtube/youtube_playables_client.h"
-#include "youtube/youtube_playables_response.h"
-#include "jwt.h"
-#include "env.h"
-#include "csv/resource_csv.h"
-#include "csv/resource_importer_csv.h"
 
-static JWT *jwt_singleton_global = nullptr;
-static ENV *env_singleton_global = nullptr;
-static Ref<ResourceImporterCSV> csv_importer;
+#include <godot_cpp/core/class_db.hpp>
+#include <godot_cpp/core/defs.hpp>
+#include <godot_cpp/godot.hpp>
+#include <godot_cpp/classes/ref_counted.hpp>
+#include <godot_cpp/classes/object.hpp>
+#include <godot_cpp/classes/node.hpp>
+#include <godot_cpp/classes/resource.hpp>
+#include <godot_cpp/classes/resource_importer.hpp>
+#include <godot_cpp/variant/dictionary.hpp>
+#include <godot_cpp/variant/array.hpp>
+#include <godot_cpp/variant/string.hpp>
+#include <godot_cpp/variant/callable.hpp>
+using namespace godot;
 
-void initialize_blazium_sdk_module(ModuleInitializationLevel p_level) {
-	if (p_level == MODULE_INITIALIZATION_LEVEL_CORE) {
-		// JWT singleton
-		jwt_singleton_global = memnew(JWT);
-		GDREGISTER_CLASS(JWT);
-		Engine::get_singleton()->add_singleton(Engine::Singleton("JWT", JWT::get_singleton()));
-		// ENV singleton
-		env_singleton_global = memnew(ENV);
-		GDREGISTER_CLASS(ENV);
-		Engine::get_singleton()->add_singleton(Engine::Singleton("ENV", ENV::get_singleton()));
-	}
-	if (p_level == MODULE_INITIALIZATION_LEVEL_SERVERS) {
-		GDREGISTER_CLASS(CSV);
-		GDREGISTER_CLASS(ResourceImporterCSV);
-		csv_importer.instantiate();
-		ResourceFormatImporter::get_singleton()->add_importer(csv_importer);
-	}
+void initialize_network_services(ModuleInitializationLevel p_level) {
 	if (p_level == MODULE_INITIALIZATION_LEVEL_SCENE) {
-		// Blazium clients
-		GDREGISTER_ABSTRACT_CLASS(BlaziumClient);
+		// Network clients
+		GDREGISTER_ABSTRACT_CLASS(NetworkClient);
 		GDREGISTER_CLASS(LobbyInfo);
 		GDREGISTER_CLASS(LobbyPeer);
 		GDREGISTER_CLASS(LobbyClient);
@@ -84,15 +70,6 @@ void initialize_blazium_sdk_module(ModuleInitializationLevel p_level) {
 		GDREGISTER_CLASS(ScriptedLobbyClient);
 		GDREGISTER_CLASS(ScriptedLobbyResponse);
 		GDREGISTER_CLASS(ScriptedLobbyResponse::ScriptedLobbyResult);
-		GDREGISTER_CLASS(POGRClient);
-		GDREGISTER_CLASS(POGRClient::POGRResponse);
-		GDREGISTER_CLASS(POGRClient::POGRResult);
-		GDREGISTER_CLASS(GameServerInfo);
-		GDREGISTER_CLASS(MasterServerClient);
-		GDREGISTER_CLASS(MasterServerClient::MasterServerResponse);
-		GDREGISTER_CLASS(MasterServerClient::MasterServerResult);
-		GDREGISTER_CLASS(MasterServerClient::MasterServerListResponse);
-		GDREGISTER_CLASS(MasterServerClient::MasterServerListResult);
 		GDREGISTER_CLASS(LoginClient);
 		GDREGISTER_CLASS(LoginClient::LoginConnectResponse);
 		GDREGISTER_CLASS(LoginClient::LoginConnectResponse::LoginConnectResult);
@@ -109,23 +86,22 @@ void initialize_blazium_sdk_module(ModuleInitializationLevel p_level) {
 		GDREGISTER_CLASS(DiscordEmbeddedAppClient);
 		GDREGISTER_CLASS(DiscordEmbeddedAppResponse);
 		GDREGISTER_CLASS(DiscordEmbeddedAppResponse::DiscordEmbeddedAppResult);
-		GDREGISTER_CLASS(YoutubePlayablesClient);
-		GDREGISTER_CLASS(YoutubePlayablesResponse);
-		GDREGISTER_CLASS(YoutubePlayablesResponse::YoutubePlayablesResult);
 	}
 }
 
-void uninitialize_blazium_sdk_module(ModuleInitializationLevel p_level) {
-	if (p_level == MODULE_INITIALIZATION_LEVEL_CORE) {
-		Engine::get_singleton()->remove_singleton("JWT");
-		Engine::get_singleton()->remove_singleton("ENV");
-		memdelete(jwt_singleton_global);
-		memdelete(env_singleton_global);
-	}
-	if (p_level == MODULE_INITIALIZATION_LEVEL_SERVERS) {
-		if (csv_importer.is_valid()) {
-			ResourceFormatImporter::get_singleton()->remove_importer(csv_importer);
-			csv_importer.unref();
-		}
-	}
+void uninitialize_network_services(ModuleInitializationLevel p_level) {
+	// No-op for GDExtension
+}
+
+extern "C" {
+// Initialization.
+GDExtensionBool GDE_EXPORT network_services_init(GDExtensionInterfaceGetProcAddress p_get_proc_address, const GDExtensionClassLibraryPtr p_library, GDExtensionInitialization *r_initialization) {
+	godot::GDExtensionBinding::InitObject init_obj(p_get_proc_address, p_library, r_initialization);
+
+	init_obj.register_initializer(initialize_network_services);
+	init_obj.register_terminator(uninitialize_network_services);
+	init_obj.set_minimum_library_initialization_level(MODULE_INITIALIZATION_LEVEL_SCENE);
+
+	return init_obj.init();
+}
 }

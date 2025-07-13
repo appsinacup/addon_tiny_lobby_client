@@ -1,5 +1,5 @@
 /**************************************************************************/
-/*  blazium_client.h                                                      */
+/*  third_party_client.h                                                  */
 /**************************************************************************/
 /*                         This file is part of:                          */
 /*                            BLAZIUM ENGINE                              */
@@ -31,7 +31,9 @@
 #ifndef THIRD_PARTY_CLIENT
 #define THIRD_PARTY_CLIENT
 
-#include "scene/main/node.h"
+#include <godot_cpp/classes/node.hpp>
+#include <godot_cpp/core/class_db.hpp>
+using namespace godot;
 
 class ThirdPartyClient : public Node {
 	GDCLASS(ThirdPartyClient, Node);

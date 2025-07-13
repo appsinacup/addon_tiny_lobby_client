@@ -62,7 +62,9 @@ void LobbyInfo::set_password_protected(bool p_password_protected) { password_pro
 void LobbyInfo::set_tags(const Dictionary &p_tags) { tags = p_tags; }
 void LobbyInfo::set_data(const Dictionary &p_data) { data = p_data; }
 void LobbyInfo::set_delta_tags(const Dictionary &p_delta_tags) {
-	for (const Variant &key : p_delta_tags.keys()) {
+	Array keys = p_delta_tags.keys();
+	for (int i = 0; i < keys.size(); i++) {
+		Variant key = keys[i];
 		if (p_delta_tags[key].get_type() == Variant::NIL) {
 			tags.erase(key);
 		} else {
@@ -71,7 +73,9 @@ void LobbyInfo::set_delta_tags(const Dictionary &p_delta_tags) {
 	}
 }
 void LobbyInfo::set_delta_data(const Dictionary &p_delta_data) {
-	for (const Variant &key : p_delta_data.keys()) {
+	Array keys = p_delta_data.keys();
+	for (int i = 0; i < keys.size(); i++) {
+		Variant key = keys[i];
 		if (p_delta_data[key].get_type() == Variant::NIL) {
 			data.erase(key);
 		} else {
