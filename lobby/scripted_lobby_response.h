@@ -36,48 +36,53 @@
 
 #include <godot_cpp/classes/ref_counted.hpp>
 #include <godot_cpp/core/class_db.hpp>
-#include <godot_cpp/variant/variant.hpp>
-#include <godot_cpp/variant/string.hpp>
 #include <godot_cpp/variant/dictionary.hpp>
+#include <godot_cpp/variant/string.hpp>
 #include <godot_cpp/variant/typed_array.hpp>
+#include <godot_cpp/variant/variant.hpp>
 using namespace godot;
 
 class ScriptedLobbyResponse : public RefCounted {
-	GDCLASS(ScriptedLobbyResponse, RefCounted);
+  GDCLASS(ScriptedLobbyResponse, RefCounted);
 
 protected:
-	static void _bind_methods() {
-		ADD_SIGNAL(MethodInfo("finished", PropertyInfo(Variant::OBJECT, "result", PROPERTY_HINT_RESOURCE_TYPE, "ScriptedLobbyResult")));
-	}
+  static void _bind_methods() {
+    ADD_SIGNAL(MethodInfo("finished", PropertyInfo(Variant::OBJECT, "result",
+                                                   PROPERTY_HINT_RESOURCE_TYPE,
+                                                   "ScriptedLobbyResult")));
+  }
 
 public:
-	class ScriptedLobbyResult : public RefCounted {
-		GDCLASS(ScriptedLobbyResult, RefCounted);
-		Variant result;
-		String error;
+  class ScriptedLobbyResult : public RefCounted {
+    GDCLASS(ScriptedLobbyResult, RefCounted);
+    Variant result;
+    String error;
 
-	protected:
-		static void _bind_methods() {
-			ClassDB::bind_method(D_METHOD("has_error"), &ScriptedLobbyResult::has_error);
-			ClassDB::bind_method(D_METHOD("get_error"), &ScriptedLobbyResult::get_error);
-			ClassDB::bind_method(D_METHOD("get_result"), &ScriptedLobbyResult::get_result);
-			ADD_PROPERTY(PropertyInfo(Variant::STRING, "error"), "", "get_error");
-		}
+  protected:
+    static void _bind_methods() {
+      ClassDB::bind_method(D_METHOD("has_error"),
+                           &ScriptedLobbyResult::has_error);
+      ClassDB::bind_method(D_METHOD("get_error"),
+                           &ScriptedLobbyResult::get_error);
+      ClassDB::bind_method(D_METHOD("get_result"),
+                           &ScriptedLobbyResult::get_result);
+      ADD_PROPERTY(PropertyInfo(Variant::STRING, "error"), "", "get_error");
+    }
 
-	public:
-		void set_error(String p_error) { this->error = p_error; }
-		void set_result(Variant p_result) { this->result = p_result; }
+  public:
+    void set_error(String p_error) { this->error = p_error; }
+    void set_result(Variant p_result) { this->result = p_result; }
 
-		bool has_error() const { return !error.is_empty(); }
-		String get_error() const { return error; }
-		Variant get_result() const { return result; }
-	};
-	void signal_finish(String p_error) {
-		Ref<ScriptedLobbyResult> result;
-		result.instantiate();
-		result->set_error(p_error);
-		emit_signal("finished", result);
-	}
+    bool has_error() const { return !error.is_empty(); }
+    String get_error() const { return error; }
+    Variant get_result() const { return result; }
+  };
+  void signal_finish(String p_error) {
+    Ref<ScriptedLobbyResult> result;
+    result.instantiate();
+    result->set_error(p_error);
+    emit_signal("finished", result);
+  }
 };
 
 #endif // SCRIPTED_LOBBY_RESPONSE_H

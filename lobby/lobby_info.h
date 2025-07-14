@@ -38,45 +38,45 @@
 using namespace godot;
 
 class LobbyInfo : public Resource {
-	GDCLASS(LobbyInfo, Resource);
-	String id = "";
-	String lobby_name = "";
-	String host = "";
-	Dictionary tags = Dictionary();
-	Dictionary data = Dictionary();
-	int max_players = 0;
-	int players = 0;
-	bool sealed = false;
-	bool password_protected = false;
+  GDCLASS(LobbyInfo, Resource);
+  String id = "";
+  String lobby_name = "";
+  String host = "";
+  Dictionary tags = Dictionary();
+  Dictionary data = Dictionary();
+  int max_players = 0;
+  int players = 0;
+  bool sealed = false;
+  bool password_protected = false;
 
 protected:
-	static void _bind_methods();
+  static void _bind_methods();
 
 public:
-	void set_id(const String &p_id);
-	void set_lobby_name(const String &p_lobby_name);
-	void set_host(const String &p_host);
-	void set_max_players(int p_max_players);
-	void set_players(int p_players);
-	void set_sealed(bool p_sealed);
-	void set_password_protected(bool p_password_protected);
-	void set_tags(const Dictionary &p_tags);
-	void set_delta_tags(const Dictionary &p_delta_tags);
-	void set_data(const Dictionary &p_data);
-	void set_delta_data(const Dictionary &p_delta_data);
+  void set_id(const String &p_id);
+  void set_lobby_name(const String &p_lobby_name);
+  void set_host(const String &p_host);
+  void set_max_players(int p_max_players);
+  void set_players(int p_players);
+  void set_sealed(bool p_sealed);
+  void set_password_protected(bool p_password_protected);
+  void set_tags(const Dictionary &p_tags);
+  void set_delta_tags(const Dictionary &p_delta_tags);
+  void set_data(const Dictionary &p_data);
+  void set_delta_data(const Dictionary &p_delta_data);
 
-	void set_dict(const Dictionary &p_dict, bool p_delta_update);
-	Dictionary get_dict() const;
+  void set_dict(const Dictionary &p_dict, bool p_delta_update);
+  Dictionary get_dict() const;
 
-	Dictionary get_data() const;
-	Dictionary get_tags() const;
-	String get_id() const;
-	String get_lobby_name() const;
-	String get_host() const;
-	int get_max_players() const;
-	int get_players() const;
-	bool is_sealed() const;
-	bool is_password_protected() const;
+  Dictionary get_data() const;
+  Dictionary get_tags() const;
+  String get_id() const;
+  String get_lobby_name() const;
+  String get_host() const;
+  int get_max_players() const;
+  int get_players() const;
+  bool is_sealed() const;
+  bool is_password_protected() const;
 };
 
 #endif // LOBBY_INFO_H

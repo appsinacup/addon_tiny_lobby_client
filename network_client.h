@@ -36,10 +36,10 @@
 using namespace godot;
 
 class NetworkClient : public Node {
-	GDCLASS(NetworkClient, Node);
+  GDCLASS(NetworkClient, Node);
 
 protected:
-	static void _bind_methods() {}
+  static void _bind_methods() {}
 };
 
 #endif // NETWORK_CLIENT_H

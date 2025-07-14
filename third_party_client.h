@@ -36,10 +36,10 @@
 using namespace godot;
 
 class ThirdPartyClient : public Node {
-	GDCLASS(ThirdPartyClient, Node);
+  GDCLASS(ThirdPartyClient, Node);
 
 protected:
-	static void _bind_methods() {}
+  static void _bind_methods() {}
 };
 
 #endif // THIRD_PARTY_CLIENT
