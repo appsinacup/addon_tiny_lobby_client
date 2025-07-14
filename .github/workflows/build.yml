@@ -81,7 +81,6 @@ jobs:
         with:
           platform: ${{ matrix.platform }}
           arch: ${{ matrix.arch }}
-          float-precision: single
           build-target-type: template_release
 
       - name: 🔗 GDExtension Build Debug
@@ -89,7 +88,6 @@ jobs:
         with:
           platform: ${{ matrix.platform }}
           arch: ${{ matrix.arch }}
-          float-precision: ${{ matrix.float-precision }}
           build-target-type: template_debug
 
       - name: Mac Sign
