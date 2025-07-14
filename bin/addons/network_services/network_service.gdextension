@@ -1,6 +1,6 @@
 [configuration]
 entry_symbol = "network_services_init"
-compatibility_minimum = "4.3"
+compatibility_minimum = "4.4"
 
 [libraries]
 macos.debug.universal = "res://addons/network_services/libnetwork_services.macos.template_debug.universal.framework"
