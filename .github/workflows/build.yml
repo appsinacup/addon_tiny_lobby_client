@@ -86,7 +86,7 @@ jobs:
           build-target-type: template_debug
 
       - name: Mac Sign
-        if: ${{ matrix.platform == 'macos' && env.APPLE_CERT_BASE64 != "" && github.ref == 'refs/heads/main' }}
+        if: ${{ matrix.platform == 'macos' && env.APPLE_CERT_BASE64 != '' && github.ref == 'refs/heads/main' }}
         env:
           APPLE_CERT_BASE64: ${{ secrets.APPLE_CERT_BASE64 }}
         uses: godotengine/godot-cpp-template/.github/actions/sign@main
