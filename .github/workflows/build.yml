@@ -74,7 +74,7 @@ jobs:
           fetch-depth: 0
 
       - name: 🔗 GDExtension Build Release
-        uses: godotengine/godot-cpp-template/.github/actions/build@main
+        uses: appsinacup/godot-cpp-template/.github/actions/build@main
         with:
           platform: ${{ matrix.platform }}
           arch: ${{ matrix.arch }}
@@ -82,7 +82,7 @@ jobs:
           build-target-type: template_release
 
       - name: 🔗 GDExtension Build Debug
-        uses: ./.github/actions/build
+        uses: appsinacup/godot-cpp-template/.github/actions/build@main
         with:
           platform: ${{ matrix.platform }}
           arch: ${{ matrix.arch }}
