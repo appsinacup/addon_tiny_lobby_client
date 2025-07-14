@@ -3,7 +3,7 @@ entry_symbol = "network_services_init"
 compatibility_minimum = "4.3"
 
 [libraries]
-macos.debug.universal = "res://addons/network_services/libnetwork_services.macos.template_debug.dev.universal.framework"
+macos.debug.universal = "res://addons/network_services/libnetwork_services.macos.template_debug.universal.framework"
 macos.release.universal = "res://addons/network_services/libnetwork_services.macos.template_release.universal.framework"
 windows.debug.x86_64 = "res://addons/network_services/network_services.windows.template_debug.x86_64.dll"
 windows.release.x86_64 = "res://addons/network_services/network_services.windows.template_release.x86_64.dll"

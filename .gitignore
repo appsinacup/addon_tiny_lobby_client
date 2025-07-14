@@ -5,3 +5,4 @@ __pycache__
 *.tmp
 .DS_Store
 .sconsign.dblite
+bin/addons/network_services/libnetwork_services.macos.template_debug.dev.universal.framework/libnetwork_services.macos.template_debug.dev.universal
