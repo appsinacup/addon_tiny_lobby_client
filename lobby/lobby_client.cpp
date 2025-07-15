@@ -173,18 +173,18 @@ void LobbyClient::_bind_methods() {
   ADD_SIGNAL(MethodInfo("received_peer_user_data",
                         PropertyInfo(Variant::OBJECT, "peer",
                                      PROPERTY_HINT_RESOURCE_TYPE, "LobbyPeer"),
-                        PropertyInfo(Variant::OBJECT, "data")));
+                        PropertyInfo(Variant::DICTIONARY, "data")));
   ADD_SIGNAL(
-      MethodInfo("lobby_notified", PropertyInfo(Variant::OBJECT, "data"),
+      MethodInfo("lobby_notified", PropertyInfo(Variant::DICTIONARY, "data"),
                  PropertyInfo(Variant::OBJECT, "from_peer",
                               PROPERTY_HINT_RESOURCE_TYPE, "LobbyPeer")));
   ADD_SIGNAL(MethodInfo("received_peer_data",
-                        PropertyInfo(Variant::OBJECT, "data"),
+                        PropertyInfo(Variant::DICTIONARY, "data"),
                         PropertyInfo(Variant::OBJECT, "to_peer",
                                      PROPERTY_HINT_RESOURCE_TYPE, "LobbyPeer"),
                         PropertyInfo(Variant::BOOL, "is_private")));
   ADD_SIGNAL(MethodInfo("received_lobby_data",
-                        PropertyInfo(Variant::OBJECT, "data"),
+                        PropertyInfo(Variant::DICTIONARY, "data"),
                         PropertyInfo(Variant::BOOL, "is_private")));
   ADD_SIGNAL(MethodInfo("lobby_created",
                         PropertyInfo(Variant::OBJECT, "lobby",
