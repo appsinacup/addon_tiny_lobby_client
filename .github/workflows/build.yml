@@ -132,6 +132,7 @@ jobs:
         with:
           pattern: GDExtension-*
           path: bin
+          merge-multiple: true
       - name: Delete draft release(s)
         uses: hugo19941994/delete-draft-releases@v1.0.0
         env:
