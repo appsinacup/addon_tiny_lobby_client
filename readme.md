@@ -1,3 +1,6 @@
 # Tiny Lobby Client Addon
 
-Addon that adds nodes that can connect to Tiny Lobby. (WIP)
+|[Website](https://appsinacup.com)|[Discord](https://discord.gg/56dMud8HYn)|
+|-|-|
+
+Addon that adds nodes that can connect to [Tiny Lobby](https://github.com/appsinacup/tiny_lobby).
