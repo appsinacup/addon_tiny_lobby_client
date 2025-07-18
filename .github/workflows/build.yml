@@ -102,7 +102,7 @@ jobs:
           APPLE_CERT_BASE64: ${{ secrets.APPLE_CERT_BASE64 }}
         uses: appsinacup/godot-cpp-template/.github/actions/sign@main
         with:
-          FRAMEWORK_PATH: bin/addons/network_services/libnetwork_services.macos.${{ matrix.target-type }}.universal.framework
+          FRAMEWORK_PATH: bin/addons/tiny_lobby/libtiny_lobby.macos.${{ matrix.target-type }}.universal.framework
           APPLE_CERT_BASE64: ${{ secrets.APPLE_CERT_BASE64 }}
           APPLE_CERT_PASSWORD: ${{ secrets.APPLE_CERT_PASSWORD }}
           APPLE_DEV_PASSWORD: ${{ secrets.APPLE_DEV_PASSWORD }}

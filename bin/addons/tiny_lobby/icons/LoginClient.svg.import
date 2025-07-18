@@ -2,8 +2,8 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://urojknnv3o0t"
-path="res://.godot/imported/DiscordEmbeddedAppClient.svg-f9be4222da98e45ecf2b6e964dcd4686.ctex"
+uid="uid://rn8d2ujf7kbn"
+path="res://.godot/imported/LoginClient.svg-3c26e393c5d051fb7db89287f0bc6c19.ctex"
 metadata={
 "has_editor_variant": true,
 "vram_texture": false
@@ -11,8 +11,8 @@ metadata={
 
 [deps]
 
-source_file="res://addons/network_services/icons/DiscordEmbeddedAppClient.svg"
-dest_files=["res://.godot/imported/DiscordEmbeddedAppClient.svg-f9be4222da98e45ecf2b6e964dcd4686.ctex"]
+source_file="res://addons/tiny_lobby/icons/LoginClient.svg"
+dest_files=["res://.godot/imported/LoginClient.svg-3c26e393c5d051fb7db89287f0bc6c19.ctex"]
 
 [params]
 

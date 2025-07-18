@@ -10,7 +10,7 @@ sources += Glob("lobby/*.cpp")
 sources += Glob("login/*.cpp")
 sources += Glob("*.cpp")
 
-target = "network_services"
+target = "tiny_lobby"
 
 if env["platform"] == "macos" or env["platform"] == "ios":
 	library = env.SharedLibrary(

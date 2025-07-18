@@ -1,0 +1,26 @@
+[configuration]
+entry_symbol = "tiny_lobby_init"
+compatibility_minimum = "4.4"
+
+[libraries]
+macos.debug.universal = "res://addons/tiny_lobby/libtiny_lobby.macos.template_debug.universal.framework"
+macos.release.universal = "res://addons/tiny_lobby/libtiny_lobby.macos.template_release.universal.framework"
+windows.debug.x86_64 = "res://addons/tiny_lobby/tiny_lobby.windows.template_debug.x86_64.dll"
+windows.release.x86_64 = "res://addons/tiny_lobby/tiny_lobby.windows.template_release.x86_64.dll"
+linux.debug.x86_64 = "res://addons/tiny_lobby/libtiny_lobby.linux.template_debug.x86_64.so"
+linux.release.x86_64 = "res://addons/tiny_lobby/libtiny_lobby.linux.template_release.x86_64.so"
+android.debug.arm64_v8a = "res://addons/tiny_lobby/libtiny_lobby.android.template_debug.arm64_v8a.so"
+android.release.arm64_v8a = "res://addons/tiny_lobby/libtiny_lobby.android.template_release.arm64_v8a.so"
+android.debug.x86_64 = "res://addons/tiny_lobby/libtiny_lobby.android.template_debug.x86_64.so"
+android.release.x86_64 = "res://addons/tiny_lobby/libtiny_lobby.android.template_release.x86_64.so"
+ios.debug.arm64 = "res://addons/tiny_lobby/libtiny_lobby.ios.template_debug.arm64.dylib"
+ios.release.arm64 = "res://addons/tiny_lobby/libtiny_lobby.ios.template_release.arm64.dylib"
+web.debug.wasm32 = "res://addons/tiny_lobby/libtiny_lobby.web.template_debug.wasm32.wasm"
+web.release.wasm32 = "res://addons/tiny_lobby/libtiny_lobby.web.template_release.wasm32.wasm"
+
+[icons]
+
+DiscordEmbeddedAppClient = "res://addons/tiny_lobby/icons/DiscordEmbeddedAppClient.svg"
+LobbyClient = "res://addons/tiny_lobby/icons/LobbyClient.svg"
+LoginClient = "res://addons/tiny_lobby/icons/LoginClient.svg"
+ScriptedLobbyClient = "res://addons/tiny_lobby/icons/ScriptedLobbyClient.svg"

@@ -2,8 +2,8 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://rn8d2ujf7kbn"
-path="res://.godot/imported/LoginClient.svg-3c26e393c5d051fb7db89287f0bc6c19.ctex"
+uid="uid://dchkn16kx7815"
+path="res://.godot/imported/ScriptedLobbyClient.svg-f9cb23e0c4cf3c0b3c728893454d38cb.ctex"
 metadata={
 "has_editor_variant": true,
 "vram_texture": false
@@ -11,8 +11,8 @@ metadata={
 
 [deps]
 
-source_file="res://addons/network_services/icons/LoginClient.svg"
-dest_files=["res://.godot/imported/LoginClient.svg-3c26e393c5d051fb7db89287f0bc6c19.ctex"]
+source_file="res://addons/tiny_lobby/icons/ScriptedLobbyClient.svg"
+dest_files=["res://.godot/imported/ScriptedLobbyClient.svg-f9cb23e0c4cf3c0b3c728893454d38cb.ctex"]
 
 [params]
 

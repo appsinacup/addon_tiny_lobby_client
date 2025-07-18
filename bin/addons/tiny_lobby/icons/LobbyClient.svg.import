@@ -11,7 +11,7 @@ metadata={
 
 [deps]
 
-source_file="res://addons/network_services/icons/LobbyClient.svg"
+source_file="res://addons/tiny_lobby/icons/LobbyClient.svg"
 dest_files=["res://.godot/imported/LobbyClient.svg-e68a8fa9c1caa6b0fd8df2e026b09a16.ctex"]
 
 [params]

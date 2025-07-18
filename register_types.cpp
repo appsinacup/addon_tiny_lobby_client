@@ -55,7 +55,7 @@
 #include <godot_cpp/variant/string.hpp>
 using namespace godot;
 
-void initialize_network_services(ModuleInitializationLevel p_level) {
+void initialize_tiny_lobby(ModuleInitializationLevel p_level) {
   if (p_level == MODULE_INITIALIZATION_LEVEL_SCENE) {
     // Network clients
     GDREGISTER_ABSTRACT_CLASS(NetworkClient);
@@ -89,21 +89,21 @@ void initialize_network_services(ModuleInitializationLevel p_level) {
   }
 }
 
-void uninitialize_network_services(ModuleInitializationLevel p_level) {
+void uninitialize_tiny_lobby(ModuleInitializationLevel p_level) {
   // No-op for GDExtension
 }
 
 extern "C" {
 // Initialization.
 GDExtensionBool GDE_EXPORT
-network_services_init(GDExtensionInterfaceGetProcAddress p_get_proc_address,
+tiny_lobby_init(GDExtensionInterfaceGetProcAddress p_get_proc_address,
                       const GDExtensionClassLibraryPtr p_library,
                       GDExtensionInitialization *r_initialization) {
   godot::GDExtensionBinding::InitObject init_obj(p_get_proc_address, p_library,
                                                  r_initialization);
 
-  init_obj.register_initializer(initialize_network_services);
-  init_obj.register_terminator(uninitialize_network_services);
+  init_obj.register_initializer(initialize_tiny_lobby);
+  init_obj.register_terminator(uninitialize_tiny_lobby);
   init_obj.set_minimum_library_initialization_level(
       MODULE_INITIALIZATION_LEVEL_SCENE);
 

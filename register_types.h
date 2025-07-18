@@ -35,7 +35,7 @@
 #include <godot_cpp/godot.hpp>
 using namespace godot;
 
-void initialize_network_services(ModuleInitializationLevel p_level);
-void uninitialize_network_services(ModuleInitializationLevel p_level);
+void initialize_tiny_lobby(ModuleInitializationLevel p_level);
+void uninitialize_tiny_lobby(ModuleInitializationLevel p_level);
 
 #endif // REGISTER_TYPES_H
