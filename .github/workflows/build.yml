@@ -6,6 +6,7 @@ on:
 jobs:
   lint:
     runs-on: ubuntu-latest
+
     steps:
       - name: Check out code
         uses: actions/checkout@v4
@@ -94,7 +95,11 @@ jobs:
         shell: pwsh
         run: |
           Remove-Item bin/* -Include *.exp,*.lib,*.pdb -Force
-
+      - name: Debug env and ref
+        run: |
+          echo "PLATFORM=${{ matrix.target.platform }}"
+          echo "DEVELOPER_ID_BASE64=${{ secrets.DEVELOPER_ID_BASE64 }}"
+          echo "REF=${{ github.ref }}"
       - name: Mac Sign
         if: ${{ matrix.target.platform == 'macos' && env.DEVELOPER_ID_BASE64 != '' && github.ref == 'refs/heads/main' }}
         env:
