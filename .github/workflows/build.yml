@@ -95,11 +95,13 @@ jobs:
         shell: pwsh
         run: |
           Remove-Item bin/* -Include *.exp,*.lib,*.pdb -Force
-      - name: Debug env and ref
+
+      - name: List framework directory contents
+        if: ${{ matrix.target.platform == 'macos' }}
         run: |
-          echo "PLATFORM=${{ matrix.target.platform }}"
-          echo "BUILD_CERTIFICATE_BASE64=${{ secrets.BUILD_CERTIFICATE_BASE64 }}"
-          echo "REF=${{ github.ref }}"
+          echo "Listing contents of framework directory:"
+          ls -l bin/addons/tiny_lobby/libtiny_lobby.macos.${{ matrix.target-type }}.universal.framework
+
       - name: Mac Sign
         if: ${{ matrix.target.platform == 'macos' && env.BUILD_CERTIFICATE_BASE64 != '' && github.ref == 'refs/heads/main' }}
         env:
