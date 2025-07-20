@@ -13,8 +13,8 @@ android.debug.arm64_v8a = "res://addons/tiny_lobby/libtiny_lobby.android.templat
 android.release.arm64_v8a = "res://addons/tiny_lobby/libtiny_lobby.android.template_release.arm64_v8a.so"
 android.debug.x86_64 = "res://addons/tiny_lobby/libtiny_lobby.android.template_debug.x86_64.so"
 android.release.x86_64 = "res://addons/tiny_lobby/libtiny_lobby.android.template_release.x86_64.so"
-ios.debug.arm64 = "res://addons/tiny_lobby/libtiny_lobby.ios.template_debug.arm64.dylib"
-ios.release.arm64 = "res://addons/tiny_lobby/libtiny_lobby.ios.template_release.arm64.dylib"
+ios.debug.arm64 = "res://addons/tiny_lobby/libtiny_lobby.ios.template_debug.arm64.framework"
+ios.release.arm64 = "res://addons/tiny_lobby/libtiny_lobby.ios.template_release.arm64.framework"
 web.debug.wasm32 = "res://addons/tiny_lobby/libtiny_lobby.web.template_debug.wasm32.wasm"
 web.release.wasm32 = "res://addons/tiny_lobby/libtiny_lobby.web.template_release.wasm32.wasm"
 
