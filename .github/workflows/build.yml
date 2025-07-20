@@ -96,19 +96,63 @@ jobs:
         run: |
           Remove-Item bin/* -Include *.exp,*.lib,*.pdb -Force
 
-      - name: Mac Sign
-        if: ${{ matrix.target.platform == 'macos' && env.BUILD_CERTIFICATE_BASE64 != '' && github.ref == 'refs/heads/main' }}
+      # https://docs.github.com/en/actions/deployment/deploying-xcode-applications/installing-an-apple-certificate-on-macos-runners-for-xcode-development
+      - name: Install the Apple certificate and provisioning profile for macOS
+        shell: bash
+        if: matrix.target.platform == 'macos' && env.BUILD_CERTIFICATE_BASE64 != '' && github.ref == 'refs/heads/main'
         env:
+          # Developer ID Certificate
           BUILD_CERTIFICATE_BASE64: ${{ secrets.BUILD_CERTIFICATE_BASE64 }}
-        uses: appsinacup/godot-cpp-template/.github/actions/sign@main
-        with:
+          P12_PASSWORD: ${{ secrets.P12_PASSWORD }}
+          KEYCHAIN_PASSWORD: ${{ secrets.KEYCHAIN_PASSWORD }}
+        run: |
+          # create variables
+          CERTIFICATE_PATH=$RUNNER_TEMP/build_certificate.p12
+          KEYCHAIN_PATH=$RUNNER_TEMP/app-signing.keychain-db
+
+          # import certificate and provisioning profile from secrets
+          echo -n "$BUILD_CERTIFICATE_BASE64" | base64 --decode -o $CERTIFICATE_PATH
+
+          # create temporary keychain
+          security create-keychain -p "$KEYCHAIN_PASSWORD" $KEYCHAIN_PATH
+          security set-keychain-settings -lut 21600 $KEYCHAIN_PATH
+          security unlock-keychain -p "$KEYCHAIN_PASSWORD" $KEYCHAIN_PATH
+
+          # import certificate to keychain
+          security import $CERTIFICATE_PATH -P "$P12_PASSWORD" -A -t cert -f pkcs12 -k $KEYCHAIN_PATH
+          security list-keychain -d user -s $KEYCHAIN_PATH
+
+          SIGNING_IDENTITY=$(security find-identity -p codesigning -v | awk -F'"' 'NR==1 {print $2}')
+          echo "APPLE_SIGNING_IDENTITY=$SIGNING_IDENTITY" >> $GITHUB_ENV
+
+      - name: Sign for macos
+        if: matrix.target.platform == 'macos' && env.BUILD_CERTIFICATE_BASE64 != ''
+        env:
+          # Developer ID Certificate
+          BUILD_CERTIFICATE_BASE64: ${{ secrets.BUILD_CERTIFICATE_BASE64 }}
           FRAMEWORK_PATH: bin/addons/tiny_lobby/libtiny_lobby.macos.${{ matrix.target-type }}.universal.framework
-          APPLE_CERT_BASE64: ${{ secrets.BUILD_CERTIFICATE_BASE64 }}
-          APPLE_CERT_PASSWORD: ${{ secrets.P12_PASSWORD }}
-          APPLE_DEV_PASSWORD: ${{ secrets.APP_SPECIFIC_PASSWORD }}
-          APPLE_DEV_ID: ${{ secrets.APPLE_ID }}
-          APPLE_DEV_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
-          APPLE_DEV_APP_ID: ${{ secrets.DEVELOPER_ID_CERT }}
+        shell: bash
+        run: |
+          # Remove wrong attributes
+          # xattr -cr $FRAMEWORK_PATH
+
+          # Set permissions and sign the application
+          chmod +x $FRAMEWORK_PATH
+          
+          codesign --deep --force --options=runtime --verbose --timestamp \
+             --sign "${{ env.APPLE_SIGNING_IDENTITY }}" \
+            $FRAMEWORK_PATH
+          codesign --verify --strict --deep --verbose $FRAMEWORK_PATH
+          # Package the application into a zip file
+          ditto -c -k --keepParent $FRAMEWORK_PATH File.zip
+
+          /Applications/Xcode.app/Contents/Developer/usr/bin/notarytool store-credentials "AppleID" \
+          --apple-id "${{ secrets.APPLE_ID }}" --password "${{ secrets.APP_SPECIFIC_PASSWORD }}" \
+          --team-id "${{ secrets.APPLE_TEAM_ID }}"
+          /Applications/Xcode.app/Contents/Developer/usr/bin/notarytool submit File.zip --wait --keychain-profile "AppleID"
+
+          xcrun stapler staple $FRAMEWORK_PATH
+          rm File.zip
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
