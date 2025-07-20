@@ -147,7 +147,7 @@ jobs:
       - name: Release
         uses: softprops/action-gh-release@v1
         with:
-          name: Network Service
+          name: Tiny Client
           files: GDExtension.zip
           generate_release_notes: true
           draft: true
