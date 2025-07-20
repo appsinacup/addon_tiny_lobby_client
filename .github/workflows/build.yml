@@ -103,7 +103,7 @@ jobs:
       - name: Mac Sign
         if: ${{ matrix.target.platform == 'macos' && env.BUILD_CERTIFICATE_BASE64 != '' && github.ref == 'refs/heads/main' }}
         env:
-          APPLE_CERT_BASE64: ${{ secrets.BUILD_CERTIFICATE_BASE64 }}
+          BUILD_CERTIFICATE_BASE64: ${{ secrets.BUILD_CERTIFICATE_BASE64 }}
         uses: appsinacup/godot-cpp-template/.github/actions/sign@main
         with:
           FRAMEWORK_PATH: bin/addons/tiny_lobby/libtiny_lobby.macos.${{ matrix.target-type }}.universal.framework
