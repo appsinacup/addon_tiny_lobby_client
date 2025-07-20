@@ -149,13 +149,23 @@ jobs:
           /Applications/Xcode.app/Contents/Developer/usr/bin/notarytool store-credentials "AppleID" \
           --apple-id "${{ secrets.APPLE_ID }}" --password "${{ secrets.APP_SPECIFIC_PASSWORD }}" \
           --team-id "${{ secrets.APPLE_TEAM_ID }}"
-          /Applications/Xcode.app/Contents/Developer/usr/bin/notarytool submit File.zip --wait --keychain-profile "AppleID"
 
-          for i in {1..5}; do
-            xcrun stapler staple "$FRAMEWORK_PATH" && break
-            echo "Stapler failed, retrying in 15 seconds..."
-            sleep 15
-          done
+          # Submit for notarization and capture output
+          /Applications/Xcode.app/Contents/Developer/usr/bin/notarytool submit File.zip --wait --keychain-profile "AppleID" | tee notarytool_output.log
+
+          # Print the notarytool output
+          echo "==== Notarytool output ===="
+          cat notarytool_output.log
+
+          # Extract submission ID and fetch notarization log
+          SUBMISSION_ID=$(grep 'id:' notarytool_output.log | awk '{print $2}')
+          if [ -n "$SUBMISSION_ID" ]; then
+            /Applications/Xcode.app/Contents/Developer/usr/bin/notarytool log "$SUBMISSION_ID" --keychain-profile "AppleID" > notarization_log.json
+            echo "==== Notarization log ===="
+            cat notarization_log.json
+          fi
+
+          xcrun stapler staple $FRAMEWORK_PATH
           rm File.zip
 
       - name: Upload Artifact
