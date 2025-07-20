@@ -167,7 +167,7 @@ jobs:
             cat notarization_log.json
           fi
 
-          xcrun stapler staple $FRAMEWORK_PATH
+          xcrun stapler staple $FRAMEWORK_PATH || true
           rm File.zip
 
       - name: Upload Artifact
