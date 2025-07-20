@@ -158,7 +158,9 @@ jobs:
           cat notarytool_output.log
 
           # Extract submission ID and fetch notarization log
-          SUBMISSION_ID=$(grep 'id:' notarytool_output.log | awk '{print $2}')
+
+          # Only use the first UUID found for the submission ID
+          SUBMISSION_ID=$(grep 'id:' notarytool_output.log | awk '{print $2}' | head -n1)
           if [ -n "$SUBMISSION_ID" ]; then
             /Applications/Xcode.app/Contents/Developer/usr/bin/notarytool log "$SUBMISSION_ID" --keychain-profile "AppleID" > notarization_log.json
             echo "==== Notarization log ===="
