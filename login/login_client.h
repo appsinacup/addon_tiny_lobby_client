@@ -591,7 +591,7 @@ public:
       server_url = DiscordEmbeddedAppClient::static_find_client_id() +
                    ".discordsays.com/.proxy/" + override_discord_path;
     } else {
-      server_url = "login.appsinacup.app";
+      server_url = "login.appsinacup.com";
     }
     _socket = Ref<WebSocketPeer>(memnew(WebSocketPeer));
     set_process_internal(false);

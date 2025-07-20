@@ -38,7 +38,7 @@ ScriptedLobbyClient::ScriptedLobbyClient() {
     server_url = "wss://" + DiscordEmbeddedAppClient::static_find_client_id() +
                  ".discordsays.com/.proxy/" + override_discord_path;
   } else {
-    server_url = "wss://lobby.appsinacup.app/connect";
+    server_url = "wss://lobby.appsinacup.com/connect";
   }
   lobby.instantiate();
   peer.instantiate();
