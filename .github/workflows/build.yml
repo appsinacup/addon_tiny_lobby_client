@@ -97,17 +97,17 @@ jobs:
           Remove-Item bin/* -Include *.exp,*.lib,*.pdb -Force
 
       - name: Mac Sign
-        if: ${{ matrix.target.platform == 'macos' && env.APPLE_CERT_BASE64 != '' && github.ref == 'refs/heads/main' }}
+        if: ${{ matrix.target.platform == 'macos' && env.DEVELOPER_ID_BASE64 != '' && github.ref == 'refs/heads/main' }}
         env:
-          APPLE_CERT_BASE64: ${{ secrets.APPLE_CERT_BASE64 }}
+          APPLE_CERT_BASE64: ${{ secrets.DEVELOPER_ID_BASE64 }}
         uses: appsinacup/godot-cpp-template/.github/actions/sign@main
         with:
           FRAMEWORK_PATH: bin/addons/tiny_lobby/libtiny_lobby.macos.${{ matrix.target-type }}.universal.framework
-          APPLE_CERT_BASE64: ${{ secrets.APPLE_CERT_BASE64 }}
-          APPLE_CERT_PASSWORD: ${{ secrets.APPLE_CERT_PASSWORD }}
-          APPLE_DEV_PASSWORD: ${{ secrets.APPLE_DEV_PASSWORD }}
-          APPLE_DEV_ID: ${{ secrets.APPLE_DEV_ID }}
-          APPLE_DEV_TEAM_ID: ${{ secrets.APPLE_DEV_TEAM_ID }}
+          APPLE_CERT_BASE64: ${{ secrets.DEVELOPER_ID_BASE64 }}
+          APPLE_CERT_PASSWORD: ${{ secrets.P12_PASSWORD }}
+          APPLE_DEV_PASSWORD: ${{ secrets.APP_SPECIFIC_PASSWORD }}
+          APPLE_DEV_ID: ${{ secrets.APPLE_ID }}
+          APPLE_DEV_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
           APPLE_DEV_APP_ID: ${{ secrets.APPLE_DEV_APP_ID }}
 
       - name: Upload Artifact
