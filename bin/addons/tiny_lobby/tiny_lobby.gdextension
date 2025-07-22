@@ -31,8 +31,8 @@ ios.debug.arm64 = "res://addons/tiny_lobby/libtiny_lobby.ios.template_debug.arm6
 ios.release.arm64 = "res://addons/tiny_lobby/libtiny_lobby.ios.template_release.arm64.framework"
 web.debug.wasm32 = "res://addons/tiny_lobby/libtiny_lobby.web.template_debug.wasm32.wasm"
 web.release.wasm32 = "res://addons/tiny_lobby/libtiny_lobby.web.template_release.wasm32.wasm"
-web.debug.wasm32.nothreads = "res://addons/tiny_lobby/libtiny_lobby.web.template_debug.wasm32.wasm.nothreads"
-web.release.wasm32.nothreads = "res://addons/tiny_lobby/libtiny_lobby.web.template_release.wasm32.wasm.nothreads"
+web.debug.wasm32.nothreads = "res://addons/tiny_lobby/libtiny_lobby.web.template_debug.wasm32.nothreads.wasm"
+web.release.wasm32.nothreads = "res://addons/tiny_lobby/libtiny_lobby.web.template_release.wasm32.nothreads.wasm"
 
 [icons]
 
