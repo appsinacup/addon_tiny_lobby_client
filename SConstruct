@@ -28,26 +28,26 @@ elif env["platform"] == "linux" or env["platform"] == "android":
 
 if "static_build" not in ARGUMENTS or ARGUMENTS["static_build"]!="yes":
     print("Building dynamic library")
-	if env["platform"] == "macos" or env["platform"] == "ios":
-		library = env.SharedLibrary(
-			"bin/addons/{}/lib{}{}.framework/lib{}{}".format(
-				target, target, env["suffix"], target, env["suffix"]
-			),
-			source=sources,
-		)
-	else:
-		library = env.SharedLibrary(
-			"bin/addons/{}/lib{}{}{}".format(target, target, env["suffix"], env["SHLIBSUFFIX"]),
-			source=sources,
-		)
-	Default(library)
-	env.SharedLibrary(target=target, source=sources)
+    if env["platform"] == "macos" or env["platform"] == "ios":
+        library = env.SharedLibrary(
+            "bin/addons/{}/lib{}{}.framework/lib{}{}".format(
+                target, target, env["suffix"], target, env["suffix"]
+            ),
+            source=sources,
+        )
+    else:
+        library = env.SharedLibrary(
+            "bin/addons/{}/lib{}{}{}".format(target, target, env["suffix"], env["SHLIBSUFFIX"]),
+            source=sources,
+        )
+    Default(library)
+    env.SharedLibrary(target=target, source=sources)
 
 else:
     print("Building static library")
     env.Append(CPPDEFINES = ['TINY_LOBBY_MODULE'])
-	library = env.StaticLibrary(
-		"bin/addons/tiny_lobby/libtiny_lobby{}{}".format(env["suffix"], env["LIBSUFFIX"]),
-		source=sources,
-	)
+    library = env.StaticLibrary(
+        "bin/addons/tiny_lobby/libtiny_lobby{}{}".format(env["suffix"], env["LIBSUFFIX"]),
+        source=sources,
+    )
     Default(library)
