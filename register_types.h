@@ -31,11 +31,20 @@
 #ifndef REGISTER_TYPES_H
 #define REGISTER_TYPES_H
 
+#ifdef TINY_LOBBY_MODULE
+
+#include "modules/register_module_types.h"
+
+void initialize_tiny_lobby_module(ModuleInitializationLevel p_level);
+void uninitialize_tiny_lobby_module(ModuleInitializationLevel p_level);
+
+#else
 #include <godot_cpp/core/defs.hpp>
 #include <godot_cpp/godot.hpp>
 using namespace godot;
 
 void initialize_tiny_lobby(ModuleInitializationLevel p_level);
 void uninitialize_tiny_lobby(ModuleInitializationLevel p_level);
+#endif
 
 #endif // REGISTER_TYPES_H
