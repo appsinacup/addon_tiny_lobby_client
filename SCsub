@@ -50,8 +50,8 @@ env_gdextension.Append(CPPDEFINES = ['TINY_LOBBY_MODULE'])
 env_modules.Append(CPPDEFINES = ['TINY_LOBBY_MODULE'])
 print("Using base path: {}".format(base_path))
 print("Using base file: {}".format(base_file))
-env.Append(LIBS=[base_file])
-env.Append(LIBPATH=[base_path])
+env.Append(LIBS=[base_path + "/" + base_file + ".a"])
+#env.Append(LIBPATH=[base_path])
 
 # Godot-cpp
 cpp_base_path = "#modules/tiny_lobby/godot-cpp/bin"
@@ -64,8 +64,8 @@ elif platform == "windows":
 else:
     cpp_base_file = "godot-cpp{}".format(get_sufix())
 
-env.Append(LIBS=[cpp_base_file])
-env.Append(LIBPATH=[cpp_base_path])
+env.Append(LIBS=[cpp_base_path + "/" + cpp_base_file + ".a"])
+#env.Append(LIBPATH=[cpp_base_path])
 
 # Sources
 env_gdextension.add_source_files(env.modules_sources, "register_types.cpp")

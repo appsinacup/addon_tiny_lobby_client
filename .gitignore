@@ -9,3 +9,4 @@ bin/addons/tiny_lobby/libtiny_lobby.macos.template_debug.dev.universal.framework
 src/gen/doc_data.gen.cpp
 SCsub
 bin/addons/tiny_lobby/libtiny_lobby.macos.template_debug.arm64.a
+bin/addons/tiny_lobby/libtiny_lobby.ios.template_debug.arm64.a
