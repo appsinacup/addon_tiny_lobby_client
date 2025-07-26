@@ -50,7 +50,9 @@ private:
   String library_path;
 
 public:
-  void set_entry_funcptr(void *p_entry_funcptr) { entry_funcptr = p_entry_funcptr; }
+  void set_entry_funcptr(void *p_entry_funcptr) {
+    entry_funcptr = p_entry_funcptr;
+  }
   virtual Error open_library(const String &p_path) override {
     library_path = p_path;
     return OK;
