@@ -31,7 +31,6 @@
 #include "register_types.h"
 
 #ifdef TINY_LOBBY_MODULE
-#include "./gdextension_static_library_loader.h"
 #include "core/extension/gdextension_interface.h"
 #include "core/extension/gdextension_loader.h"
 #include "core/extension/gdextension_manager.h"
@@ -51,6 +50,7 @@ private:
   String library_path;
 
 public:
+  void set_entry_funcptr(void *p_entry_funcptr) { entry_funcptr = p_entry_funcptr; }
   virtual Error open_library(const String &p_path) override {
     library_path = p_path;
     return OK;
