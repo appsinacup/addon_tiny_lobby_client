@@ -90,9 +90,12 @@ jobs:
         if: ${{ matrix.target.platform == 'ios' }}
         shell: bash
         run: |
-          IOS_FRAMEWORK=bin/addons/tiny_lobby/libtiny_lobby.ios.${{ matrix.target-type }}.${{ matrix.arch }}.framework
-          IOS_BINARY=libtiny_lobby.ios.${{ matrix.target-type }}.${{ matrix.arch }}
+          IOS_FRAMEWORK=bin/addons/tiny_lobby/libtiny_lobby.ios.${{ matrix.target_type }}.${{ matrix.target.arch }}.framework
+          IOS_BINARY=libtiny_lobby.ios.${{ matrix.target_type }}.${{ matrix.target.arch }}
+          DYLIB=target/release/libtiny_lobby.dylib
           install_name_tool -id @rpath/$IOS_FRAMEWORK/$IOS_BINARY $DYLIB
+          # Replace the old binary in the framework with the new dylib
+          mv -f "$DYLIB" "$IOS_FRAMEWORK/$IOS_BINARY"
 
       - name: Save .scons_cache
         uses: ./godot-cpp/.github/actions/godot-cache-save

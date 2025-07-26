@@ -12,6 +12,20 @@ sources += Glob("*.cpp")
 
 target = "tiny_lobby"
 
+def add_godot_cpp_doc_data(env, sources):
+    try:
+        doc_data = env.GodotCPPDocData("src/gen/doc_data.gen.cpp", source=Glob("doc_classes/*.xml"))
+        sources.append(doc_data)
+    except AttributeError:
+        print("Not including class reference as we're targeting a pre-4.3 baseline.")
+
+if env["platform"] == "windows":
+    add_godot_cpp_doc_data(env, sources)
+elif env["platform"] == "macos":
+    add_godot_cpp_doc_data(env, sources)
+elif env["platform"] == "linux" or env["platform"] == "android":
+    add_godot_cpp_doc_data(env, sources)
+
 if env["platform"] == "macos" or env["platform"] == "ios":
 	library = env.SharedLibrary(
 		"bin/addons/{}/lib{}{}.framework/lib{}{}".format(
