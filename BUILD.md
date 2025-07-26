@@ -22,3 +22,13 @@ This will ensure that `clang-format` is run on all staged C/C++ files before com
 ```sh
 pre-commit run --all-files
 ```
+
+## Build module
+
+To build module lib, do:
+
+```sh
+git clone https://github.com/godotengine/godot
+git submodule add -- https://github.com/appsinacup/addon_tiny_lobby_client modules/tiny_lobby
+scons
+```
