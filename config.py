@@ -1,4 +1,3 @@
-@ -1,57 +0,0 @@
 def can_build(env, platform):
 	return True
 
