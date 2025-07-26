@@ -27,7 +27,7 @@ def get_sufix():
         suffix += ".nothreads"
     return suffix
 
-
+env.Append(CPPDEFINES = ['TINY_LOBBY_MODULE'])
 os.system("scons static_build=yes platform=" + get_addon_platform() + " target=" + get_addon_target() + " arch=" + env["arch"] + " precision=" + env["precision"] + " threads=" + str(env["threads"]) + " dev_build=" + str(env["dev_build"]))
 
 platform = get_addon_platform()

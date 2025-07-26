@@ -19,14 +19,13 @@ def add_godot_cpp_doc_data(env, sources):
     except AttributeError:
         print("Not including class reference as we're targeting a pre-4.3 baseline.")
 
-if env["platform"] == "windows":
-    add_godot_cpp_doc_data(env, sources)
-elif env["platform"] == "macos":
-    add_godot_cpp_doc_data(env, sources)
-elif env["platform"] == "linux" or env["platform"] == "android":
-    add_godot_cpp_doc_data(env, sources)
-
 if "static_build" not in ARGUMENTS or ARGUMENTS["static_build"]!="yes":
+    if env["platform"] == "windows":
+        add_godot_cpp_doc_data(env, sources)
+    elif env["platform"] == "macos":
+        add_godot_cpp_doc_data(env, sources)
+    elif env["platform"] == "linux" or env["platform"] == "android":
+        add_godot_cpp_doc_data(env, sources)
     print("Building dynamic library")
     if env["platform"] == "macos" or env["platform"] == "ios":
         library = env.SharedLibrary(
