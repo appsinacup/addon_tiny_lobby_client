@@ -27,7 +27,6 @@ def get_sufix():
         suffix += ".nothreads"
     return suffix
 
-env.Append(CPPDEFINES = ['TINY_LOBBY_MODULE'])
 os.system("scons static_build=yes platform=" + get_addon_platform() + " target=" + get_addon_target() + " arch=" + env["arch"] + " precision=" + env["precision"] + " threads=" + str(env["threads"]) + " dev_build=" + str(env["dev_build"]))
 
 platform = get_addon_platform()
@@ -44,8 +43,11 @@ elif platform == "windows":
     base_file = "tiny_lobby"
 else:
     base_file = "tiny_lobby{}".format(get_sufix())
-    
+
 env_gdextension = env_modules.Clone()
+env.Append(CPPDEFINES = ['TINY_LOBBY_MODULE'])
+env_gdextension.Append(CPPDEFINES = ['TINY_LOBBY_MODULE'])
+env_modules.Append(CPPDEFINES = ['TINY_LOBBY_MODULE'])
 print("Using base path: {}".format(base_path))
 print("Using base file: {}".format(base_file))
 env.Append(LIBS=[base_file])

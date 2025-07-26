@@ -7,3 +7,5 @@ __pycache__
 .sconsign.dblite
 bin/addons/tiny_lobby/libtiny_lobby.macos.template_debug.dev.universal.framework/libtiny_lobby.macos.template_debug.dev.universal
 src/gen/doc_data.gen.cpp
+SCsub
+bin/addons/tiny_lobby/libtiny_lobby.macos.template_debug.arm64.a
