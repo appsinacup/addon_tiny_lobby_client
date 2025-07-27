@@ -93,7 +93,7 @@ jobs:
           IOS_FRAMEWORK=addons/tiny_lobby/libtiny_lobby.ios.${{ matrix.target-type }}.${{ matrix.target.arch }}.framework
           IOS_BINARY=libtiny_lobby.ios.${{ matrix.target-type }}.${{ matrix.target.arch }}
           DYLIB=bin/$IOS_FRAMEWORK/$IOS_BINARY
-          install_name_tool -id @rpath/$IOS_FRAMEWORK/$IOS_BINARY $DYLIB
+          install_name_tool -id @rpath/$(basename $IOS_FRAMEWORK)/$IOS_BINARY $DYLIB
 
       - name: Save .scons_cache
         uses: ./godot-cpp/.github/actions/godot-cache-save
