@@ -33,39 +33,18 @@ platform = get_addon_platform()
 target = get_addon_target()
 arch = env["arch"]
 
-# Godot-cpp
-base_path = "#modules/tiny_lobby/bin/addons/tiny_lobby"
-if platform == "macos":
-    base_file = f"libtiny_lobby.macos.{target}{dev_build_extension}.{arch}"
-elif platform == "ios":
-    base_file = f"libtiny_lobby.ios.{target}{dev_build_extension}.{arch}"
-elif platform == "windows":
-    base_file = "tiny_lobby"
-else:
-    base_file = "tiny_lobby{}".format(get_sufix())
-
+# GDExtension
 env_gdextension = env_modules.Clone()
 env.Append(CPPDEFINES = ['TINY_LOBBY_MODULE'])
 env_gdextension.Append(CPPDEFINES = ['TINY_LOBBY_MODULE'])
 env_modules.Append(CPPDEFINES = ['TINY_LOBBY_MODULE'])
-print("Using base path: {}".format(base_path))
-print("Using base file: {}".format(base_file))
-env.Append(LIBS=[base_path + "/" + base_file + ".a"])
-#env.Append(LIBPATH=[base_path])
+
+env_gdextension.Append(LIBS=[f"libtiny_lobby.{platform}.{target}{dev_build_extension}.{arch}"])
+env_gdextension.Append(LIBPATH=["#modules/tiny_lobby/bin"])
 
 # Godot-cpp
-cpp_base_path = "#modules/tiny_lobby/godot-cpp/bin"
-if platform == "macos":
-    cpp_base_file = f"libgodot-cpp.macos.{target}{dev_build_extension}.{arch}"
-elif platform == "ios":
-    cpp_base_file = f"libgodot-cpp.ios.{target}{dev_build_extension}.{arch}"
-elif platform == "windows":
-    cpp_base_file = "godot-cpp"
-else:
-    cpp_base_file = "godot-cpp{}".format(get_sufix())
-
-env.Append(LIBS=[cpp_base_path + "/" + cpp_base_file + ".a"])
-#env.Append(LIBPATH=[cpp_base_path])
+env.Append(LIBS=[f"libgodot-cpp.{platform}.{target}{dev_build_extension}.{arch}"])
+env.Append(LIBPATH=["#modules/tiny_lobby/godot-cpp/bin"])
 
 # Sources
 env_gdextension.add_source_files(env.modules_sources, "register_types.cpp")
