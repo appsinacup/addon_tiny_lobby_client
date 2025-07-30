@@ -798,7 +798,9 @@ void ScriptedLobbyClient::_notification(int p_what) {
     if (state == WebSocketPeer::STATE_OPEN) {
       if (!connected) {
         connected = true;
+#ifndef __EMSCRIPTEN__
         _socket->set_no_delay(true);
+#endif
         emit_signal("log_updated", "connect_to_server",
                     "Connected to: " + server_url);
       }
