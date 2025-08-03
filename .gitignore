@@ -15,3 +15,4 @@ libtiny_lobby.macos.template_debug.arm64.a
 register_types.ios.template_debug.arm64.d
 .gitignore
 bin/libtiny_lobby.ios.template_debug.arm64.a
+bin/addons/tiny_lobby/libtiny_lobby.macos.template_debug.universal.framework/libtiny_lobby.macos.template_debug.universal
