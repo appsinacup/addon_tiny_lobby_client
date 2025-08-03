@@ -8,6 +8,7 @@ def configure(env):
 
 def get_doc_classes():
 	return [
+		"LeaderboardsClient",
 		"LobbyClient",
 		"NetworkClient",
 		"LobbyInfo",
