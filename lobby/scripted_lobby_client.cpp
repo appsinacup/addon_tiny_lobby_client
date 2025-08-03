@@ -887,7 +887,7 @@ void ScriptedLobbyClient::_receive_data(const Dictionary &p_dict) {
   if (is_logical_error) {
     emit_signal("log_updated", "logical_error", message);
   } else {
-    emit_signal("log_updated", command, message);
+    emit_signal("log_updated", command_to_message(command), message);
   }
   Dictionary data_dict = p_dict.get("d", Dictionary());
   String message_id = data_dict.get("id", "");

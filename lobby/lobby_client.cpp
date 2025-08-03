@@ -1121,7 +1121,7 @@ void LobbyClient::_clear_lobby() {
 void LobbyClient::_receive_data(const Dictionary &p_dict) {
   int command = p_dict.get("c", COMMAND_ERROR);
   String message = p_dict.get("m", command_to_message(command));
-  emit_signal("log_updated", command, message);
+  emit_signal("log_updated", command_to_message(command), message);
   Dictionary data_dict = p_dict.get("d", Dictionary());
   String message_id = data_dict.get("id", "");
   Array command_array = _commands.get(message_id, Array());
