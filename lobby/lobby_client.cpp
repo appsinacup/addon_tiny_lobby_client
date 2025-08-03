@@ -378,9 +378,9 @@ Ref<ViewLobbyResponse> LobbyClient::quick_join(const String &p_name,
   }
   String id = _increment_counter();
   Dictionary command;
-  command["command"] = "quick_join";
+  command["c"] = "quick_join";
   Dictionary data_dict;
-  command["data"] = data_dict;
+  command["d"] = data_dict;
   data_dict["name"] = p_name;
   data_dict["max_players"] = p_max_players;
   data_dict["tags"] = p_tags;
@@ -409,9 +409,9 @@ Ref<ViewLobbyResponse> LobbyClient::create_lobby(const String &p_name,
   }
   String id = _increment_counter();
   Dictionary command;
-  command["command"] = "create_lobby";
+  command["c"] = "create_lobby";
   Dictionary data_dict;
-  command["data"] = data_dict;
+  command["d"] = data_dict;
   data_dict["name"] = p_name;
   data_dict["max_players"] = p_max_players;
   data_dict["password"] = p_password;
@@ -438,9 +438,9 @@ Ref<ViewLobbyResponse> LobbyClient::set_password(const String &p_password) {
   }
   String id = _increment_counter();
   Dictionary command;
-  command["command"] = "lobby_password";
+  command["c"] = "lobby_password";
   Dictionary data_dict;
-  command["data"] = data_dict;
+  command["d"] = data_dict;
   data_dict["password"] = p_password;
   data_dict["id"] = id;
   Array command_array;
@@ -463,9 +463,9 @@ Ref<ViewLobbyResponse> LobbyClient::set_title(const String &p_title) {
   }
   String id = _increment_counter();
   Dictionary command;
-  command["command"] = "lobby_title";
+  command["c"] = "lobby_title";
   Dictionary data_dict;
-  command["data"] = data_dict;
+  command["d"] = data_dict;
   data_dict["name"] = p_title;
   data_dict["id"] = id;
   Array command_array;
@@ -487,9 +487,9 @@ Ref<ViewLobbyResponse> LobbyClient::set_max_players(int p_max_players) {
   }
   String id = _increment_counter();
   Dictionary command;
-  command["command"] = "lobby_max_players";
+  command["c"] = "lobby_max_players";
   Dictionary data_dict;
-  command["data"] = data_dict;
+  command["d"] = data_dict;
   data_dict["max_players"] = p_max_players;
   data_dict["id"] = id;
   Array command_array;
@@ -513,9 +513,9 @@ Ref<ViewLobbyResponse> LobbyClient::join_lobby(const String &p_lobby_id,
   }
   String id = _increment_counter();
   Dictionary command;
-  command["command"] = "join_lobby";
+  command["c"] = "join_lobby";
   Dictionary data_dict;
-  command["data"] = data_dict;
+  command["d"] = data_dict;
   data_dict["lobby_id"] = p_lobby_id;
   data_dict["password"] = p_password;
   data_dict["id"] = id;
@@ -538,9 +538,9 @@ Ref<LobbyResponse> LobbyClient::leave_lobby() {
   }
   String id = _increment_counter();
   Dictionary command;
-  command["command"] = "leave_lobby";
+  command["c"] = "leave_lobby";
   Dictionary data_dict;
-  command["data"] = data_dict;
+  command["d"] = data_dict;
   data_dict["id"] = id;
   Array command_array;
   command_array.push_back(LOBBY_REQUEST);
@@ -561,10 +561,10 @@ Ref<LobbyResponse> LobbyClient::list_lobby() {
   }
   String id = _increment_counter();
   Dictionary command;
-  command["command"] = "list_lobby";
+  command["c"] = "list_lobby";
   Dictionary data_dict;
   data_dict["id"] = id;
-  command["data"] = data_dict;
+  command["d"] = data_dict;
   Array command_array;
   command_array.push_back(LOBBY_REQUEST);
   command_array.push_back(response);
@@ -584,9 +584,9 @@ Ref<LobbyResponse> LobbyClient::kick_peer(const String &p_peer_id) {
   }
   String id = _increment_counter();
   Dictionary command;
-  command["command"] = "kick_peer";
+  command["c"] = "kick_peer";
   Dictionary data_dict;
-  command["data"] = data_dict;
+  command["d"] = data_dict;
   data_dict["peer_id"] = p_peer_id;
   data_dict["id"] = id;
   Array command_array;
@@ -608,9 +608,9 @@ Ref<LobbyResponse> LobbyClient::set_lobby_tags(const Dictionary &p_tags) {
   }
   String id = _increment_counter();
   Dictionary command;
-  command["command"] = "lobby_tags";
+  command["c"] = "lobby_tags";
   Dictionary data_dict;
-  command["data"] = data_dict;
+  command["d"] = data_dict;
   data_dict["tags"] = p_tags;
   data_dict["id"] = id;
   Array command_array;
@@ -633,9 +633,9 @@ LobbyClient::del_lobby_tags(const TypedArray<String> &p_keys) {
   }
   String id = _increment_counter();
   Dictionary command;
-  command["command"] = "lobby_tags";
+  command["c"] = "lobby_tags";
   Dictionary data_dict;
-  command["data"] = data_dict;
+  command["d"] = data_dict;
   Dictionary data_object_dict;
   // set null value
   for (int i = 0; i < p_keys.size(); i++) {
@@ -663,9 +663,9 @@ Ref<LobbyResponse> LobbyClient::lobby_chat(const String &p_chat_message,
   }
   String id = _increment_counter();
   Dictionary command;
-  command["command"] = "chat_lobby";
+  command["c"] = "chat_lobby";
   Dictionary data_dict;
-  command["data"] = data_dict;
+  command["d"] = data_dict;
   data_dict["chat"] = p_chat_message;
   data_dict["metadata"] = p_chat_metadata;
   data_dict["id"] = id;
@@ -689,12 +689,12 @@ Ref<LobbyResponse> LobbyClient::lobby_ready(bool p_ready) {
   String id = _increment_counter();
   Dictionary command;
   if (p_ready) {
-    command["command"] = "lobby_ready";
+    command["c"] = "lobby_ready";
   } else {
-    command["command"] = "lobby_unready";
+    command["c"] = "lobby_unready";
   }
   Dictionary data_dict;
-  command["data"] = data_dict;
+  command["d"] = data_dict;
   data_dict["id"] = id;
   Array command_array;
   command_array.push_back(LOBBY_REQUEST);
@@ -716,12 +716,12 @@ Ref<LobbyResponse> LobbyClient::seal_lobby(bool seal) {
   String id = _increment_counter();
   Dictionary command;
   if (seal) {
-    command["command"] = "seal_lobby";
+    command["c"] = "seal_lobby";
   } else {
-    command["command"] = "unseal_lobby";
+    command["c"] = "unseal_lobby";
   }
   Dictionary data_dict;
-  command["data"] = data_dict;
+  command["d"] = data_dict;
   data_dict["id"] = id;
   Array command_array;
   command_array.push_back(LOBBY_REQUEST);
@@ -742,11 +742,11 @@ Ref<LobbyResponse> LobbyClient::lobby_notify(const Variant &p_peer_data) {
   }
   String id = _increment_counter();
   Dictionary command;
-  command["command"] = "lobby_notify";
+  command["c"] = "lobby_notify";
   Dictionary data_dict;
   data_dict["peer_data"] = p_peer_data;
   data_dict["id"] = id;
-  command["data"] = data_dict;
+  command["d"] = data_dict;
   Array command_array;
   command_array.push_back(LOBBY_REQUEST);
   command_array.push_back(response);
@@ -767,12 +767,12 @@ Ref<LobbyResponse> LobbyClient::peer_notify(const Variant &p_peer_data,
   }
   String id = _increment_counter();
   Dictionary command;
-  command["command"] = "notify_to";
+  command["c"] = "notify_to";
   Dictionary data_dict;
   data_dict["peer_data"] = p_peer_data;
   data_dict["target_peer"] = p_target_peer;
   data_dict["id"] = id;
-  command["data"] = data_dict;
+  command["d"] = data_dict;
   Array command_array;
   command_array.push_back(LOBBY_REQUEST);
   command_array.push_back(response);
@@ -792,11 +792,11 @@ Ref<LobbyResponse> LobbyClient::add_user_data(const Dictionary &p_user_data) {
   }
   String id = _increment_counter();
   Dictionary command;
-  command["command"] = "user_data";
+  command["c"] = "user_data";
   Dictionary data_dict;
   data_dict["user_data"] = p_user_data;
   data_dict["id"] = id;
-  command["data"] = data_dict;
+  command["d"] = data_dict;
   Array command_array;
   command_array.push_back(LOBBY_REQUEST);
   command_array.push_back(response);
@@ -817,7 +817,7 @@ LobbyClient::del_user_data(const TypedArray<String> &p_keys) {
   }
   String id = _increment_counter();
   Dictionary command;
-  command["command"] = "user_data";
+  command["c"] = "user_data";
   Dictionary data_dict;
   Dictionary data_object_dict;
   data_dict["user_data"] = data_object_dict;
@@ -826,7 +826,7 @@ LobbyClient::del_user_data(const TypedArray<String> &p_keys) {
     data_object_dict[p_keys[i]] = Variant();
   }
   data_dict["id"] = id;
-  command["data"] = data_dict;
+  command["d"] = data_dict;
   Array command_array;
   command_array.push_back(LOBBY_REQUEST);
   command_array.push_back(response);
@@ -847,12 +847,12 @@ Ref<LobbyResponse> LobbyClient::lobby_data(const Dictionary &p_lobby_data,
   }
   String id = _increment_counter();
   Dictionary command;
-  command["command"] = "lobby_data";
+  command["c"] = "lobby_data";
   Dictionary data_dict;
   data_dict["lobby_data"] = p_lobby_data;
   data_dict["is_private"] = p_is_private;
   data_dict["id"] = id;
-  command["data"] = data_dict;
+  command["d"] = data_dict;
   Array command_array;
   command_array.push_back(LOBBY_REQUEST);
   command_array.push_back(response);
@@ -873,7 +873,7 @@ Ref<LobbyResponse> LobbyClient::del_lobby_data(const TypedArray<String> &p_keys,
   }
   String id = _increment_counter();
   Dictionary command;
-  command["command"] = "lobby_data";
+  command["c"] = "lobby_data";
   Dictionary data_dict;
   Dictionary data_object_dict;
   data_dict["lobby_data"] = data_object_dict;
@@ -883,7 +883,7 @@ Ref<LobbyResponse> LobbyClient::del_lobby_data(const TypedArray<String> &p_keys,
   }
   data_dict["is_private"] = p_is_private;
   data_dict["id"] = id;
-  command["data"] = data_dict;
+  command["d"] = data_dict;
   Array command_array;
   command_array.push_back(LOBBY_REQUEST);
   command_array.push_back(response);
@@ -905,13 +905,13 @@ Ref<LobbyResponse> LobbyClient::set_peer_data(const Dictionary &p_peer_data,
   }
   String id = _increment_counter();
   Dictionary command;
-  command["command"] = "data_to";
+  command["c"] = "data_to";
   Dictionary data_dict;
   data_dict["peer_data"] = p_peer_data;
   data_dict["target_peer"] = p_target_peer;
   data_dict["is_private"] = p_is_private;
   data_dict["id"] = id;
-  command["data"] = data_dict;
+  command["d"] = data_dict;
   Array command_array;
   command_array.push_back(LOBBY_REQUEST);
   command_array.push_back(response);
@@ -933,7 +933,7 @@ Ref<LobbyResponse> LobbyClient::del_peer_data(const TypedArray<String> &p_keys,
   }
   String id = _increment_counter();
   Dictionary command;
-  command["command"] = "data_to";
+  command["c"] = "data_to";
   Dictionary data_dict;
   Dictionary data_object_dict;
   data_dict["peer_data"] = data_object_dict;
@@ -944,7 +944,7 @@ Ref<LobbyResponse> LobbyClient::del_peer_data(const TypedArray<String> &p_keys,
   data_dict["target_peer"] = p_target_peer;
   data_dict["is_private"] = p_is_private;
   data_dict["id"] = id;
-  command["data"] = data_dict;
+  command["d"] = data_dict;
   Array command_array;
   command_array.push_back(LOBBY_REQUEST);
   command_array.push_back(response);
@@ -965,12 +965,12 @@ Ref<LobbyResponse> LobbyClient::set_peers_data(const Dictionary &p_peer_data,
   }
   String id = _increment_counter();
   Dictionary command;
-  command["command"] = "data_to_all";
+  command["c"] = "data_to_all";
   Dictionary data_dict;
   data_dict["peer_data"] = p_peer_data;
   data_dict["is_private"] = p_is_private;
   data_dict["id"] = id;
-  command["data"] = data_dict;
+  command["d"] = data_dict;
   Array command_array;
   command_array.push_back(LOBBY_REQUEST);
   command_array.push_back(response);
@@ -991,7 +991,7 @@ Ref<LobbyResponse> LobbyClient::del_peers_data(const TypedArray<String> &p_keys,
   }
   String id = _increment_counter();
   Dictionary command;
-  command["command"] = "data_to_all";
+  command["c"] = "data_to_all";
   Dictionary data_dict;
   Dictionary data_object_dict;
   data_dict["peer_data"] = data_object_dict;
@@ -1001,7 +1001,7 @@ Ref<LobbyResponse> LobbyClient::del_peers_data(const TypedArray<String> &p_keys,
   }
   data_dict["is_private"] = p_is_private;
   data_dict["id"] = id;
-  command["data"] = data_dict;
+  command["d"] = data_dict;
   Array command_array;
   command_array.push_back(LOBBY_REQUEST);
   command_array.push_back(response);
@@ -1119,10 +1119,10 @@ void LobbyClient::_clear_lobby() {
 }
 
 void LobbyClient::_receive_data(const Dictionary &p_dict) {
-  String command = p_dict.get("command", "error");
-  String message = p_dict.get("message", "");
+  int command = p_dict.get("c", COMMAND_ERROR);
+  String message = p_dict.get("m", command_to_message(command));
   emit_signal("log_updated", command, message);
-  Dictionary data_dict = p_dict.get("data", Dictionary());
+  Dictionary data_dict = p_dict.get("d", Dictionary());
   String message_id = data_dict.get("id", "");
   Array command_array = _commands.get(message_id, Array());
   _commands.erase(message_id);
@@ -1139,7 +1139,7 @@ void LobbyClient::_receive_data(const Dictionary &p_dict) {
       Ref<LobbyInfo> lobby_info = Ref<LobbyInfo>(memnew(LobbyInfo));
       lobby_info->set_dict(lobby_dict, false);
       if (lobby_info->get_id() == lobby->get_id() ||
-          command == "lobby_created" || command == "joined_lobby") {
+          command == COMMAND_LOBBY_CREATED || command == COMMAND_JOINED_LOBBY) {
         // Update lobby info because we viewed our own lobby
         lobby->set_dict(lobby_info->get_dict(), true);
         if (lobby_dict.has("private_data")) {
@@ -1149,7 +1149,7 @@ void LobbyClient::_receive_data(const Dictionary &p_dict) {
       }
     }
   }
-  if (command == "peer_state") {
+  if (command == COMMAND_PEER_STATE) {
     Dictionary peer_dict = data_dict.get("peer", Dictionary());
     peer->set_dict(peer_dict, false);
     lobby->set_id(peer_dict.get("lobby_id", ""));
@@ -1162,25 +1162,25 @@ void LobbyClient::_receive_data(const Dictionary &p_dict) {
       _commands.erase("connect");
     }
     emit_signal("connected_to_server", peer, reconnection_token);
-  } else if (command == "lobby_created") {
+  } else if (command == COMMAND_LOBBY_CREATED) {
     lobbies.clear();
     emit_signal("lobby_created", lobby, peers);
-  } else if (command == "joined_lobby") {
+  } else if (command == COMMAND_JOINED_LOBBY) {
     lobbies.clear();
     emit_signal("lobby_joined", lobby, peers);
-  } else if (command == "lobby_left") {
+  } else if (command == COMMAND_LOBBY_LEFT) {
     _clear_lobby();
     emit_signal("lobby_left", false);
-  } else if (command == "lobby_kicked") {
+  } else if (command == COMMAND_LOBBY_KICKED) {
     _clear_lobby();
     emit_signal("lobby_left", true);
-  } else if (command == "lobby_sealed") {
+  } else if (command == COMMAND_LOBBY_SEALED) {
     lobby->set_sealed(true);
     emit_signal("lobby_sealed", true);
-  } else if (command == "lobby_unsealed") {
+  } else if (command == COMMAND_LOBBY_UNSEALED) {
     lobby->set_sealed(false);
     emit_signal("lobby_sealed", false);
-  } else if (command == "lobby_hosted") {
+  } else if (command == COMMAND_LOBBY_HOSTED) {
     Ref<LobbyPeer> new_host = Ref<LobbyPeer>(memnew(LobbyPeer));
     String new_host_id = data_dict.get("host_id", String());
     // find the new host in the peers array
@@ -1193,19 +1193,19 @@ void LobbyClient::_receive_data(const Dictionary &p_dict) {
     }
     lobby->set_host(new_host_id);
     emit_signal("lobby_hosted", new_host);
-  } else if (command == "lobby_tags") {
+  } else if (command == COMMAND_LOBBY_TAGS) {
     lobby->set_delta_tags(data_dict.get("tags", Dictionary()));
     emit_signal("lobby_tagged", lobby->get_tags());
-  } else if (command == "lobby_resized") {
+  } else if (command == COMMAND_LOBBY_RESIZED) {
     lobby->set_max_players(data_dict.get("max_players", 0));
     emit_signal("lobby_resized", lobby->get_max_players());
-  } else if (command == "lobby_passworded") {
+  } else if (command == COMMAND_LOBBY_PASSWORDED) {
     lobby->set_password_protected(data_dict.get("password_protected", false));
     emit_signal("lobby_passworded", lobby->is_password_protected());
-  } else if (command == "lobby_titled") {
+  } else if (command == COMMAND_LOBBY_TITLED) {
     lobby->set_lobby_name(data_dict.get("lobby_title", ""));
     emit_signal("lobby_titled", lobby->get_name());
-  } else if (command == "lobby_list") {
+  } else if (command == COMMAND_LOBBY_LIST) {
     Array arr = data_dict.get("lobbies", Array());
     TypedArray<Dictionary> lobbies_input = arr;
     for (int i = 0; i < lobbies_input.size(); ++i) {
@@ -1244,7 +1244,7 @@ void LobbyClient::_receive_data(const Dictionary &p_dict) {
       lobbies.push_front(lobby_info);
     }
     emit_signal("lobbies_listed", lobbies);
-  } else if (command == "peer_chat") {
+  } else if (command == COMMAND_PEER_CHAT) {
     String peer_id = data_dict.get("from_peer", "");
     String chat_data = data_dict.get("chat_data", "");
     Dictionary chat_metadata = data_dict.get("chat_metadata", Dictionary());
@@ -1260,7 +1260,7 @@ void LobbyClient::_receive_data(const Dictionary &p_dict) {
     if (!message_sent) {
       emit_signal("peer_messaged", empty_peer, chat_data, chat_metadata);
     }
-  } else if (command == "peer_user_data") {
+  } else if (command == COMMAND_PEER_USER_DATA) {
     String peer_id = data_dict.get("peer_id", "");
     Dictionary peer_user_data = data_dict.get("user_data", "");
     bool notified = false;
@@ -1280,7 +1280,7 @@ void LobbyClient::_receive_data(const Dictionary &p_dict) {
         break;
       }
     }
-  } else if (command == "peer_ready") {
+  } else if (command == COMMAND_PEER_READY) {
     String peer_id = data_dict.get("peer_id", "");
     if (peer->get_id() == peer_id) {
       peer->set_ready(true);
@@ -1297,7 +1297,7 @@ void LobbyClient::_receive_data(const Dictionary &p_dict) {
         break;
       }
     }
-  } else if (command == "peer_unready") {
+  } else if (command == COMMAND_PEER_UNREADY) {
     String peer_id = data_dict.get("peer_id", "");
     if (peer->get_id() == peer_id) {
       peer->set_ready(false);
@@ -1314,7 +1314,7 @@ void LobbyClient::_receive_data(const Dictionary &p_dict) {
         break;
       }
     }
-  } else if (command == "peer_joined") {
+  } else if (command == COMMAND_PEER_JOINED) {
     Ref<LobbyPeer> joining_peer = Ref<LobbyPeer>(memnew(LobbyPeer));
     Dictionary peer_dict = data_dict.get("peer", Dictionary());
     joining_peer->set_id(peer_dict.get("id", ""));
@@ -1323,7 +1323,7 @@ void LobbyClient::_receive_data(const Dictionary &p_dict) {
     sort_peers_by_id(peers);
     lobby->set_players(peers.size());
     emit_signal("peer_joined", joining_peer);
-  } else if (command == "peer_reconnected") {
+  } else if (command == COMMAND_PEER_RECONNECTED) {
     for (int i = 0; i < peers.size(); ++i) {
       Ref<LobbyPeer> updated_peer = peers[i];
       if (updated_peer->get_id() == String(data_dict.get("peer_id", ""))) {
@@ -1332,7 +1332,7 @@ void LobbyClient::_receive_data(const Dictionary &p_dict) {
         break;
       }
     }
-  } else if (command == "peer_left") {
+  } else if (command == COMMAND_PEER_LEFT) {
     for (int i = 0; i < peers.size(); ++i) {
       Ref<LobbyPeer> leaving_peer = peers[i];
       if (leaving_peer->get_id() == String(data_dict.get("peer_id", ""))) {
@@ -1343,7 +1343,7 @@ void LobbyClient::_receive_data(const Dictionary &p_dict) {
       }
     }
     sort_peers_by_id(peers);
-  } else if (command == "peer_disconnected") {
+  } else if (command == COMMAND_PEER_DISCONNECTED) {
     for (int i = 0; i < peers.size(); ++i) {
       Ref<LobbyPeer> leaving_peer = peers[i];
       if (leaving_peer->get_id() == String(data_dict.get("peer_id", ""))) {
@@ -1353,7 +1353,7 @@ void LobbyClient::_receive_data(const Dictionary &p_dict) {
       }
     }
     sort_peers_by_id(peers);
-  } else if (command == "peer_notify") {
+  } else if (command == COMMAND_PEER_NOTIFY) {
     String from_peer_id = data_dict.get("from_peer", "");
     for (int i = 0; i < peers.size(); ++i) {
       Ref<LobbyPeer> from_peer = peers[i];
@@ -1363,7 +1363,7 @@ void LobbyClient::_receive_data(const Dictionary &p_dict) {
         break;
       }
     }
-  } else if (command == "lobby_data") {
+  } else if (command == COMMAND_LOBBY_DATA) {
     Dictionary lobby_data = data_dict.get("lobby_data", Dictionary());
     bool is_private = data_dict.get("is_private", false);
     if (is_private) {
@@ -1373,7 +1373,7 @@ void LobbyClient::_receive_data(const Dictionary &p_dict) {
     }
     emit_signal("received_lobby_data", lobby->get_data(), is_private);
     // nothing for now
-  } else if (command == "data_to") {
+  } else if (command == COMMAND_DATA_TO) {
     String target_peer_id = data_dict.get("target_peer", "");
     bool is_private = data_dict.get("is_private", false);
     Dictionary peer_data_variant = data_dict.get("peer_data", Dictionary());
@@ -1398,23 +1398,11 @@ void LobbyClient::_receive_data(const Dictionary &p_dict) {
         break;
       }
     }
-  } else if (command == "notified_to") {
-    String from_peer_id = data_dict.get("from_peer", "");
-    for (int i = 0; i < peers.size(); ++i) {
-      Ref<LobbyPeer> from_peer = peers[i];
-      if (from_peer->get_id() == from_peer_id) {
-        emit_signal("lobby_notified", data_dict.get("peer_data", Variant()),
-                    from_peer);
-        break;
-      }
-    }
-  } else if (command == "data_to_sent") {
+  } else if (command == COMMAND_DATA_TO_SENT) {
     // nothing for now
-  } else if (command == "lobby_notify_sent") {
+  } else if (command == COMMAND_NOTIFY_TO_SENT) {
     // nothing for now
-  } else if (command == "notify_to_sent") {
-    // nothing for now
-  } else if (command == "error") {
+  } else if (command == COMMAND_ERROR) {
     if (command_array.size() == 2) {
       int command_type = command_array[0];
       switch (command_type) {
@@ -1440,10 +1428,9 @@ void LobbyClient::_receive_data(const Dictionary &p_dict) {
     }
   } else {
     emit_signal("log_updated", "error",
-                "Unknown command received. " + command +
-                    " with message: " + message);
+                "Unknown command received with message: " + message);
   }
-  if (command_array.size() == 2 && command != "error") {
+  if (command_array.size() == 2 && command != COMMAND_ERROR) {
     int command_type = command_array[0];
     switch (command_type) {
     case LOBBY_REQUEST: {
