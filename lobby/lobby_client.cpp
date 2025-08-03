@@ -382,7 +382,7 @@ Ref<ViewLobbyResponse> LobbyClient::quick_join(const String &p_name,
   Dictionary data_dict;
   command["d"] = data_dict;
   data_dict["name"] = p_name;
-  data_dict["max_players"] = p_max_players;
+  data_dict["m"] = p_max_players;
   data_dict["tags"] = p_tags;
   data_dict["id"] = id;
   Array command_array;
@@ -413,7 +413,7 @@ Ref<ViewLobbyResponse> LobbyClient::create_lobby(const String &p_name,
   Dictionary data_dict;
   command["d"] = data_dict;
   data_dict["name"] = p_name;
-  data_dict["max_players"] = p_max_players;
+  data_dict["m"] = p_max_players;
   data_dict["password"] = p_password;
   data_dict["tags"] = p_tags;
   data_dict["sealed"] = p_sealed;
@@ -490,7 +490,7 @@ Ref<ViewLobbyResponse> LobbyClient::set_max_players(int p_max_players) {
   command["c"] = "lobby_max_players";
   Dictionary data_dict;
   command["d"] = data_dict;
-  data_dict["max_players"] = p_max_players;
+  data_dict["m"] = p_max_players;
   data_dict["id"] = id;
   Array command_array;
   command_array.push_back(LOBBY_VIEW);
@@ -1182,7 +1182,7 @@ void LobbyClient::_receive_data(const Dictionary &p_dict) {
     emit_signal("lobby_sealed", false);
   } else if (command == COMMAND_LOBBY_HOSTED) {
     Ref<LobbyPeer> new_host = Ref<LobbyPeer>(memnew(LobbyPeer));
-    String new_host_id = data_dict.get("host_id", String());
+    String new_host_id = data_dict.get("h", String());
     // find the new host in the peers array
     for (int i = 0; i < peers.size(); ++i) {
       Ref<LobbyPeer> peer_info = peers[i];
@@ -1197,7 +1197,7 @@ void LobbyClient::_receive_data(const Dictionary &p_dict) {
     lobby->set_delta_tags(data_dict.get("tags", Dictionary()));
     emit_signal("lobby_tagged", lobby->get_tags());
   } else if (command == COMMAND_LOBBY_RESIZED) {
-    lobby->set_max_players(data_dict.get("max_players", 0));
+    lobby->set_max_players(data_dict.get("m", 0));
     emit_signal("lobby_resized", lobby->get_max_players());
   } else if (command == COMMAND_LOBBY_PASSWORDED) {
     lobby->set_password_protected(data_dict.get("password_protected", false));
