@@ -108,9 +108,46 @@ protected:
   Ref<LeaderboardResponse> leaderboard_response;
   HTTPRequest *request = nullptr;
 
+protected:
+  static void _bind_methods() {
+    ClassDB::bind_method(D_METHOD("set_game_id", "game_id"),
+                         &LeaderboardsClient::set_game_id);
+    ClassDB::bind_method(D_METHOD("get_game_id"),
+                         &LeaderboardsClient::get_game_id);
+    ClassDB::bind_method(D_METHOD("set_server_url", "server_url"),
+                         &LeaderboardsClient::set_server_url);
+    ClassDB::bind_method(D_METHOD("get_server_url"),
+                         &LeaderboardsClient::get_server_url);
+    ClassDB::bind_method(D_METHOD("set_http_prefix", "http_prefix"),
+                         &LeaderboardsClient::set_http_prefix);
+    ClassDB::bind_method(D_METHOD("get_http_prefix"),
+                         &LeaderboardsClient::get_http_prefix);
+    ClassDB::bind_method(D_METHOD("get_connected"),
+                         &LeaderboardsClient::get_connected);
+    ClassDB::bind_method(D_METHOD("request_leaderboard", "leaderboard_id"),
+                         &LeaderboardsClient::request_leaderboard);
+    ADD_PROPERTY(PropertyInfo(Variant::STRING, "game_id"), "set_game_id",
+                 "get_game_id");
+    ADD_PROPERTY(PropertyInfo(Variant::STRING, "server_url"), "set_server_url",
+                 "get_server_url");
+    ADD_PROPERTY(PropertyInfo(Variant::STRING, "http_prefix"),
+                 "set_http_prefix", "get_http_prefix");
+    ADD_PROPERTY(PropertyInfo(Variant::BOOL, "connected"), "", "get_connected");
+  }
+
 public:
-  void set_game_id(const String &p_game_id) { this->game_id = p_game_id; }
-  String get_game_id() { return game_id; }
+  void set_game_id(String p_game_id) { this->game_id = p_game_id; }
+  String get_game_id() const { return game_id; }
+
+  void set_server_url(String p_server_url) { this->server_url = p_server_url; }
+  String get_server_url() const { return server_url; }
+
+  void set_http_prefix(String p_http_prefix) {
+    this->http_prefix = p_http_prefix;
+  }
+  String get_http_prefix() const { return http_prefix; }
+
+  bool get_connected() const { return connected; }
 
   void set_override_discord_path(String p_path) {
     override_discord_path = p_path;
@@ -121,13 +158,29 @@ public:
   }
   String get_override_discord_path() const { return override_discord_path; }
 
-  String get_server_url() { return server_url; }
-  void set_http_prefix(const String &p_http_prefix) {
-    this->http_prefix = p_http_prefix;
+  Ref<LeaderboardResponse> request_leaderboard(String leaderboard_id) {
+    if (game_id.is_empty()) {
+      Ref<LeaderboardResponse> response;
+      response.instantiate();
+      Callable callable =
+          callable_mp(*response, &LeaderboardResponse::signal_finish);
+      callable.call_deferred("Game ID not set.", Array());
+      return response;
+    }
+    if (request) {
+      request->queue_free();
+      request = nullptr;
+    }
+    String url = http_prefix + server_url + "/game/" + game_id +
+                 "/leaderboard/" + leaderboard_id;
+    request = memnew(HTTPRequest);
+    add_child(request);
+    request->connect(
+        "request_completed",
+        callable_mp(this, &LeaderboardsClient::_on_request_completed));
+    request->request(url, PackedStringArray(), HTTPClient::METHOD_GET);
+    return leaderboard_response;
   }
-  String get_http_prefix() { return http_prefix; }
-
-  bool get_connected() { return connected; }
 
   void _on_request_completed(int p_status, int p_code,
                              const PackedStringArray &p_headers,
@@ -158,30 +211,6 @@ public:
       request->queue_free();
       request = nullptr;
     }
-  }
-
-  Ref<LeaderboardResponse> request_leaderboard(const String &leaderboard_id) {
-    if (game_id.is_empty()) {
-      Ref<LeaderboardResponse> response;
-      response.instantiate();
-      Callable callable =
-          callable_mp(*response, &LeaderboardResponse::signal_finish);
-      callable.call_deferred("Game ID not set.", Array());
-      return response;
-    }
-    if (request) {
-      request->queue_free();
-      request = nullptr;
-    }
-    String url = http_prefix + server_url + "/game/" + game_id +
-                 "/leaderboard/" + leaderboard_id;
-    request = memnew(HTTPRequest);
-    add_child(request);
-    request->connect(
-        "request_completed",
-        callable_mp(this, &LeaderboardsClient::_on_request_completed));
-    request->request(url, PackedStringArray(), HTTPClient::METHOD_GET);
-    return leaderboard_response;
   }
 
   LeaderboardsClient() {
