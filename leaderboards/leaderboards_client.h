@@ -147,63 +147,66 @@ protected:
   }
 
 public:
-  Ref<LeaderboardData> request_user_score_and_rank(String leaderboard_id,
-                                                   String user_id) {
-    if (game_id.is_empty()) {
-      Ref<LeaderboardData> data;
-      data.instantiate();
-      emit_signal("log_updated", "error", "Game ID not set.");
-      return data;
+  void _on_request_completed(int p_status, int p_code,
+                             const PackedStringArray &p_headers,
+                             const PackedByteArray &p_data) {
+    Ref<LeaderboardResult> result;
+    result.instantiate();
+    Array leaderboard_array;
+    String result_str = String::utf8((const char *)p_data.ptr(), p_data.size());
+    if (p_code != 200 || result_str == "") {
+      result->set_error("Request failed with code: " + String::num(p_code) +
+                        " " + result_str);
+      emit_signal("log_updated", "error",
+                  "Request failed with code: " + String::num(p_code) + " " +
+                      result_str);
+    } else {
+      Variant parse_result = JSON::parse_string(result_str);
+      Array raw_array = parse_result;
+      for (int i = 0; i < raw_array.size(); ++i) {
+        Dictionary entry = raw_array[i];
+        Ref<LeaderboardData> data;
+        data.instantiate();
+        data->set_rank(entry.get("rank", i + 1));
+        data->set_user_id(entry.get("user_id", ""));
+        data->set_score(entry.get("score", 0));
+        data->set_timestamp(entry.get("timestamp", ""));
+        leaderboard_array.append(data);
+      }
+      result->set_leaderboard_data(leaderboard_array);
+      emit_signal("log_updated", "request_leaderboard", "Success");
     }
-    if (request) {
-      request->queue_free();
-      request = nullptr;
-    }
-    String url = http_prefix + server_url + "/game/" + game_id +
-                 "/leaderboard/" + leaderboard_id + "/user/" + user_id;
-    emit_signal("log_updated", "request_user_score_and_rank",
-                "Requesting score and rank for user: " + user_id);
-    Ref<LeaderboardData> user_data;
-    user_data.instantiate();
-    request = memnew(HTTPRequest);
-    add_child(request);
-    request->set_meta("user_data", user_data);
-    request->connect(
-        "request_completed",
-        callable_mp(this,
-                    &LeaderboardsClient::_on_user_score_request_completed));
-    request->request(url, PackedStringArray(), HTTPClient::METHOD_GET);
-    return user_data;
+    leaderboard_response->emit_signal("finished", result);
   }
 
   void _on_user_score_request_completed(int p_status, int p_code,
                                         const PackedStringArray &p_headers,
                                         const PackedByteArray &p_data) {
-    if (!request)
-      return;
-    Ref<LeaderboardData> user_data = request->get_meta("user_data");
+    Ref<LeaderboardResult> result;
+    result.instantiate();
+    Array leaderboard_array;
+    Ref<LeaderboardData> user_data;
+    user_data.instantiate();
+    leaderboard_array.append(user_data);
     String result_str = String::utf8((const char *)p_data.ptr(), p_data.size());
     if (p_code != 200 || result_str == "") {
-      if (user_data.is_valid())
-        user_data->set_score(0);
-      if (user_data.is_valid())
-        user_data->set_rank(-1);
+      user_data->set_user_id("");
+      user_data->set_score(0);
+      user_data->set_rank(-1);
+      user_data->set_timestamp("");
       emit_signal("log_updated", "error",
                   "Request failed with code: " + String::num(p_code) + " " +
                       result_str);
     } else {
       Dictionary entry = JSON::parse_string(result_str);
-      if (user_data.is_valid())
-        user_data->set_score(entry.get("score", 0));
-      if (user_data.is_valid())
-        user_data->set_rank(entry.get("rank", -1));
+      data->set_user_id(entry.get("user_id", ""));
+      data->set_score(entry.get("score", 0));
+      data->set_timestamp(entry.get("timestamp", ""));
+      data->set_rank(entry.get("rank", -1));
       emit_signal("log_updated", "request_user_score_and_rank", "Success");
     }
-    request->queue_free();
-    request = nullptr;
   }
 
-public:
   void set_game_id(String p_game_id) { this->game_id = p_game_id; }
   String get_game_id() const { return game_id; }
 
@@ -234,10 +237,6 @@ public:
       emit_signal("log_updated", "error", "Game ID not set.");
       return response;
     }
-    if (request) {
-      request->queue_free();
-      request = nullptr;
-    }
     String url = http_prefix + server_url + "/game/" + game_id +
                  "/leaderboard/" + leaderboard_id;
     emit_signal("log_updated", "request_leaderboard",
@@ -251,39 +250,30 @@ public:
     return leaderboard_response;
   }
 
-  void _on_request_completed(int p_status, int p_code,
-                             const PackedStringArray &p_headers,
-                             const PackedByteArray &p_data) {
-    Ref<LeaderboardResult> result;
-    result.instantiate();
-    Array leaderboard_array;
-    String result_str = String::utf8((const char *)p_data.ptr(), p_data.size());
-    if (p_code != 200 || result_str == "") {
-      result->set_error("Request failed with code: " + String::num(p_code) +
-                        " " + result_str);
-      emit_signal("log_updated", "error",
-                  "Request failed with code: " + String::num(p_code) + " " +
-                      result_str);
-    } else {
-      Variant parse_result = JSON::parse_string(result_str);
-      Array raw_array = parse_result;
-      for (int i = 0; i < raw_array.size(); ++i) {
-        Dictionary entry = raw_array[i];
-        Ref<LeaderboardData> data;
-        data.instantiate();
-        data->set_user_id(entry.get("user_id", ""));
-        data->set_score(entry.get("score", 0));
-        data->set_timestamp(entry.get("timestamp", ""));
-        leaderboard_array.append(data);
-      }
-      result->set_leaderboard_data(leaderboard_array);
-      emit_signal("log_updated", "request_leaderboard", "Success");
+  Ref<LeaderboardResponse> request_user_score_and_rank(String leaderboard_id,
+                                                       String user_id) {
+    if (game_id.is_empty()) {
+      Ref<LeaderboardResponse> response;
+      response.instantiate();
+      Callable callable =
+          callable_mp(*response, &LeaderboardResponse::signal_finish);
+      callable.call_deferred("Game ID not set.", Array());
+      emit_signal("log_updated", "error", "Game ID not set.");
+      return response;
     }
-    leaderboard_response->emit_signal("finished", result);
-    if (request) {
-      request->queue_free();
-      request = nullptr;
-    }
+    String url = http_prefix + server_url + "/game/" + game_id +
+                 "/leaderboard/" + leaderboard_id + "/user/" + user_id;
+    emit_signal("log_updated", "request_user_score_and_rank",
+                "Requesting score and rank for user: " + user_id);
+
+    request = memnew(HTTPRequest);
+    add_child(request);
+    request->connect(
+        "request_completed",
+        callable_mp(this,
+                    &LeaderboardsClient::_on_user_score_request_completed));
+    request->request(url, PackedStringArray(), HTTPClient::METHOD_GET);
+    return leaderboard_response;
   }
 
   LeaderboardsClient() {
