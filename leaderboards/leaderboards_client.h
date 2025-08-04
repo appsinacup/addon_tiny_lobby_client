@@ -19,6 +19,7 @@ class LeaderboardData : public RefCounted {
   String user_id;
   int score = 0;
   String timestamp;
+  int rank = -1;
 
 protected:
   static void _bind_methods() {
@@ -33,11 +34,15 @@ protected:
                          &LeaderboardData::get_timestamp);
     ClassDB::bind_method(D_METHOD("set_timestamp", "timestamp"),
                          &LeaderboardData::set_timestamp);
+    ClassDB::bind_method(D_METHOD("get_rank"), &LeaderboardData::get_rank);
+    ClassDB::bind_method(D_METHOD("set_rank", "rank"),
+                         &LeaderboardData::set_rank);
     ADD_PROPERTY(PropertyInfo(Variant::STRING, "user_id"), "set_user_id",
                  "get_user_id");
     ADD_PROPERTY(PropertyInfo(Variant::INT, "score"), "set_score", "get_score");
     ADD_PROPERTY(PropertyInfo(Variant::STRING, "timestamp"), "set_timestamp",
                  "get_timestamp");
+    ADD_PROPERTY(PropertyInfo(Variant::INT, "rank"), "set_rank", "get_rank");
   }
 
 public:
@@ -47,13 +52,15 @@ public:
   int get_score() const { return score; }
   void set_timestamp(String p_ts) { timestamp = p_ts; }
   String get_timestamp() const { return timestamp; }
+  void set_rank(int p_rank) { rank = p_rank; }
+  int get_rank() const { return rank; }
 };
 
 class LeaderboardResult : public RefCounted {
   GDCLASS(LeaderboardResult, RefCounted);
 
   String error = "";
-  Array leaderboard_data;
+  TypedArray<LeaderboardData> leaderboard_data;
 
 protected:
   static void _bind_methods() {
@@ -68,12 +75,16 @@ protected:
   }
 
 public:
-  void set_leaderboard_data(Array p_data) { leaderboard_data = p_data; }
+  void set_leaderboard_data(TypedArray<LeaderboardData> p_data) {
+    leaderboard_data = p_data;
+  }
   void set_error(String p_error) { this->error = p_error; }
 
   bool has_error() const { return !error.is_empty(); }
   String get_error() const { return error; }
-  Array get_leaderboard_data() const { return leaderboard_data; }
+  TypedArray<LeaderboardData> get_leaderboard_data() const {
+    return leaderboard_data;
+  }
 };
 
 class LeaderboardResponse : public RefCounted {
@@ -107,7 +118,6 @@ protected:
   Ref<LeaderboardResponse> leaderboard_response;
   HTTPRequest *request = nullptr;
 
-protected:
   static void _bind_methods() {
     ClassDB::bind_method(D_METHOD("set_game_id", "game_id"),
                          &LeaderboardsClient::set_game_id);
@@ -123,6 +133,9 @@ protected:
                          &LeaderboardsClient::get_http_prefix);
     ClassDB::bind_method(D_METHOD("request_leaderboard", "leaderboard_id"),
                          &LeaderboardsClient::request_leaderboard);
+    ClassDB::bind_method(
+        D_METHOD("request_user_score_and_rank", "leaderboard_id", "user_id"),
+        &LeaderboardsClient::request_user_score_and_rank);
     ADD_SIGNAL(MethodInfo("log_updated", PropertyInfo(Variant::STRING, "type"),
                           PropertyInfo(Variant::STRING, "message")));
     ADD_PROPERTY(PropertyInfo(Variant::STRING, "game_id"), "set_game_id",
@@ -131,6 +144,63 @@ protected:
                  "get_server_url");
     ADD_PROPERTY(PropertyInfo(Variant::STRING, "http_prefix"),
                  "set_http_prefix", "get_http_prefix");
+  }
+
+public:
+  Ref<LeaderboardData> request_user_score_and_rank(String leaderboard_id,
+                                                   String user_id) {
+    if (game_id.is_empty()) {
+      Ref<LeaderboardData> data;
+      data.instantiate();
+      emit_signal("log_updated", "error", "Game ID not set.");
+      return data;
+    }
+    if (request) {
+      request->queue_free();
+      request = nullptr;
+    }
+    String url = http_prefix + server_url + "/game/" + game_id +
+                 "/leaderboard/" + leaderboard_id + "/user/" + user_id;
+    emit_signal("log_updated", "request_user_score_and_rank",
+                "Requesting score and rank for user: " + user_id);
+    Ref<LeaderboardData> user_data;
+    user_data.instantiate();
+    request = memnew(HTTPRequest);
+    add_child(request);
+    request->set_meta("user_data", user_data);
+    request->connect(
+        "request_completed",
+        callable_mp(this,
+                    &LeaderboardsClient::_on_user_score_request_completed));
+    request->request(url, PackedStringArray(), HTTPClient::METHOD_GET);
+    return user_data;
+  }
+
+  void _on_user_score_request_completed(int p_status, int p_code,
+                                        const PackedStringArray &p_headers,
+                                        const PackedByteArray &p_data) {
+    if (!request)
+      return;
+    Ref<LeaderboardData> user_data = request->get_meta("user_data");
+    String result_str = String::utf8((const char *)p_data.ptr(), p_data.size());
+    if (p_code != 200 || result_str == "") {
+      if (user_data.is_valid())
+        user_data->set_score(0);
+      if (user_data.is_valid())
+        user_data->set_rank(-1);
+      emit_signal("log_updated", "error",
+                  "Request failed with code: " + String::num(p_code) + " " +
+                      result_str);
+    } else {
+      Dictionary entry = JSON::parse_string(result_str);
+      if (user_data.is_valid())
+        user_data->set_score(entry.get("score", 0));
+      if (user_data.is_valid())
+        user_data->set_rank(entry.get("rank", -1));
+      emit_signal("log_updated", "request_user_score_and_rank", "Success");
+    }
+    request->queue_free();
+    request = nullptr;
   }
 
 public:
@@ -171,7 +241,7 @@ public:
     String url = http_prefix + server_url + "/game/" + game_id +
                  "/leaderboard/" + leaderboard_id;
     emit_signal("log_updated", "request_leaderboard",
-                "Requesting leaderboard: " + leaderboard_id);
+                "Requesting leaderboard: " + url);
     request = memnew(HTTPRequest);
     add_child(request);
     request->connect(
