@@ -188,6 +188,7 @@ public:
     Ref<LeaderboardData> user_data;
     user_data.instantiate();
     leaderboard_array.append(user_data);
+    result->set_leaderboard_data(leaderboard_array);
     String result_str = String::utf8((const char *)p_data.ptr(), p_data.size());
     if (p_code != 200 || result_str == "") {
       user_data->set_user_id("");
@@ -197,6 +198,8 @@ public:
       emit_signal("log_updated", "error",
                   "Request failed with code: " + String::num(p_code) + " " +
                       result_str);
+      result->set_error("Request failed with code: " + String::num(p_code) +
+                        " " + result_str);
     } else {
       Dictionary entry = JSON::parse_string(result_str);
       user_data->set_user_id(entry.get("user_id", ""));
