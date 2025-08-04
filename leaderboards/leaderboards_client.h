@@ -199,12 +199,13 @@ public:
                       result_str);
     } else {
       Dictionary entry = JSON::parse_string(result_str);
-      data->set_user_id(entry.get("user_id", ""));
-      data->set_score(entry.get("score", 0));
-      data->set_timestamp(entry.get("timestamp", ""));
-      data->set_rank(entry.get("rank", -1));
+      user_data->set_user_id(entry.get("user_id", ""));
+      user_data->set_score(entry.get("score", 0));
+      user_data->set_timestamp(entry.get("timestamp", ""));
+      user_data->set_rank(entry.get("rank", -1));
       emit_signal("log_updated", "request_user_score_and_rank", "Success");
     }
+    leaderboard_response->emit_signal("finished", result);
   }
 
   void set_game_id(String p_game_id) { this->game_id = p_game_id; }
