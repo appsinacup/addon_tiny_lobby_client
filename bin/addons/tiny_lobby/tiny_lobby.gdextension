@@ -38,5 +38,6 @@ web.release.wasm32.nothreads = "res://addons/tiny_lobby/libtiny_lobby.web.templa
 
 DiscordEmbeddedAppClient = "res://addons/tiny_lobby/icons/DiscordEmbeddedAppClient.svg"
 LobbyClient = "res://addons/tiny_lobby/icons/LobbyClient.svg"
+LeaderboardsClient = "res://addons/tiny_lobby/icons/LeaderboardsClient.svg"
 LoginClient = "res://addons/tiny_lobby/icons/LoginClient.svg"
 ScriptedLobbyClient = "res://addons/tiny_lobby/icons/ScriptedLobbyClient.svg"

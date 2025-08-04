@@ -102,9 +102,8 @@ class LeaderboardsClient : public NetworkClient {
 protected:
   String override_discord_path = "appsinacup/lobby";
   String server_url = "lobby.appsinacup.com";
-  String http_prefix = "http://";
+  String http_prefix = "https://";
   String game_id = "";
-  bool connected = false;
   Ref<LeaderboardResponse> leaderboard_response;
   HTTPRequest *request = nullptr;
 
@@ -122,17 +121,16 @@ protected:
                          &LeaderboardsClient::set_http_prefix);
     ClassDB::bind_method(D_METHOD("get_http_prefix"),
                          &LeaderboardsClient::get_http_prefix);
-    ClassDB::bind_method(D_METHOD("get_connected"),
-                         &LeaderboardsClient::get_connected);
     ClassDB::bind_method(D_METHOD("request_leaderboard", "leaderboard_id"),
                          &LeaderboardsClient::request_leaderboard);
+    ADD_SIGNAL(MethodInfo("log_updated", PropertyInfo(Variant::STRING, "type"),
+                          PropertyInfo(Variant::STRING, "message")));
     ADD_PROPERTY(PropertyInfo(Variant::STRING, "game_id"), "set_game_id",
                  "get_game_id");
     ADD_PROPERTY(PropertyInfo(Variant::STRING, "server_url"), "set_server_url",
                  "get_server_url");
     ADD_PROPERTY(PropertyInfo(Variant::STRING, "http_prefix"),
                  "set_http_prefix", "get_http_prefix");
-    ADD_PROPERTY(PropertyInfo(Variant::BOOL, "connected"), "", "get_connected");
   }
 
 public:
@@ -146,8 +144,6 @@ public:
     this->http_prefix = p_http_prefix;
   }
   String get_http_prefix() const { return http_prefix; }
-
-  bool get_connected() const { return connected; }
 
   void set_override_discord_path(String p_path) {
     override_discord_path = p_path;
@@ -165,6 +161,7 @@ public:
       Callable callable =
           callable_mp(*response, &LeaderboardResponse::signal_finish);
       callable.call_deferred("Game ID not set.", Array());
+      emit_signal("log_updated", "error", "Game ID not set.");
       return response;
     }
     if (request) {
@@ -173,6 +170,8 @@ public:
     }
     String url = http_prefix + server_url + "/game/" + game_id +
                  "/leaderboard/" + leaderboard_id;
+    emit_signal("log_updated", "request_leaderboard",
+                "Requesting leaderboard: " + leaderboard_id);
     request = memnew(HTTPRequest);
     add_child(request);
     request->connect(
@@ -192,6 +191,9 @@ public:
     if (p_code != 200 || result_str == "") {
       result->set_error("Request failed with code: " + String::num(p_code) +
                         " " + result_str);
+      emit_signal("log_updated", "error",
+                  "Request failed with code: " + String::num(p_code) + " " +
+                      result_str);
     } else {
       Variant parse_result = JSON::parse_string(result_str);
       Array raw_array = parse_result;
@@ -205,6 +207,7 @@ public:
         leaderboard_array.append(data);
       }
       result->set_leaderboard_data(leaderboard_array);
+      emit_signal("log_updated", "request_leaderboard", "Success");
     }
     leaderboard_response->emit_signal("finished", result);
     if (request) {
