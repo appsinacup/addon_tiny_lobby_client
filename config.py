@@ -9,6 +9,9 @@ def configure(env):
 def get_doc_classes():
 	return [
 		"LeaderboardsClient",
+		"LeaderboardResponse",
+		"LeaderboardResult",
+		"LeaderboardData",
 		"LobbyClient",
 		"NetworkClient",
 		"LobbyInfo",

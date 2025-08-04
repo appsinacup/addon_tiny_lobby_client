@@ -113,6 +113,7 @@ void uninitialize_tiny_lobby_module(ModuleInitializationLevel p_level) {}
 
 #include "discord/discord_embedded_app_client.h"
 #include "discord/discord_embedded_app_response.h"
+#include "leaderboards/leaderboards_client.h"
 #include "lobby/lobby_client.h"
 #include "lobby/lobby_info.h"
 #include "lobby/lobby_peer.h"
@@ -163,6 +164,10 @@ void initialize_tiny_lobby(ModuleInitializationLevel p_level) {
     GDREGISTER_CLASS(LoginClient::LoginIDResponse::LoginIDResult);
     GDREGISTER_CLASS(LoginClient::LoginAuthResponse);
     GDREGISTER_CLASS(LoginClient::LoginAuthResponse::LoginAuthResult);
+    GDREGISTER_CLASS(LeaderboardsClient);
+    GDREGISTER_CLASS(LeaderboardResponse);
+    GDREGISTER_CLASS(LeaderboardResult);
+    GDREGISTER_CLASS(LeaderboardData);
     // Third party clients
     GDREGISTER_ABSTRACT_CLASS(ThirdPartyClient);
     GDREGISTER_CLASS(DiscordEmbeddedAppClient);

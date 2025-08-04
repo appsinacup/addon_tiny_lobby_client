@@ -8,6 +8,7 @@ sources = []
 sources += Glob("discord/*.cpp")
 sources += Glob("lobby/*.cpp")
 sources += Glob("login/*.cpp")
+sources += Glob("leaderboards/*.cpp")
 sources += Glob("*.cpp")
 
 target = "tiny_lobby"
