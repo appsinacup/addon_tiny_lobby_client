@@ -20,15 +20,14 @@ def add_godot_cpp_doc_data(env, sources):
     except AttributeError:
         print("Not including class reference as we're targeting a pre-4.3 baseline.")
 
+env.Append(CPPDEFINES = ['TINY_LOBBY_GDEXTENSION'])
 if "static_build" not in ARGUMENTS or ARGUMENTS["static_build"]!="yes":
-    env.Append(CPPDEFINES = ['TINY_LOBBY_GDEXTENSION'])
     if env["platform"] == "windows":
         add_godot_cpp_doc_data(env, sources)
     elif env["platform"] == "macos":
         add_godot_cpp_doc_data(env, sources)
     elif env["platform"] == "linux" or env["platform"] == "android":
         add_godot_cpp_doc_data(env, sources)
-    print("Building dynamic library")
     if env["platform"] == "macos" or env["platform"] == "ios":
         library = env.SharedLibrary(
             "bin/addons/{}/lib{}{}.framework/lib{}{}".format(
@@ -45,7 +44,6 @@ if "static_build" not in ARGUMENTS or ARGUMENTS["static_build"]!="yes":
     env.SharedLibrary(target=target, source=sources)
 
 else:
-    print("Building static library")
     library = env.StaticLibrary(
         "bin/libtiny_lobby{}{}".format(env["suffix"], env["LIBSUFFIX"]),
         source=sources,

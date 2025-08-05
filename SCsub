@@ -5,6 +5,8 @@ import os
 Import("env")
 Import("env_modules")
 
+
+#region Helpers
 def get_addon_target():
     if env["target"] == "template_release":
         return "template_release"
@@ -32,16 +34,18 @@ os.system("scons static_build=yes platform=" + get_addon_platform() + " target="
 platform = get_addon_platform()
 target = get_addon_target()
 arch = env["arch"]
+#endregion
 
-# GDExtension
-env_gdextension = env_modules.Clone()
+env_tiny_lobby = env_modules.Clone()
 
-env_gdextension.Append(LIBS=[f"libtiny_lobby.{platform}.{target}{dev_build_extension}.{arch}"])
-env_gdextension.Append(LIBPATH=["#modules/tiny_lobby/bin"])
+env.Append(LIBS=[f"libtiny_lobby.{platform}.{target}{dev_build_extension}.{arch}.a"])
+env.Append(LIBPATH=["#modules/tiny_lobby/bin"])
 
-# Godot-cpp
-env_gdextension.Append(LIBS=[f"libgodot-cpp.{platform}.{target}{dev_build_extension}.{arch}"])
-env_gdextension.Append(LIBPATH=["#modules/tiny_lobby/godot-cpp/bin"])
+env.Append(LIBS=[f"libgodot-cpp.{platform}.{target}{dev_build_extension}.{arch}.a"])
+env.Append(LIBPATH=["#modules/tiny_lobby/godot-cpp/bin"])
 
-# Sources
-env_gdextension.add_source_files(env.modules_sources, "register_types.cpp")
+
+module_obj = []
+
+env_tiny_lobby.add_source_files(module_obj, "*.cpp")
+env.modules_sources += module_obj

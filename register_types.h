@@ -28,8 +28,8 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#ifndef REGISTER_TYPES_H
-#define REGISTER_TYPES_H
+#ifndef TINY_LOBBY_REGISTER_TYPES_H
+#define TINY_LOBBY_REGISTER_TYPES_H
 
 #ifndef TINY_LOBBY_GDEXTENSION
 
@@ -47,4 +47,4 @@ void initialize_tiny_lobby(ModuleInitializationLevel p_level);
 void uninitialize_tiny_lobby(ModuleInitializationLevel p_level);
 #endif
 
-#endif // REGISTER_TYPES_H
+#endif // TINY_LOBBY_REGISTER_TYPES_H
