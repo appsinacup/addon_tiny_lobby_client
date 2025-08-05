@@ -35,16 +35,13 @@ arch = env["arch"]
 
 # GDExtension
 env_gdextension = env_modules.Clone()
-env.Append(CPPDEFINES = ['TINY_LOBBY_MODULE'])
-env_gdextension.Append(CPPDEFINES = ['TINY_LOBBY_MODULE'])
-env_modules.Append(CPPDEFINES = ['TINY_LOBBY_MODULE'])
 
-env.Append(LIBS=[f"libtiny_lobby.{platform}.{target}{dev_build_extension}.{arch}"])
-env.Append(LIBPATH=["#modules/tiny_lobby/bin"])
+env_gdextension.Append(LIBS=[f"libtiny_lobby.{platform}.{target}{dev_build_extension}.{arch}"])
+env_gdextension.Append(LIBPATH=["#modules/tiny_lobby/bin"])
 
 # Godot-cpp
-env.Append(LIBS=[f"libgodot-cpp.{platform}.{target}{dev_build_extension}.{arch}"])
-env.Append(LIBPATH=["#modules/tiny_lobby/godot-cpp/bin"])
+env_gdextension.Append(LIBS=[f"libgodot-cpp.{platform}.{target}{dev_build_extension}.{arch}"])
+env_gdextension.Append(LIBPATH=["#modules/tiny_lobby/godot-cpp/bin"])
 
 # Sources
 env_gdextension.add_source_files(env.modules_sources, "register_types.cpp")

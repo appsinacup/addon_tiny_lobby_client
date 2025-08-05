@@ -30,7 +30,7 @@
 
 #include "register_types.h"
 
-#ifdef TINY_LOBBY_MODULE
+#ifndef TINY_LOBBY_GDEXTENSION
 #include "core/extension/gdextension_interface.h"
 #include "core/extension/gdextension_loader.h"
 #include "core/extension/gdextension_manager.h"

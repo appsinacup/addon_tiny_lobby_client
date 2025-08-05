@@ -21,6 +21,7 @@ def add_godot_cpp_doc_data(env, sources):
         print("Not including class reference as we're targeting a pre-4.3 baseline.")
 
 if "static_build" not in ARGUMENTS or ARGUMENTS["static_build"]!="yes":
+    env.Append(CPPDEFINES = ['TINY_LOBBY_GDEXTENSION'])
     if env["platform"] == "windows":
         add_godot_cpp_doc_data(env, sources)
     elif env["platform"] == "macos":

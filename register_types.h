@@ -31,7 +31,7 @@
 #ifndef REGISTER_TYPES_H
 #define REGISTER_TYPES_H
 
-#ifdef TINY_LOBBY_MODULE
+#ifndef TINY_LOBBY_GDEXTENSION
 
 #include "modules/register_module_types.h"
 
