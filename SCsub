@@ -38,11 +38,23 @@ arch = env["arch"]
 
 env_tiny_lobby = env_modules.Clone()
 
-env.Append(LIBS=[f"libtiny_lobby.{platform}.{target}{dev_build_extension}.{arch}.a"])
-env.Append(LIBPATH=["#modules/tiny_lobby/bin"])
 
-env.Append(LIBS=[f"libgodot-cpp.{platform}.{target}{dev_build_extension}.{arch}.a"])
+if env["platform"] == "ios":
+    env.Append(LIBPATH=["#modules/tiny_lobby/bin", "#modules/tiny_lobby/godot-cpp/bin"])
+    env.Append(LIBS=[
+            f"tiny_lobby.{platform}.{target}{dev_build_extension}.{arch}",
+            f"godot-cpp.{platform}.{target}{dev_build_extension}.{arch}"])
+else:
+    env.Append(LIBPATH=["#modules/tiny_lobby/bin", "#modules/tiny_lobby/godot-cpp/bin"])
+    env.Append(LIBS=[
+        f"tiny_lobby.{platform}.{target}{dev_build_extension}.{arch}",
+        f"godot-cpp.{platform}.{target}{dev_build_extension}.{arch}"])
+
+env.Append(LIBPATH=["#modules/tiny_lobby/bin"])
+env.Append(LIBS=[f"tiny_lobby.{platform}.{target}{dev_build_extension}.{arch}"])
+
 env.Append(LIBPATH=["#modules/tiny_lobby/godot-cpp/bin"])
+env.Append(LIBS=[f"godot-cpp.{platform}.{target}{dev_build_extension}.{arch}"])
 
 
 module_obj = []
