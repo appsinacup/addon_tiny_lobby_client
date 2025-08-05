@@ -3,6 +3,8 @@
 |[Website](https://appsinacup.com)|[Discord](https://discord.gg/56dMud8HYn)|[Build](./BUILD.md)|
 |-|-|-|
 
+![example](https://github.com/appsinacup/tiny_lobby/blob/main/docs/example.gif?raw=true)
+
 <p align="center">
 		<img src="https://img.shields.io/badge/Godot-4.4.1-%23478cbf?logo=godot-engine&logoColor=white" />
 </p>
