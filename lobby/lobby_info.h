@@ -66,7 +66,7 @@ const int COMMAND_DATA_TO = 25;
 const int COMMAND_DATA_TO_SENT = 26;
 const int COMMAND_NOTIFY_TO_SENT = 27;
 
-godot::String command_to_message(int command) {
+inline godot::String command_to_message(int command) {
   switch (command) {
   case COMMAND_ERROR:
     return "error";
