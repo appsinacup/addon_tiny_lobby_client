@@ -30,7 +30,10 @@ def get_sufix():
     return suffix
 
 os.system("scons static_build=yes platform=" + get_addon_platform() + " target=" + get_addon_target() + " arch=" + env["arch"] + " precision=" + env["precision"] + " threads=" + str(env["threads"]) + " dev_build=" + str(env["dev_build"]))
-
+# Do an ls on bin folder
+os.system("ls -l bin/")
+# Do an ls on godot-cpp/bin folder
+os.system("ls -l godot-cpp/bin/")
 platform = get_addon_platform()
 target = get_addon_target()
 arch = env["arch"]
