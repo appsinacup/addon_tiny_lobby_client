@@ -30,7 +30,7 @@ def get_sufix_before():
         suffix += ".dev"
     if env["precision"] == "double":
         suffix += ".double"
-    suffix += f".{env["arch"]}"
+    suffix += f".{env['arch']}"
     if not env["threads"]:
         suffix += ".nothreads"
     return suffix
