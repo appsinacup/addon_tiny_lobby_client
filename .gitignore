@@ -19,3 +19,4 @@ bin/addons/tiny_lobby/libtiny_lobby.macos.template_debug.universal.framework/lib
 bin/libtiny_lobby.web.template_debug.wasm32.a
 bin/libtiny_lobby.macos.template_debug.dev.arm64.a
 bin/libtiny_lobby.macos.template_debug.double.arm64.a
+bin/libtiny_lobby.macos.editor.double.arm64.a
