@@ -22,7 +22,7 @@ def get_addon_devbuild():
 def get_addon_target():
     return "template_release" if env["target"] == "editor" else env["target"]
 
-os.system(f"scons static_build=yes platform={get_addon_platform()} target={get_addon_target()} arch={env["arch"]} precision={env["precision"]} threads={get_addon_threads()} dev_build={get_addon_devbuild()} use_llvm={get_addon_llvm()}")
+os.system(f"scons static_build=yes platform={get_addon_platform()} target={get_addon_target()} arch={env['arch']} precision={env['precision']} threads={get_addon_threads()} dev_build={get_addon_devbuild()} use_llvm={get_addon_llvm()}")
 
 def get_sufix_before():
     suffix = f".{get_addon_platform()}.{env["target"]}"
