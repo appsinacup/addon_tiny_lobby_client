@@ -48,9 +48,15 @@ def get_sufix_after():
     return suffix
 # Rename if target is editor
 if env["target"] == "editor":
+    # Rename our lib
     os.rename(
-        f"modules/tiny_lobby/bin/libtiny_lobby{get_sufix_before()}.a",
-        f"modules/tiny_lobby/bin/libtiny_lobby{get_sufix_after()}.a"
+        f"bin/libtiny_lobby{get_sufix_after()}.a",
+        f"bin/libtiny_lobby{get_sufix_before()}.a"
+    )
+    # Rename godot-cpp lib
+    os.rename(
+        f"godot-cpp/bin/libgodot-cpp{get_sufix_after()}.a",
+        f"godot-cpp/bin/libgodot-cpp{get_sufix_before()}.a"
     )
 # Do an ls on bin folder
 os.system("ls -l bin/")
@@ -62,8 +68,8 @@ if env["platform"] == "ios":
     env_tiny_lobby.Append(LIBPATH=["#modules/tiny_lobby/bin", "#modules/tiny_lobby/godot-cpp/bin"])
     env_tiny_lobby.Append(LIBS=[f"libtiny_lobby{suffix}", f"libgodot-cpp{suffix}"])
 elif env["platform"] != "windows":
-    env_tiny_lobby.Append(LIBPATH=["#modules/tiny_lobby/bin", "#modules/tiny_lobby/godot-cpp/bin"])
-    env_tiny_lobby.Append(LIBS=[f"libtiny_lobby{suffix}", f"libgodot-cpp{suffix}"])
+    env.Append(LIBPATH=["#modules/tiny_lobby/bin", "#modules/tiny_lobby/godot-cpp/bin"])
+    env.Append(LIBS=[f"tiny_lobby{suffix}", f"godot-cpp{suffix}"])
 else:
     env.Append(LIBPATH=["#modules/tiny_lobby/bin", "#modules/tiny_lobby/godot-cpp/bin"])
     env.Append(LIBS=["tiny_lobby", "godot-cpp"])
