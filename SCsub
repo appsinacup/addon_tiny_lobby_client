@@ -22,6 +22,7 @@ def get_addon_devbuild():
 def get_addon_target():
     return "template_release" if env["target"] == "editor" else env["target"]
 
+# TODO remove when godot-cpp 4.5 is released
 # Replace in godot-cpp android ndk from "23.2.8568313" to "28.1.13356709"
 if env["platform"] == "android":
     os.system("sed -i 's/23.2.8568313/28.1.13356709/g' godot-cpp/tools/android.py")
@@ -36,6 +37,8 @@ def get_sufix_before():
     suffix += f".{env['arch']}"
     if not env["threads"]:
         suffix += ".nothreads"
+    if env.get("use_llvm", False):
+        suffix += ".llvm"
     return suffix
 
 
@@ -52,17 +55,17 @@ def get_sufix_after():
 # Rename if target is editor
 if env["target"] == "editor":
     lib_extension = ".a" if env["platform"] != "windows" else ".lib"
-    if env["platform"] != "windows":
-        # Rename our lib
-        os.rename(
-            f"bin/libtiny_lobby{get_sufix_after()}{lib_extension}",
-            f"bin/libtiny_lobby{get_sufix_before()}{lib_extension}"
-        )
-        # Rename godot-cpp lib
-        os.rename(
-            f"godot-cpp/bin/libgodot-cpp{get_sufix_after()}{lib_extension}",
-            f"godot-cpp/bin/libgodot-cpp{get_sufix_before()}{lib_extension}"
-        )
+    # Rename our lib
+    os.rename(
+        f"bin/libtiny_lobby{get_sufix_after()}{lib_extension}",
+        f"bin/libtiny_lobby{get_sufix_before()}{lib_extension}"
+    )
+    # Rename godot-cpp lib
+    os.rename(
+        f"godot-cpp/bin/libgodot-cpp{get_sufix_after()}{lib_extension}",
+        f"godot-cpp/bin/libgodot-cpp{get_sufix_before()}{lib_extension}"
+    )
+        
 # Do an ls on bin folder
 os.system("ls -l bin/")
 #endregion
