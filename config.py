@@ -1,6 +1,4 @@
 def can_build(env, platform):
-	if platform == "android" and env.get("target") == "editor":
-		return False
 	return True
 
 
