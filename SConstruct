@@ -20,13 +20,9 @@ def add_godot_cpp_doc_data(env, sources):
     except AttributeError:
         print("Not including class reference as we're targeting a pre-4.3 baseline.")
 
-env.Append(CPPDEFINES = ['TINY_LOBBY_GDEXTENSION'])
+env.Append(CPPDEFINES = ["TINY_LOBBY_GDEXTENSION"])
 if "static_build" not in ARGUMENTS or ARGUMENTS["static_build"]!="yes":
-    if env["platform"] == "windows":
-        add_godot_cpp_doc_data(env, sources)
-    elif env["platform"] == "macos":
-        add_godot_cpp_doc_data(env, sources)
-    elif env["platform"] == "linux" or env["platform"] == "android":
+    if env["platform"] == "windows" or env["platform"] == "macos" or env["platform"] == "linux" or env["platform"] == "android":
         add_godot_cpp_doc_data(env, sources)
     if env["platform"] == "macos" or env["platform"] == "ios":
         library = env.SharedLibrary(
@@ -40,8 +36,8 @@ if "static_build" not in ARGUMENTS or ARGUMENTS["static_build"]!="yes":
             "bin/addons/{}/lib{}{}{}".format(target, target, env["suffix"], env["SHLIBSUFFIX"]),
             source=sources,
         )
-    Default(library)
     env.SharedLibrary(target=target, source=sources)
+    Default(library)
 
 else:
     library = env.StaticLibrary(

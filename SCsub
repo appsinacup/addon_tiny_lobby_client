@@ -10,39 +10,63 @@ Import("env_modules")
 def get_addon_platform():
     return env["platform"].replace("linuxbsd", "linux")
 
-os.system(f"scons static_build=yes platform={get_addon_platform()} target={env["target"]} arch={env["arch"]} precision={env["precision"]} threads={env["threads"]} dev_build={env["dev_build"]} use_llvm={env.get("use_llvm", 'no')}")
-# Do an ls on bin folder
-os.system("ls -l bin/")
-# Do an ls on godot-cpp/bin folder
-#endregion
+def get_addon_threads():
+    return "yes" if env["threads"] else "no"
 
-env_tiny_lobby = env_modules.Clone()
+def get_addon_llvm():
+    return "yes" if env.get("use_llvm", False) else "no"
 
-def get_sufix():
+def get_addon_devbuild():
+    return "yes" if env.get("dev_build", False) else "no"
+
+def get_addon_target():
+    return "template_release" if env["target"] == "editor" else env["target"]
+
+os.system(f"scons static_build=yes platform={get_addon_platform()} target={get_addon_target()} arch={env["arch"]} precision={env["precision"]} threads={get_addon_threads()} dev_build={get_addon_devbuild()} use_llvm={get_addon_llvm()}")
+
+def get_sufix_before():
     suffix = f".{get_addon_platform()}.{env["target"]}"
     if env["dev_build"]:
         suffix += ".dev"
     if env["precision"] == "double":
         suffix += ".double"
     suffix += f".{env["arch"]}"
-    if env["threads"] == "no":
+    if not env["threads"]:
         suffix += ".nothreads"
     return suffix
 
+
+def get_sufix_after():
+    suffix = f".{get_addon_platform()}.{get_addon_target()}"
+    if env["dev_build"]:
+        suffix += ".dev"
+    if env["precision"] == "double":
+        suffix += ".double"
+    suffix += f".{env["arch"]}"
+    if not env["threads"]:
+        suffix += ".nothreads"
+    return suffix
+# Rename if target is editor
+if env["target"] == "editor":
+    os.rename(
+        f"modules/tiny_lobby/bin/libtiny_lobby{get_sufix_before()}.a",
+        f"modules/tiny_lobby/bin/libtiny_lobby{get_sufix_after()}.a"
+    )
+# Do an ls on bin folder
+os.system("ls -l bin/")
+#endregion
+
+env_tiny_lobby = env_modules.Clone()
+suffix = get_sufix_before()
 if env["platform"] == "ios":
     env_tiny_lobby.Append(LIBPATH=["#modules/tiny_lobby/bin", "#modules/tiny_lobby/godot-cpp/bin"])
-    env_tiny_lobby.Append(LIBS=[f"libtiny_lobby{get_sufix()}", f"libgodot-cpp{get_sufix()}"])
+    env_tiny_lobby.Append(LIBS=[f"libtiny_lobby{suffix}", f"libgodot-cpp{suffix}"])
 elif env["platform"] != "windows":
-    env.Append(LIBPATH=["#modules/tiny_lobby/bin", "#modules/tiny_lobby/godot-cpp/bin"])
-    env.Append(LIBS=[f"libtiny_lobby{get_sufix()}", f"libgodot-cpp{get_sufix()}"])
+    env_tiny_lobby.Append(LIBPATH=["#modules/tiny_lobby/bin", "#modules/tiny_lobby/godot-cpp/bin"])
+    env_tiny_lobby.Append(LIBS=[f"libtiny_lobby{suffix}", f"libgodot-cpp{suffix}"])
 else:
     env.Append(LIBPATH=["#modules/tiny_lobby/bin", "#modules/tiny_lobby/godot-cpp/bin"])
     env.Append(LIBS=["tiny_lobby", "godot-cpp"])
 
 
-#module_obj = []
-
-#env_tiny_lobby.add_source_files(module_obj, "register_types.cpp")
 env.add_source_files(env.modules_sources, "register_types.cpp")
-
-#env.modules_sources += module_obj
