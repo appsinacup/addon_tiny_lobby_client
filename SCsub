@@ -25,7 +25,7 @@ def get_sufix():
     if env["precision"] == "double":
         suffix += ".double"
     suffix += "." + env["arch"]
-    if not env["threads"]:
+    if env["threads"] == "no":
         suffix += ".nothreads"
     return suffix
 
