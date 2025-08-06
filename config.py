@@ -1,6 +1,5 @@
 def can_build(env, platform):
-	# TODO re-enable this when godot-cpp 4.5 is released
-	if platform == "android" and eng.get("target") == "editor":
+	if platform == "android" and env.get("target") == "editor":
 		return False
 	return True
 
