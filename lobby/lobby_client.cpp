@@ -90,10 +90,10 @@ void LobbyClient::_bind_methods() {
                "set_game_id", "get_game_id");
   ADD_PROPERTY(PropertyInfo(Variant::BOOL, "connected"), "", "get_connected");
   ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "lobby",
-                            PROPERTY_HINT_RESOURCE_TYPE, "LobbyInfo"),
+                            PROPERTY_HINT_RESOURCE_TYPE, "LobbyInfo", PROPERTY_USAGE_EDITOR_INSTANTIATE_OBJECT),
                "", "get_lobby");
   ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "peer",
-                            PROPERTY_HINT_RESOURCE_TYPE, "LobbyPeer"),
+                            PROPERTY_HINT_RESOURCE_TYPE, "LobbyPeer", PROPERTY_USAGE_EDITOR_INSTANTIATE_OBJECT),
                "", "get_peer");
   ADD_PROPERTY(PropertyInfo(Variant::ARRAY, "peers", PROPERTY_HINT_ARRAY_TYPE,
                             "LobbyPeer"),

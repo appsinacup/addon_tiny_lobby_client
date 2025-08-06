@@ -103,7 +103,7 @@ public:
                                 PROPERTY_HINT_ARRAY_TYPE, "LobbyPeer"),
                    "", "get_peers");
       ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "lobby",
-                                PROPERTY_HINT_RESOURCE_TYPE, "LobbyInfo"),
+                                PROPERTY_HINT_RESOURCE_TYPE, "LobbyInfo", PROPERTY_USAGE_EDITOR_INSTANTIATE_OBJECT),
                    "", "get_lobby");
       ADD_PROPERTY(PropertyInfo(Variant::STRING, "error"), "", "get_error");
     }
