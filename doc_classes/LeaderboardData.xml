@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="LeaderboardData" inherits="RefCounted" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../doc/class.xsd">
+	<brief_description>
+		Data returned by the [LeaderboardsClient] when requesting a leaderboard or a user score and rank.
+	</brief_description>
+	<description>
+		Data returned by the [LeaderboardsClient] when requesting a leaderboard or a user score and rank.
+	</description>
+	<tutorials>
+	</tutorials>
+	<members>
+		<member name="rank" type="int" setter="set_rank" getter="get_rank" default="-1">
+			The rank of the user in the leaderboard. (Eg. 1, 2, 3, etc.)
+		</member>
+		<member name="score" type="int" setter="set_score" getter="get_score" default="0">
+			The score of the user in the leaderboard. (Eg. 100, 200, etc.)
+		</member>
+		<member name="timestamp" type="String" setter="set_timestamp" getter="get_timestamp" default="&quot;&quot;">
+			The timestamp of the score in the leaderboard.
+		</member>
+		<member name="user_id" type="String" setter="set_user_id" getter="get_user_id" default="&quot;&quot;">
+			The user ID of the user in the leaderboard. It corresponds to the peer id from the lobby.
+		</member>
+	</members>
+</class>

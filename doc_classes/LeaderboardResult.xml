@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="LeaderboardResult" inherits="RefCounted" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../doc/class.xsd">
+	<brief_description>
+		A result from a [LeaderboardResponse].
+	</brief_description>
+	<description>
+		A result from a [LeaderboardResponse]. Contains either leaderboard data or error.
+	</description>
+	<tutorials>
+	</tutorials>
+	<methods>
+		<method name="has_error" qualifiers="const">
+			<return type="bool" />
+			<description>
+				Returns true if there is an error.
+			</description>
+		</method>
+	</methods>
+	<members>
+		<member name="error" type="String" setter="" getter="get_error" default="&quot;&quot;">
+			The error message.
+		</member>
+		<member name="leaderboard_data" type="LeaderboardData[]" setter="" getter="get_leaderboard_data" default="[]">
+			The leaderboard returned. Either 1 or more [LeaderboardData] objects.
+		</member>
+	</members>
+</class>

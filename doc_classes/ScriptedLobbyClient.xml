@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <class name="ScriptedLobbyClient" inherits="NetworkClient" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../doc/class.xsd">
 	<brief_description>
-		Node for connecting to the Blazium Lobby service. Offers authoritative lobby making features.
+		Node for connecting to the Lobby service. Offers authoritative lobby making features.
 	</brief_description>
 	<description>
-		The [ScriptedLobbyClient] node provides an interface for connecting to the Blazium Authoritative service. There is a free instance hosted on the [url=https://blazium.app]blazium.app[/url] domain that is used by default.
+		The [ScriptedLobbyClient] node provides an interface for connecting to the Lobby service. There is a free instance hosted on the [url=https://appsinacup.com]appsinacup.com[/url] domain that is used by default.
 		The normal flow is as follows:
 		1. Listen to all the signals you are interested in.
 		2. Connect to the server using [method connect_to_server] method.
@@ -39,7 +39,7 @@
 		[/codeblocks]
 	</description>
 	<tutorials>
-		<link title="Lobby SDK Demo">https://github.com/blazium-engine/blazium-lobby-sdk</link>
+		<link title="Lobby SDK Demo">https://github.com/appsinacup/tiny-lobby-demo</link>
 	</tutorials>
 	<methods>
 		<method name="add_lobby_tags">
@@ -246,7 +246,7 @@
 		<member name="connected" type="bool" setter="" getter="get_connected" default="false">
 			True if the client is connected, else false.
 		</member>
-		<member name="discord_embedded_app/path" type="String" setter="set_override_discord_path" getter="get_override_discord_path" default="&quot;blazium/scriptedlobby/connect&quot;">
+		<member name="discord_embedded_app/path" type="String" setter="set_override_discord_path" getter="get_override_discord_path" default="&quot;appsinacup/lobby/connect&quot;">
 			Set to what path this client should use when connecting to the discord embedded app.
 		</member>
 		<member name="game_id" type="String" setter="set_game_id" getter="get_game_id" default="&quot;&quot;">
@@ -267,7 +267,7 @@
 		<member name="reconnection_token" type="String" setter="set_reconnection_token" getter="get_reconnection_token" default="&quot;&quot;">
 			Reconnection token.
 		</member>
-		<member name="server_url" type="String" setter="set_server_url" getter="get_server_url" default="&quot;wss://scriptedlobby.blazium.app/connect&quot;">
+		<member name="server_url" type="String" setter="set_server_url" getter="get_server_url" default="&quot;wss://lobby.appsinacup.com/connect&quot;">
 			Set to what url this lobby should connect to.
 			For discord embedded app environment, replaces the url with [url=wss://client_id.discordsays.com/.proxy/blazium/scriptedlobby/connect]client_id.discordsays.com/.proxy/blazium/scriptedlobby/connect[/url] if left default, where client_id is the client id from the discord embedded app url (automatically detected).
 		</member>
@@ -319,7 +319,7 @@
 			</description>
 		</signal>
 		<signal name="lobby_notified">
-			<param index="0" name="data" type="Object" />
+			<param index="0" name="data" type="Dictionary" />
 			<description>
 				Signal generated after a notification is received.
 			</description>
@@ -402,13 +402,13 @@
 			</description>
 		</signal>
 		<signal name="received_lobby_data">
-			<param index="0" name="data" type="Object" />
+			<param index="0" name="data" type="Dictionary" />
 			<description>
 				Signal generated after data is sent to the lobby.
 			</description>
 		</signal>
 		<signal name="received_peer_data">
-			<param index="0" name="data" type="Object" />
+			<param index="0" name="data" type="Dictionary" />
 			<param index="1" name="to_peer" type="LobbyPeer" />
 			<param index="2" name="is_private" type="bool" />
 			<description>
@@ -417,7 +417,7 @@
 		</signal>
 		<signal name="received_peer_user_data">
 			<param index="0" name="peer" type="LobbyPeer" />
-			<param index="1" name="data" type="Object" />
+			<param index="1" name="data" type="Dictionary" />
 			<description>
 				Signal generated after user data is sent to peer.
 			</description>

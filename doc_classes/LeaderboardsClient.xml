@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="LeaderboardsClient" inherits="NetworkClient" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../doc/class.xsd">
+	<brief_description>
+		Node for connecting to the Lobby service leaderboard module.
+	</brief_description>
+	<description>
+		Node for connecting to the Lobby service leaderboard module. In order to use it, set the [member game_id] to the same as you use in the [LobbyClient]. 
+	</description>
+	<tutorials>
+	</tutorials>
+	<methods>
+		<method name="request_leaderboard">
+			<return type="LeaderboardResponse" />
+			<param index="0" name="leaderboard_id" type="String" />
+			<description>
+				Requests the leaderboard data for the given leaderboard ID.
+				Returns a [LeaderboardResponse] object that has a [signal LeaderboardResponse.finished] signal that is emitted when finished.
+			</description>
+		</method>
+		<method name="request_user_score_and_rank">
+			<return type="LeaderboardResponse" />
+			<param index="0" name="leaderboard_id" type="String" />
+			<param index="1" name="user_id" type="String" />
+			<description>
+				Requests the leaderboard data for the given user and leaderboard ID.
+				Returns a [LeaderboardResponse] object that has a [signal LeaderboardResponse.finished] signal that is emitted when finished.
+			</description>
+		</method>
+	</methods>
+	<members>
+		<member name="game_id" type="String" setter="set_game_id" getter="get_game_id" default="&quot;&quot;">
+			The game ID to use for the leaderboard requests. It should match the one used in the [LobbyClient].
+		</member>
+		<member name="http_prefix" type="String" setter="set_http_prefix" getter="get_http_prefix" default="&quot;https://&quot;">
+			The HTTP prefix to use for the requests. It should be either "http://" or "https://". Defaults to "https://".
+		</member>
+		<member name="server_url" type="String" setter="set_server_url" getter="get_server_url" default="&quot;leaderboards.appsinacup.com&quot;">
+			The server URL to use for the requests. Defaults to "leaderboards.appsinacup.com".
+			You can set this to a custom URL if you are running your own leaderboard server.
+		</member>
+	</members>
+	<signals>
+		<signal name="log_updated">
+			<param index="0" name="type" type="String" />
+			<param index="1" name="message" type="String" />
+			<description>
+				Signals a log from a command.
+			</description>
+		</signal>
+	</signals>
+</class>

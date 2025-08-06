@@ -321,7 +321,7 @@
 		<member name="connected" type="bool" setter="" getter="get_connected" default="false">
 			True if the client is connected, else false.
 		</member>
-		<member name="discord_embedded_app/path" type="String" setter="set_override_discord_path" getter="get_override_discord_path" default="&quot;blazium/lobby/connect&quot;">
+		<member name="discord_embedded_app/path" type="String" setter="set_override_discord_path" getter="get_override_discord_path" default="&quot;appsinacup/lobby/connect&quot;">
 			Set to what path this client should use when connecting to the discord embedded app.
 		</member>
 		<member name="game_id" type="String" setter="set_game_id" getter="get_game_id" default="&quot;&quot;">
@@ -345,7 +345,7 @@
 		<member name="reconnection_token" type="String" setter="set_reconnection_token" getter="get_reconnection_token" default="&quot;&quot;">
 			Reconnection token.
 		</member>
-		<member name="server_url" type="String" setter="set_server_url" getter="get_server_url" default="&quot;wss://lobby.blazium.app/connect&quot;">
+		<member name="server_url" type="String" setter="set_server_url" getter="get_server_url" default="&quot;wss://lobby.appsinacup.com/connect&quot;">
 			Set to what url this lobby should connect to.
 			For discord embedded app environment, replaces the url with [url=wss://client_id.discordsays.com/.proxy/blazium/lobby/connect]client_id.discordsays.com/.proxy/blazium/lobby/connect[/url] if left default, where client_id is the client id from the discord embedded app url (automatically detected).
 		</member>
@@ -397,7 +397,7 @@
 			</description>
 		</signal>
 		<signal name="lobby_notified">
-			<param index="0" name="data" type="Object" />
+			<param index="0" name="data" type="Dictionary" />
 			<param index="1" name="from_peer" type="LobbyPeer" />
 			<description>
 				Signal generated after a notification is received.
@@ -481,14 +481,14 @@
 			</description>
 		</signal>
 		<signal name="received_lobby_data">
-			<param index="0" name="data" type="Object" />
+			<param index="0" name="data" type="Dictionary" />
 			<param index="1" name="is_private" type="bool" />
 			<description>
 				Signal generated after data is sent to the lobby.
 			</description>
 		</signal>
 		<signal name="received_peer_data">
-			<param index="0" name="data" type="Object" />
+			<param index="0" name="data" type="Dictionary" />
 			<param index="1" name="to_peer" type="LobbyPeer" />
 			<param index="2" name="is_private" type="bool" />
 			<description>
@@ -497,7 +497,7 @@
 		</signal>
 		<signal name="received_peer_user_data">
 			<param index="0" name="peer" type="LobbyPeer" />
-			<param index="1" name="data" type="Object" />
+			<param index="1" name="data" type="Dictionary" />
 			<description>
 				Signal generated after user data is sent to peer.
 			</description>
