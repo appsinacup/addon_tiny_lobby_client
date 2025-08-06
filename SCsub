@@ -46,12 +46,16 @@ if env["platform"] == "ios":
     env_tiny_lobby.Append(LIBS=[
             f"tiny_lobby.{platform}.{target}{dev_build_extension}.{arch}",
             f"godot-cpp.{platform}.{target}{dev_build_extension}.{arch}"])
-else:
+else if env["platform"] != "windows":
     env.Append(LIBPATH=["#modules/tiny_lobby/bin", "#modules/tiny_lobby/godot-cpp/bin"])
     env.Append(LIBS=[
         f"tiny_lobby.{platform}.{target}{dev_build_extension}.{arch}",
         f"godot-cpp.{platform}.{target}{dev_build_extension}.{arch}"])
-
+else:
+    env.Append(LIBPATH=["#modules/tiny_lobby/bin", "#modules/tiny_lobby/godot-cpp/bin"])
+    env.Append(LIBS=[
+        f"tiny_lobby",
+        f"godot-cpp"])
 module_obj = []
 
 env_tiny_lobby.add_source_files(module_obj, "*.cpp")
