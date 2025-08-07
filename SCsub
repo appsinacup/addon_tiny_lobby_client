@@ -59,6 +59,9 @@ def get_sufix_after():
 if env["target"] == "editor" or env["platform"] == "windows":
     lib_extension = ".a" if env["platform"] != "windows" else ".lib"
     lib_prefix = "lib" if env["platform"] != "windows" else ""
+    if env["use_mingw"]:
+        lib_extension = ".a"
+        lib_prefix = "lib"
     # Rename our lib
     os.rename(
         f"bin/libtiny_lobby{get_sufix_after()}{lib_extension}",
