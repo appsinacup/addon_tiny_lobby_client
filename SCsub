@@ -23,7 +23,7 @@ def get_addon_target():
     return "template_release" if env["target"] == "editor" else env["target"]
 
 def get_addon_mingw():
-    return "yes" if env["use_mingw"] else "no"
+    return "yes" if env.get("use_mingw", False) else "no"
 
 # TODO remove when godot-cpp 4.5 is released
 # Replace in godot-cpp android ndk from "23.2.8568313" to "28.1.13356709"
