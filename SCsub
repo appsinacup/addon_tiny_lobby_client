@@ -53,7 +53,7 @@ def get_sufix_after():
         suffix += ".nothreads"
     return suffix
 # Rename if target is editor
-if env["target"] == "editor":
+if env["target"] == "editor" or env["platform"] == "windows":
     lib_extension = ".a" if env["platform"] != "windows" else ".lib"
     lib_prefix = "lib" if env["platform"] != "windows" else ""
     # Rename our lib
