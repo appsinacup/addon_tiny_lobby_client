@@ -55,15 +55,16 @@ def get_sufix_after():
 # Rename if target is editor
 if env["target"] == "editor":
     lib_extension = ".a" if env["platform"] != "windows" else ".lib"
+    lib_prefix = "lib" if env["platform"] != "windows" else ""
     # Rename our lib
     os.rename(
         f"bin/libtiny_lobby{get_sufix_after()}{lib_extension}",
-        f"bin/libtiny_lobby{get_sufix_before()}{lib_extension}"
+        f"bin/{lib_prefix}tiny_lobby{get_sufix_before()}{lib_extension}"
     )
     # Rename godot-cpp lib
     os.rename(
         f"godot-cpp/bin/libgodot-cpp{get_sufix_after()}{lib_extension}",
-        f"godot-cpp/bin/libgodot-cpp{get_sufix_before()}{lib_extension}"
+        f"godot-cpp/bin/{lib_prefix}godot-cpp{get_sufix_before()}{lib_extension}"
     )
         
 # Do an ls on bin folder
