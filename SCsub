@@ -55,6 +55,7 @@ def get_sufix_after():
     if not env["threads"]:
         suffix += ".nothreads"
     return suffix
+os.system("ls -l bin/")
 # Rename if target is editor
 if env["target"] == "editor" or env["platform"] == "windows":
     lib_extension = ".a" if env["platform"] != "windows" else ".lib"
