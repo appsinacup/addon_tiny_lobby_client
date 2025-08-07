@@ -22,11 +22,14 @@ def get_addon_devbuild():
 def get_addon_target():
     return "template_release" if env["target"] == "editor" else env["target"]
 
+def get_addon_mingw():
+    return "yes" if env["use_mingw"] else "no"
+
 # TODO remove when godot-cpp 4.5 is released
 # Replace in godot-cpp android ndk from "23.2.8568313" to "28.1.13356709"
 if env["platform"] == "android":
     os.system("sed -i 's/23.2.8568313/28.1.13356709/g' godot-cpp/tools/android.py")
-os.system(f"scons static_build=yes platform={get_addon_platform()} target={get_addon_target()} arch={env['arch']} precision={env['precision']} threads={get_addon_threads()} dev_build={get_addon_devbuild()} use_llvm={get_addon_llvm()} lto={env['lto']}")
+os.system(f"scons static_build=yes platform={get_addon_platform()} target={get_addon_target()} arch={env['arch']} precision={env['precision']} threads={get_addon_threads()} dev_build={get_addon_devbuild()} use_llvm={get_addon_llvm()} lto={env['lto']} use_mingw={get_addon_mingw()}")
 
 def get_sufix_before():
     suffix = f".{get_addon_platform()}.{env['target']}"
@@ -76,7 +79,7 @@ suffix = get_sufix_before()
 if env["platform"] == "ios":
     env_tiny_lobby.Append(LIBPATH=["#modules/tiny_lobby/bin", "#modules/tiny_lobby/godot-cpp/bin"])
     env_tiny_lobby.Append(LIBS=[f"libtiny_lobby{suffix}", f"libgodot-cpp{suffix}"])
-elif env["platform"] != "windows":
+elif env["platform"] != "windows" or env.get("use_mingw", False):
     env.Append(LIBPATH=["#modules/tiny_lobby/bin", "#modules/tiny_lobby/godot-cpp/bin"])
     env.Append(LIBS=[f"tiny_lobby{suffix}", f"godot-cpp{suffix}"])
 else:
