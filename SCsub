@@ -60,7 +60,7 @@ os.system("ls -l bin/")
 if env["target"] == "editor" or env["platform"] == "windows":
     lib_extension = ".a" if env["platform"] != "windows" else ".lib"
     lib_prefix = "lib" if env["platform"] != "windows" else ""
-    if env["use_mingw"]:
+    if env.get("use_mingw", False):
         lib_extension = ".a"
         lib_prefix = "lib"
     # Rename our lib
