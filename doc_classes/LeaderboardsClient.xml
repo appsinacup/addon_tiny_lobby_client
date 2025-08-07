@@ -4,7 +4,7 @@
 		Node for connecting to the Lobby service leaderboard module.
 	</brief_description>
 	<description>
-		Node for connecting to the Lobby service leaderboard module. In order to use it, set the [member game_id] to the same as you use in the [LobbyClient]. 
+		Node for connecting to the Lobby service leaderboard module. In order to use it, set the [member game_id] to the same as you use in the [LobbyClient].
 	</description>
 	<tutorials>
 	</tutorials>
