@@ -32,4 +32,3 @@ git clone https://github.com/godotengine/godot
 git submodule add -- https://github.com/appsinacup/addon_tiny_lobby_client modules/tiny_lobby
 scons
 ```
-
