@@ -89,43 +89,43 @@ void LobbyPeer::set_dict(const Dictionary &p_dict, bool p_delta_update) {
   if (p_dict.has("id")) {
     set_id(p_dict.get("id", ""));
   }
-  if (p_dict.has("order_id")) {
-    set_order_id(p_dict.get("order_id", -1));
+  if (p_dict.has("oi")) {
+    set_order_id(p_dict.get("oi", -1));
   }
-  if (p_dict.has("platform")) {
-    set_platform(p_dict.get("platform", ""));
+  if (p_dict.has("p")) {
+    set_platform(p_dict.get("p", ""));
   }
-  if (p_dict.has("ready")) {
-    set_ready(p_dict.get("ready", false));
+  if (p_dict.has("r")) {
+    set_ready(p_dict.get("r", false));
   }
   if (!p_delta_update) {
-    if (p_dict.has("user_data")) {
-      set_user_data(p_dict.get("user_data", Dictionary()));
+    if (p_dict.has("ud")) {
+      set_user_data(p_dict.get("ud", Dictionary()));
     }
-    if (p_dict.has("public_data")) {
-      set_data(p_dict.get("public_data", Dictionary()));
+    if (p_dict.has("d")) {
+      set_data(p_dict.get("d", Dictionary()));
     }
   } else {
-    if (p_dict.has("user_data")) {
-      set_delta_user_data(p_dict.get("user_data", Dictionary()));
+    if (p_dict.has("ud")) {
+      set_delta_user_data(p_dict.get("ud", Dictionary()));
     }
-    if (p_dict.has("public_data")) {
-      set_delta_data(p_dict.get("public_data", Dictionary()));
+    if (p_dict.has("d")) {
+      set_delta_data(p_dict.get("d", Dictionary()));
     }
   }
-  if (p_dict.has("is_disconnected")) {
-    set_disconnected(p_dict.get("is_disconnected", false));
+  if (p_dict.has("dc")) {
+    set_disconnected(p_dict.get("dc", false));
   }
 }
 Dictionary LobbyPeer::get_dict() const {
   Dictionary dict;
-  dict["order_id"] = get_order_id();
+  dict["oi"] = get_order_id();
   dict["id"] = get_id();
-  dict["user_data"] = get_user_data();
-  dict["ready"] = is_ready();
-  dict["public_data"] = get_data();
-  dict["is_disconnected"] = is_disconnected();
-  dict["platform"] = get_platform();
+  dict["ud"] = get_user_data();
+  dict["r"] = is_ready();
+  dict["d"] = get_data();
+  dict["dc"] = is_disconnected();
+  dict["p"] = get_platform();
   return dict;
 }
 

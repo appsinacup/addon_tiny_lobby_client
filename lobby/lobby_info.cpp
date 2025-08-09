@@ -95,32 +95,32 @@ void LobbyInfo::set_delta_data(const Dictionary &p_delta_data) {
   }
 }
 void LobbyInfo::set_dict(const Dictionary &p_dict, bool p_delta_update) {
-  set_host(p_dict.get("host", ""));
-  set_max_players(p_dict.get("max_players", 0));
-  set_sealed(p_dict.get("sealed", false));
-  set_players(p_dict.get("players", 0));
+  set_host(p_dict.get("h", ""));
+  set_max_players(p_dict.get("m", 0));
+  set_sealed(p_dict.get("s", false));
+  set_players(p_dict.get("p", 0));
   set_id(p_dict.get("id", ""));
-  set_lobby_name(p_dict.get("name", ""));
-  set_password_protected(p_dict.get("has_password", false));
+  set_lobby_name(p_dict.get("n", ""));
+  set_password_protected(p_dict.get("_p", false));
   if (!p_delta_update) {
-    set_tags(p_dict.get("tags", Dictionary()));
-    set_data(p_dict.get("public_data", Dictionary()));
+    set_tags(p_dict.get("t", Dictionary()));
+    set_data(p_dict.get("d", Dictionary()));
   } else {
-    set_delta_tags(p_dict.get("tags", Dictionary()));
-    set_delta_data(p_dict.get("public_data", Dictionary()));
+    set_delta_tags(p_dict.get("t", Dictionary()));
+    set_delta_data(p_dict.get("d", Dictionary()));
   }
 }
 Dictionary LobbyInfo::get_dict() const {
   Dictionary dict;
-  dict["host"] = get_host();
-  dict["max_players"] = get_max_players();
-  dict["sealed"] = is_sealed();
-  dict["players"] = get_players();
+  dict["h"] = get_host();
+  dict["m"] = get_max_players();
+  dict["s"] = is_sealed();
+  dict["p"] = get_players();
   dict["id"] = get_id();
-  dict["name"] = get_lobby_name();
-  dict["has_password"] = is_password_protected();
-  dict["tags"] = get_tags();
-  dict["public_data"] = get_data();
+  dict["n"] = get_lobby_name();
+  dict["_p"] = is_password_protected();
+  dict["t"] = get_tags();
+  dict["d"] = get_data();
   return dict;
 }
 

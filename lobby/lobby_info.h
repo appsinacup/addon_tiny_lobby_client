@@ -37,96 +37,119 @@
 #include <godot_cpp/variant/string.hpp>
 using namespace godot;
 
-const int COMMAND_ERROR = 0;
-const int COMMAND_LOBBY_HOSTED = 1;
-const int COMMAND_LOBBY_CREATED = 2;
-const int COMMAND_LOBBY_UNSEALED = 3;
-const int COMMAND_LOBBY_SEALED = 4;
-const int COMMAND_LOBBY_RESIZED = 5;
-const int COMMAND_LOBBY_PASSWORDED = 6;
-const int COMMAND_LOBBY_TITLED = 7;
-const int COMMAND_PEER_READY = 8;
-const int COMMAND_PEER_UNREADY = 9;
-const int COMMAND_LOBBY_LEFT = 10;
-const int COMMAND_PEER_LEFT = 11;
-const int COMMAND_LOBBY_KICKED = 12;
-const int COMMAND_PEER_STATE = 13;
-const int COMMAND_LOBBY_CALL = 14;
-const int COMMAND_PEER_USER_DATA = 15;
-const int COMMAND_LOBBY_TAGS = 16;
-const int COMMAND_PEER_CHAT = 17;
-const int COMMAND_PEER_RECONNECTED = 18;
-const int COMMAND_JOINED_LOBBY = 19;
-const int COMMAND_PEER_JOINED = 20;
-const int COMMAND_PEER_DISCONNECTED = 21;
-const int COMMAND_LOBBY_LIST = 22;
-const int COMMAND_LOBBY_DATA = 23;
-const int COMMAND_PEER_NOTIFY = 24;
-const int COMMAND_DATA_TO = 25;
-const int COMMAND_DATA_TO_SENT = 26;
-const int COMMAND_NOTIFY_TO_SENT = 27;
+const int RESPONSE_ERROR = 0;
+const int RESPONSE_LOBBY_HOSTED = 1;
+const int RESPONSE_LOBBY_CREATED = 2;
+const int RESPONSE_LOBBY_UNSEALED = 3;
+const int RESPONSE_LOBBY_SEALED = 4;
+const int RESPONSE_LOBBY_RESIZED = 5;
+const int RESPONSE_LOBBY_PASSWORDED = 6;
+const int RESPONSE_LOBBY_TITLED = 7;
+const int RESPONSE_PEER_READY = 8;
+const int RESPONSE_PEER_UNREADY = 9;
+const int RESPONSE_LOBBY_LEFT = 10;
+const int RESPONSE_PEER_LEFT = 11;
+const int RESPONSE_LOBBY_KICKED = 12;
+const int RESPONSE_PEER_STATE = 13;
+const int RESPONSE_LOBBY_CALL = 14;
+const int RESPONSE_PEER_USER_DATA = 15;
+const int RESPONSE_LOBBY_TAGS = 16;
+const int RESPONSE_PEER_CHAT = 17;
+const int RESPONSE_PEER_RECONNECTED = 18;
+const int RESPONSE_JOINED_LOBBY = 19;
+const int RESPONSE_PEER_JOINED = 20;
+const int RESPONSE_PEER_DISCONNECTED = 21;
+const int RESPONSE_LOBBY_LIST = 22;
+const int RESPONSE_LOBBY_DATA = 23;
+const int RESPONSE_PEER_NOTIFY = 24;
+const int RESPONSE_DATA_TO = 25;
+const int RESPONSE_DATA_TO_SENT = 26;
+const int RESPONSE_NOTIFY_TO_SENT = 27;
 
-inline godot::String command_to_message(int command) {
+inline godot::String response_to_message(int command) {
   switch (command) {
-  case COMMAND_ERROR:
+  case RESPONSE_ERROR:
     return "error";
-  case COMMAND_LOBBY_HOSTED:
+  case RESPONSE_LOBBY_HOSTED:
     return "lobby_hosted";
-  case COMMAND_LOBBY_CREATED:
+  case RESPONSE_LOBBY_CREATED:
     return "lobby_created";
-  case COMMAND_LOBBY_UNSEALED:
+  case RESPONSE_LOBBY_UNSEALED:
     return "lobby_unsealed";
-  case COMMAND_LOBBY_SEALED:
+  case RESPONSE_LOBBY_SEALED:
     return "lobby_sealed";
-  case COMMAND_LOBBY_RESIZED:
+  case RESPONSE_LOBBY_RESIZED:
     return "lobby_resized";
-  case COMMAND_LOBBY_PASSWORDED:
+  case RESPONSE_LOBBY_PASSWORDED:
     return "lobby_passworded";
-  case COMMAND_LOBBY_TITLED:
+  case RESPONSE_LOBBY_TITLED:
     return "lobby_titled";
-  case COMMAND_PEER_READY:
+  case RESPONSE_PEER_READY:
     return "peer_ready";
-  case COMMAND_PEER_UNREADY:
+  case RESPONSE_PEER_UNREADY:
     return "peer_unready";
-  case COMMAND_LOBBY_LEFT:
+  case RESPONSE_LOBBY_LEFT:
     return "lobby_left";
-  case COMMAND_PEER_LEFT:
+  case RESPONSE_PEER_LEFT:
     return "peer_left";
-  case COMMAND_LOBBY_KICKED:
+  case RESPONSE_LOBBY_KICKED:
     return "lobby_kicked";
-  case COMMAND_PEER_STATE:
+  case RESPONSE_PEER_STATE:
     return "peer_state";
-  case COMMAND_LOBBY_CALL:
+  case RESPONSE_LOBBY_CALL:
     return "lobby_call";
-  case COMMAND_PEER_USER_DATA:
+  case RESPONSE_PEER_USER_DATA:
     return "peer_user_data";
-  case COMMAND_LOBBY_TAGS:
+  case RESPONSE_LOBBY_TAGS:
     return "lobby_tags";
-  case COMMAND_PEER_CHAT:
+  case RESPONSE_PEER_CHAT:
     return "peer_chat";
-  case COMMAND_PEER_RECONNECTED:
+  case RESPONSE_PEER_RECONNECTED:
     return "peer_reconnected";
-  case COMMAND_JOINED_LOBBY:
+  case RESPONSE_JOINED_LOBBY:
     return "joined_lobby";
-  case COMMAND_PEER_JOINED:
+  case RESPONSE_PEER_JOINED:
     return "peer_joined";
-  case COMMAND_PEER_DISCONNECTED:
+  case RESPONSE_PEER_DISCONNECTED:
     return "peer_disconnected";
-  case COMMAND_LOBBY_LIST:
+  case RESPONSE_LOBBY_LIST:
     return "lobby_list";
-  case COMMAND_LOBBY_DATA:
+  case RESPONSE_LOBBY_DATA:
     return "lobby_data";
-  case COMMAND_PEER_NOTIFY:
+  case RESPONSE_PEER_NOTIFY:
     return "peer_notify";
-  case COMMAND_DATA_TO:
+  case RESPONSE_DATA_TO:
     return "data_to";
-  case COMMAND_DATA_TO_SENT:
+  case RESPONSE_DATA_TO_SENT:
     return "data_to_sent";
-  case COMMAND_NOTIFY_TO_SENT:
+  case RESPONSE_NOTIFY_TO_SENT:
     return "notify_to_sent";
   }
   return "";
 }
+
+const int COMMAND_LOBBY_DATA = 0;
+const int COMMAND_LOBBY_DATA_TO = 1;
+const int COMMAND_LOBBY_DATA_TO_ALL = 2;
+const int COMMAND_LOBBY_NOTIFY_TO = 3;
+const int COMMAND_LOBBY_NOTIFY = 4;
+const int COMMAND_LOBBY_CALL = 5;
+const int COMMAND_LOBBY_QUICK_JOIN = 6;
+const int COMMAND_CREATE_LOBBY = 7;
+const int COMMAND_JOIN_LOBBY = 8;
+const int COMMAND_LEAVE_LOBBY = 9;
+const int COMMAND_LIST_LOBBY = 10;
+const int COMMAND_CHAT_LOBBY = 11;
+const int COMMAND_LOBBY_TAGS = 12;
+const int COMMAND_KICK_PEER = 13;
+const int COMMAND_USER_DATA = 14;
+const int COMMAND_LOBBY_READY = 15;
+const int COMMAND_LOBBY_UNREADY = 16;
+const int COMMAND_LOBBY_SEAL = 17;
+const int COMMAND_LOBBY_UNSEAL = 18;
+const int COMMAND_LOBBY_MAX_PLAYERS = 19;
+const int COMMAND_LOBBY_TITLE = 20;
+const int COMMAND_LOBBY_PASSWORD = 21;
 
 class LobbyInfo : public Resource {
   GDCLASS(LobbyInfo, Resource);
