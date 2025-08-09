@@ -920,7 +920,7 @@ void ScriptedLobbyClient::_receive_data(const Dictionary &p_dict) {
     Dictionary peer_dict = data_dict.get("p", Dictionary());
     peer->set_dict(peer_dict, false);
     lobby->set_id(peer_dict.get("l", ""));
-    reconnection_token = peer_dict.get("r", "");
+    reconnection_token = peer_dict.get("rt", "");
     if (_commands.has("connect")) {
       Ref<LobbyResponse> response = _commands["connect"];
       Ref<LobbyResponse::LobbyResult> result;
