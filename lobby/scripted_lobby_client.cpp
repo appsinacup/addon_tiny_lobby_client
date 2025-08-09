@@ -1158,7 +1158,7 @@ void ScriptedLobbyClient::_receive_data(const Dictionary &p_dict) {
         Ref<ScriptedLobbyResponse::ScriptedLobbyResult> result =
             Ref<ScriptedLobbyResponse::ScriptedLobbyResult>(
                 memnew(ScriptedLobbyResponse::ScriptedLobbyResult));
-        result->set_result(data_dict.get("result", ""));
+        result->set_result(data_dict.get("r", ""));
         response->emit_signal("finished", result);
       }
     }
