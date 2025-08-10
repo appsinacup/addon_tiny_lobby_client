@@ -12,7 +12,9 @@
 
 Tiny Lobby is a lightweight multiplayer lobby system for WebSocket-based games, allowing peers to create, join, and manage lobbies, exchange data, and communicate in real time. It also supports backend scripting in Lua, enabling custom game logic directly on the server.
 
-![example](https://github.com/appsinacup/tiny_lobby/blob/main/docs/example.gif?raw=true)
+## Video Tutorial
+
+[![Video Tutorial](https://img.youtube.com/vi/I9v_qkCa08Y/0.jpg)](https://www.youtube.com/watch?v=I9v_qkCa08Y)
 
 ## Features
 
