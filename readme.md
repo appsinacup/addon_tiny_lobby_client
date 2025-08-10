@@ -10,11 +10,27 @@
 		<img src="https://img.shields.io/badge/Godot-4.4.1-%23478cbf?logo=godot-engine&logoColor=white" />
 </p>
 
-Addon that adds nodes that can connect to [Tiny Lobby](https://github.com/appsinacup/tiny_lobby).
+Addon that adds multiplayer functionality with nodes that can connect to [tiny_lobby Server](https://github.com/appsinacup/tiny_lobby).
 
 ![example](https://github.com/appsinacup/tiny_lobby/blob/main/docs/example.gif?raw=true)
 
-## Install
+## Features
+
+- Create, join, or leave a lobby.
+- Get lobby public data, tags, and a list of lobbies.
+- Receive the lobby state and notifications for peer join/leave/kick events.
+- Call lobby scripted functions.
+- Lock/unlock the lobby.
+- Change max players, title, password, or tags.
+- Set ready state and update user data.
+- Send/receive chat messages.
+- Get notifications for peer reconnect/disconnect, user data changes, and public/private data updates.
+
+## Install from Godot Asset Library
+
+Go to Godot `AssetLib` tab and download [Tiny Lobby Client](https://godotengine.org/asset-library/asset/4200).
+
+## Install from GitHub Releases
 
 In order to install, download from latest [GitHub Releases](https://github.com/appsinacup/addon_tiny_lobby_client/releases) the `GDExtension.zip` and place the `addons` folder inside your project.
 
