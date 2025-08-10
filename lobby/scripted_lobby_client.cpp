@@ -153,13 +153,13 @@ void ScriptedLobbyClient::_bind_methods() {
 
   // Register signals
   ADD_SIGNAL(MethodInfo("connected_to_server",
-                        PropertyInfo(Variant::OBJECT, "peer",
+                        PropertyInfo(Variant::OBJECT, "to_peer",
                                      PROPERTY_HINT_RESOURCE_TYPE, "LobbyPeer"),
                         PropertyInfo(Variant::STRING, "reconnection_token")));
   ADD_SIGNAL(MethodInfo("disconnected_from_server",
                         PropertyInfo(Variant::STRING, "reason")));
   ADD_SIGNAL(MethodInfo("received_peer_user_data",
-                        PropertyInfo(Variant::OBJECT, "peer",
+                        PropertyInfo(Variant::OBJECT, "to_peer",
                                      PROPERTY_HINT_RESOURCE_TYPE, "LobbyPeer"),
                         PropertyInfo(Variant::DICTIONARY, "data")));
   ADD_SIGNAL(
@@ -197,28 +197,28 @@ void ScriptedLobbyClient::_bind_methods() {
   ADD_SIGNAL(MethodInfo("lobbies_listed",
                         PropertyInfo(Variant::ARRAY, "lobbies",
                                      PROPERTY_HINT_ARRAY_TYPE, "LobbyInfo")));
-  ADD_SIGNAL(MethodInfo("peer_joined", PropertyInfo(Variant::OBJECT, "peer",
+  ADD_SIGNAL(MethodInfo("peer_joined", PropertyInfo(Variant::OBJECT, "to_peer",
                                                     PROPERTY_HINT_RESOURCE_TYPE,
                                                     "LobbyPeer")));
   ADD_SIGNAL(
       MethodInfo("peer_reconnected",
-                 PropertyInfo(Variant::OBJECT, "peer",
+                 PropertyInfo(Variant::OBJECT, "to_peer",
                               PROPERTY_HINT_RESOURCE_TYPE, "LobbyPeer")));
   ADD_SIGNAL(MethodInfo("peer_left",
-                        PropertyInfo(Variant::OBJECT, "peer",
+                        PropertyInfo(Variant::OBJECT, "to_peer",
                                      PROPERTY_HINT_RESOURCE_TYPE, "LobbyPeer"),
                         PropertyInfo(Variant::BOOL, "kicked")));
   ADD_SIGNAL(
       MethodInfo("peer_disconnected",
-                 PropertyInfo(Variant::OBJECT, "peer",
+                 PropertyInfo(Variant::OBJECT, "to_peer",
                               PROPERTY_HINT_RESOURCE_TYPE, "LobbyPeer")));
   ADD_SIGNAL(MethodInfo("peer_messaged",
-                        PropertyInfo(Variant::OBJECT, "peer",
+                        PropertyInfo(Variant::OBJECT, "to_peer",
                                      PROPERTY_HINT_RESOURCE_TYPE, "LobbyPeer"),
                         PropertyInfo(Variant::STRING, "chat_message"),
                         PropertyInfo(Variant::DICTIONARY, "chat_metadata")));
   ADD_SIGNAL(MethodInfo("peer_ready",
-                        PropertyInfo(Variant::OBJECT, "peer",
+                        PropertyInfo(Variant::OBJECT, "to_peer",
                                      PROPERTY_HINT_RESOURCE_TYPE, "LobbyPeer"),
                         PropertyInfo(Variant::BOOL, "is_ready")));
   ADD_SIGNAL(MethodInfo("log_updated", PropertyInfo(Variant::STRING, "command"),

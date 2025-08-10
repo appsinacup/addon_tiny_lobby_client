@@ -274,7 +274,7 @@
 	</members>
 	<signals>
 		<signal name="connected_to_server">
-			<param index="0" name="peer" type="LobbyPeer" />
+			<param index="0" name="to_peer" type="LobbyPeer" />
 			<param index="1" name="reconnection_token" type="String" />
 			<description>
 				Signal generated after you connect to the lobby.
@@ -362,26 +362,26 @@
 			</description>
 		</signal>
 		<signal name="peer_disconnected">
-			<param index="0" name="peer" type="LobbyPeer" />
+			<param index="0" name="to_peer" type="LobbyPeer" />
 			<description>
 				Signal generated after a peer disconnects. If they don't reconnect they will be removed.
 			</description>
 		</signal>
 		<signal name="peer_joined">
-			<param index="0" name="peer" type="LobbyPeer" />
+			<param index="0" name="to_peer" type="LobbyPeer" />
 			<description>
 				Signal generated after a peer joins the lobby.
 			</description>
 		</signal>
 		<signal name="peer_left">
-			<param index="0" name="peer" type="LobbyPeer" />
+			<param index="0" name="to_peer" type="LobbyPeer" />
 			<param index="1" name="kicked" type="bool" />
 			<description>
 				Signal generated after a peer leaves the lobby.
 			</description>
 		</signal>
 		<signal name="peer_messaged">
-			<param index="0" name="peer" type="LobbyPeer" />
+			<param index="0" name="to_peer" type="LobbyPeer" />
 			<param index="1" name="chat_message" type="String" />
 			<param index="2" name="chat_metadata" type="Dictionary" />
 			<description>
@@ -389,14 +389,14 @@
 			</description>
 		</signal>
 		<signal name="peer_ready">
-			<param index="0" name="peer" type="LobbyPeer" />
+			<param index="0" name="to_peer" type="LobbyPeer" />
 			<param index="1" name="is_ready" type="bool" />
 			<description>
 				Signal generated after a peer is ready.
 			</description>
 		</signal>
 		<signal name="peer_reconnected">
-			<param index="0" name="peer" type="LobbyPeer" />
+			<param index="0" name="to_peer" type="LobbyPeer" />
 			<description>
 				Signal generated after a peer reconnects.
 			</description>
@@ -416,7 +416,7 @@
 			</description>
 		</signal>
 		<signal name="received_peer_user_data">
-			<param index="0" name="peer" type="LobbyPeer" />
+			<param index="0" name="to_peer" type="LobbyPeer" />
 			<param index="1" name="data" type="Dictionary" />
 			<description>
 				Signal generated after user data is sent to peer.
