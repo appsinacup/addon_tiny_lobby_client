@@ -596,6 +596,7 @@ Ref<LobbyResponse> ScriptedLobbyClient::stop_list_lobby() {
   command_array.push_back(response);
   _commands[id] = command_array;
   _send_data(command);
+  lobbies.clear();
   return response;
 }
 
@@ -900,7 +901,6 @@ void ScriptedLobbyClient::_update_peers(Dictionary p_data_dict,
 void ScriptedLobbyClient::_clear_lobby() {
   lobby->set_dict(Dictionary(), false);
   peers.clear();
-  lobbies.clear();
   peer_data = Dictionary();
   peer->set_data(Dictionary());
   peer->set_ready(false);
@@ -953,10 +953,8 @@ void ScriptedLobbyClient::_receive_data(const Dictionary &p_dict) {
     }
     emit_signal("connected_to_server", peer, reconnection_token);
   } else if (command == RESPONSE_LOBBY_CREATED) {
-    lobbies.clear();
     emit_signal("lobby_created", lobby, peers);
   } else if (command == RESPONSE_JOINED_LOBBY) {
-    lobbies.clear();
     emit_signal("lobby_joined", lobby, peers);
   } else if (command == RESPONSE_LOBBY_LEFT) {
     _clear_lobby();

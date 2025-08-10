@@ -595,6 +595,7 @@ Ref<LobbyResponse> LobbyClient::stop_list_lobby() {
   command_array.push_back(response);
   _commands[id] = command_array;
   _send_data(command);
+  lobbies.clear();
   return response;
 }
 
@@ -743,7 +744,7 @@ Ref<LobbyResponse> LobbyClient::seal_lobby(bool seal) {
   if (seal) {
     command["c"] = COMMAND_LOBBY_SEAL;
   } else {
-    command["c"] = COMMAND_LOBBY_UNREADY;
+    command["c"] = COMMAND_LOBBY_UNSEAL;
   }
   Dictionary data_dict;
   command["d"] = data_dict;
@@ -1136,7 +1137,6 @@ void sort_peers_by_id(TypedArray<LobbyPeer> &peers) {
 void LobbyClient::_clear_lobby() {
   lobby->set_dict(Dictionary(), false);
   peers.clear();
-  lobbies.clear();
   host_data = Dictionary();
   peer_data = Dictionary();
   peer->set_data(Dictionary());
@@ -1189,10 +1189,8 @@ void LobbyClient::_receive_data(const Dictionary &p_dict) {
     }
     emit_signal("connected_to_server", peer, reconnection_token);
   } else if (command == RESPONSE_LOBBY_CREATED) {
-    lobbies.clear();
     emit_signal("lobby_created", lobby, peers);
   } else if (command == RESPONSE_JOINED_LOBBY) {
-    lobbies.clear();
     emit_signal("lobby_joined", lobby, peers);
   } else if (command == RESPONSE_LOBBY_LEFT) {
     _clear_lobby();
