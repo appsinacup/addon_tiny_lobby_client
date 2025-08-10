@@ -241,6 +241,14 @@
 				Generates [signal lobby_titled].
 			</description>
 		</method>
+		<method name="stop_list_lobbies">
+			<return type="LobbyResponse" />
+			<description>
+				Stop listing lobbies. This will stop the [signal lobbies_listed] signal from being emitted.
+				Needs [method connect_to_server] to be called first.
+				Returns a [LobbyResponse] object that has a [signal LobbyResponse.finished] signal that is emitted when finished.
+			</description>
+		</method>
 	</methods>
 	<members>
 		<member name="connected" type="bool" setter="" getter="get_connected" default="false">
