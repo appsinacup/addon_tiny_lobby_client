@@ -11,6 +11,8 @@
 
 Addon that adds nodes that can connect to [Tiny Lobby](https://github.com/appsinacup/tiny_lobby).
 
+![tiny_lobby](logo.png)
+
 ## Install
 
 In order to install, download from latest [GitHub Releases](https://github.com/appsinacup/addon_tiny_lobby_client/releases) the `GDExtension.zip` and place the `addons` folder inside your project.
