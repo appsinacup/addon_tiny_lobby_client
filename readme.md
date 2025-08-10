@@ -11,7 +11,7 @@
 
 Addon that adds nodes that can connect to [Tiny Lobby](https://github.com/appsinacup/tiny_lobby).
 
-![tiny_lobby](logo.png)
+<img src="logo.png" height="128"/>
 
 ## Install
 
