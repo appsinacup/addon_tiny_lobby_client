@@ -3,8 +3,8 @@
 	<h1 align="center">Tiny Lobby Godot Client</h1> 
 </p>
 
-|[Website](https://appsinacup.com)|[Discord](https://discord.gg/56dMud8HYn)|[Build](./BUILD.md)|[Startup Project](https://github.com/appsinacup/tiny_lobby_starter)
-|-|-|-|-|
+|[Website](https://appsinacup.com)|[Discord](https://discord.gg/56dMud8HYn)|[Build](./BUILD.md)|[tiny_lobby Server](https://github.com/appsinacup/tiny_lobby)|[Starter Project](https://github.com/appsinacup/tiny_lobby_starter)
+|-|-|-|-|-|
 
 <p align="center">
 		<img src="https://img.shields.io/badge/Godot-4.4.1-%23478cbf?logo=godot-engine&logoColor=white" />
