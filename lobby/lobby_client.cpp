@@ -1293,7 +1293,7 @@ void LobbyClient::_receive_data(const Dictionary &p_dict) {
     if (peer->get_id() == peer_id) {
       peer->set_user_data(peer_user_data);
       // notify self
-      emit_signal("received_peer_user_data", peer, peer_user_data);
+      emit_signal("received_peer_user_data", peer, peer->get_user_data());
       notified = true;
     }
     for (int i = 0; i < peers.size(); ++i) {
@@ -1301,7 +1301,8 @@ void LobbyClient::_receive_data(const Dictionary &p_dict) {
       if (updated_peer->get_id() == peer_id) {
         updated_peer->set_user_data(peer_user_data);
         if (!notified) {
-          emit_signal("received_peer_user_data", updated_peer, peer_user_data);
+          emit_signal("received_peer_user_data", updated_peer,
+                      updated_peer->get_user_data());
         }
         break;
       }
@@ -1418,8 +1419,8 @@ void LobbyClient::_receive_data(const Dictionary &p_dict) {
           // public peer data
           updated_peer->set_delta_data(peer_data_variant);
         }
-        emit_signal("received_peer_data", peer_data_variant, updated_peer,
-                    is_private);
+        emit_signal("received_peer_data", updated_peer->get_data(),
+                    updated_peer, is_private);
         break;
       }
     }
