@@ -3,19 +3,20 @@
 	<h1 align="center">Tiny Lobby Godot Client</h1> 
 </p>
 
-|[Website](https://appsinacup.com)|[Discord](https://discord.gg/56dMud8HYn)|[Build](./BUILD.md)|[tiny_lobby Server](https://github.com/appsinacup/tiny_lobby)|[Starter Project](https://github.com/appsinacup/tiny_lobby_starter)
+|[Website](https://appsinacup.com)|[Discord](https://discord.gg/56dMud8HYn)|[Build Locally](./BUILD.md)|[tiny_lobby Server](https://github.com/appsinacup/tiny_lobby)|[Starter Project](https://github.com/appsinacup/tiny_lobby_starter)
 |-|-|-|-|-|
 
 <p align="center">
 		<img src="https://img.shields.io/badge/Godot-4.4.1-%23478cbf?logo=godot-engine&logoColor=white" />
 </p>
 
-Addon that adds multiplayer functionality with nodes that can connect to [tiny_lobby Server](https://github.com/appsinacup/tiny_lobby).
+Tiny Lobby is a lightweight multiplayer lobby system for WebSocket-based games, allowing peers to create, join, and manage lobbies, exchange data, and communicate in real time. It also supports backend scripting in Lua, enabling custom game logic directly on the server.
 
 ![example](https://github.com/appsinacup/tiny_lobby/blob/main/docs/example.gif?raw=true)
 
 ## Features
 
+- Write backend game logic in Lua that runs directly on the lobby server.
 - Create, join, or leave a lobby.
 - Get lobby public data, tags, and a list of lobbies.
 - Receive the lobby state and notifications for peer join/leave/kick events.
