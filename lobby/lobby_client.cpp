@@ -125,6 +125,8 @@ void LobbyClient::_bind_methods() {
                        &LobbyClient::join_lobby, DEFVAL(""));
   ClassDB::bind_method(D_METHOD("leave_lobby"), &LobbyClient::leave_lobby);
   ClassDB::bind_method(D_METHOD("list_lobbies"), &LobbyClient::list_lobby);
+  ClassDB::bind_method(D_METHOD("stop_list_lobbies"),
+                       &LobbyClient::stop_list_lobby);
   ClassDB::bind_method(D_METHOD("kick_peer", "peer_id"),
                        &LobbyClient::kick_peer);
   ClassDB::bind_method(

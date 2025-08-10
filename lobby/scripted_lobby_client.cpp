@@ -131,6 +131,8 @@ void ScriptedLobbyClient::_bind_methods() {
                        &ScriptedLobbyClient::lobby_call, DEFVAL(Array()));
   ClassDB::bind_method(D_METHOD("list_lobbies"),
                        &ScriptedLobbyClient::list_lobby);
+  ClassDB::bind_method(D_METHOD("stop_list_lobbies"),
+                       &ScriptedLobbyClient::stop_list_lobby);
   ClassDB::bind_method(D_METHOD("kick_peer", "peer_id"),
                        &ScriptedLobbyClient::kick_peer);
   ClassDB::bind_method(
