@@ -1,5 +1,5 @@
 <p align="center">
-	<img width="256px" src="tiny_lobby_banner.png"/> 
+	<img width="512px" src="tiny_lobby_banner.png"/> 
 	<h1 align="center">Tiny Lobby Godot Client</h1> 
 </p>
 
