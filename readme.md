@@ -10,6 +10,14 @@
 		<img src="https://img.shields.io/badge/Godot-4.4.1-%23478cbf?logo=godot-engine&logoColor=white" />
 </p>
 
+-----
+
+<p align = "center">
+<b>Multiplayer lobbies</b> with real-time Lua-powered logic <i>for the Godot game engine.</i>
+</p>
+
+-----
+
 Tiny Lobby is a lightweight multiplayer lobby system for WebSocket-based games, allowing peers to create, join, and manage lobbies, exchange data, and communicate in real time. It also supports backend scripting in Lua, enabling custom game logic directly on the server.
 
 ## Video Tutorial
