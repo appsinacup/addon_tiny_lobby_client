@@ -1033,7 +1033,7 @@ void ScriptedLobbyClient::_receive_data(const Dictionary &p_dict) {
     }
     emit_signal("lobbies_listed", lobbies);
   } else if (command == RESPONSE_PEER_CHAT) {
-    String peer_id = data_dict.get("f", "");
+    String peer_id = data_dict.get("fp", "");
     String chat_data = data_dict.get("c", "");
     Dictionary chat_metadata = data_dict.get("m", Dictionary());
     bool message_sent = false;
@@ -1050,7 +1050,7 @@ void ScriptedLobbyClient::_receive_data(const Dictionary &p_dict) {
     }
   } else if (command == RESPONSE_PEER_USER_DATA) {
     String peer_id = data_dict.get("p", "");
-    Dictionary peer_user_data = data_dict.get("ud", "");
+    Dictionary peer_user_data = data_dict.get("ud", {});
     bool notified = false;
     if (peer->get_id() == peer_id) {
       peer->set_delta_user_data(peer_user_data);
