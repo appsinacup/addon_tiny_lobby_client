@@ -107,6 +107,7 @@ public:
                                     const String &p_password);
   Ref<LobbyResponse> leave_lobby();
   Ref<LobbyResponse> list_lobby();
+  Ref<LobbyResponse> stop_list_lobby();
   Ref<LobbyResponse> kick_peer(const String &p_peer_id);
 
   Ref<LobbyResponse> add_user_data(const Dictionary &p_user_data);

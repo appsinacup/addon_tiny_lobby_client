@@ -150,6 +150,7 @@ const int COMMAND_LOBBY_UNSEAL = 18;
 const int COMMAND_LOBBY_MAX_PLAYERS = 19;
 const int COMMAND_LOBBY_TITLE = 20;
 const int COMMAND_LOBBY_PASSWORD = 21;
+const int COMMAND_STOP_LIST_LOBBY = 22;
 
 class LobbyInfo : public Resource {
   GDCLASS(LobbyInfo, Resource);

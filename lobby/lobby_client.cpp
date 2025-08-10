@@ -575,6 +575,29 @@ Ref<LobbyResponse> LobbyClient::list_lobby() {
   return response;
 }
 
+Ref<LobbyResponse> LobbyClient::stop_list_lobby() {
+  Ref<LobbyResponse> response;
+  response.instantiate();
+  if (!connected) {
+    // signal the finish deferred
+    Callable callable = callable_mp(*response, &LobbyResponse::signal_finish);
+    callable.call_deferred("Not connected to the server.");
+    return response;
+  }
+  String id = _increment_counter();
+  Dictionary command;
+  command["c"] = COMMAND_STOP_LIST_LOBBY;
+  Dictionary data_dict;
+  data_dict["id"] = id;
+  command["d"] = data_dict;
+  Array command_array;
+  command_array.push_back(LOBBY_REQUEST);
+  command_array.push_back(response);
+  _commands[id] = command_array;
+  _send_data(command);
+  return response;
+}
+
 Ref<LobbyResponse> LobbyClient::kick_peer(const String &p_peer_id) {
   Ref<LobbyResponse> response;
   response.instantiate();
