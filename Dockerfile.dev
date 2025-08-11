@@ -1,0 +1,70 @@
+# syntax=docker/dockerfile:1.7
+
+ARG UBUNTU_VERSION=24.04
+FROM ubuntu:${UBUNTU_VERSION}
+
+ENV DEBIAN_FRONTEND=noninteractive \
+    LC_ALL=C.UTF-8 \
+    LANG=C.UTF-8
+
+# Base toolchain + build tools
+RUN apt-get update -y && \
+    apt-get install -y --no-install-recommends \
+      build-essential \
+      git \
+      ca-certificates \
+      curl \
+      pkg-config \
+      python3 \
+      python3-pip \
+      python3-venv \
+      scons \
+      ccache \
+      clang \
+      cmake \
+      ninja-build \
+      zip \
+      unzip && \
+    rm -rf /var/lib/apt/lists/*
+
+# Speed up rebuilds via ccache; /usr/lib/ccache contains compiler wrappers on Ubuntu
+ENV PATH=/usr/lib/ccache:${PATH} \
+    CCACHE_DIR=/ccache \
+    CCACHE_MAXSIZE=5G \
+    CCACHE_COMPRESS=1 \
+    CCACHE_BASEDIR=/work
+
+# SCons shared cache (godot-cpp honors SCONS_CACHE in its SConstruct)
+# We build godot-cpp at image build time with a seed cache stored in the image.
+ENV SCONS_CACHE=/scons-cache
+
+# Useful defaults; can be overridden at runtime
+ENV PLATFORM=linux \
+    TARGET=template_debug
+
+WORKDIR /work
+
+# --- Copy the full repo and build godot-cpp in-place to seed caches (keep sources intact) ---
+ENV SEED_SCONS_CACHE=/opt/seed/scons-cache
+RUN mkdir -p "$SEED_SCONS_CACHE"
+
+COPY . /work
+WORKDIR /work/godot-cpp
+
+# Build both debug and release to warm up caches; keep outputs and sources
+RUN --mount=type=cache,target=/ccache \
+    SCONS_CACHE="$SEED_SCONS_CACHE" \
+    scons platform=linux target=template_debug -j"$(nproc)" && \
+    SCONS_CACHE="$SEED_SCONS_CACHE" \
+    scons platform=linux target=template_release -j"$(nproc)"
+
+# Helper to seed mounted caches at runtime if empty
+RUN bash -lc 'cat > /usr/local/bin/seed-caches.sh <<"EOF"\n#!/usr/bin/env bash\nset -euo pipefail\nif [ -d /scons-cache ] && [ -z "$(ls -A /scons-cache 2>/dev/null || true)" ]; then\n  if [ -d /opt/seed/scons-cache ]; then\n    echo "Seeding SCons cache from image..."\n    cp -a /opt/seed/scons-cache/. /scons-cache/ || true\n  fi\nfi\nif [ -d /ccache ] && [ -z "$(ls -A /ccache 2>/dev/null || true)" ]; then\n  # Nothing to seed for ccache by default\n  :\nfi\nEOF\nchmod +x /usr/local/bin/seed-caches.sh'
+
+# Restore working directory
+WORKDIR /work
+
+# Example build (inside container):
+#   scons platform=${PLATFORM} target=${TARGET} -j"$(nproc)"
+
+CMD ["bash", "-lc", "seed-caches.sh && exec bash"]

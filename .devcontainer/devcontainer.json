@@ -1,0 +1,14 @@
+{
+  "name": "Tiny Lobby Client Dev",
+  "image": "ghcr.io/appsinacup/addon_tiny_lobby_client-dev:main",
+  "runArgs": [
+    "-e", "PLATFORM=linux",
+    "-e", "TARGET=template_debug"
+  ],
+  "mounts": [
+    "source=addon_tiny_lobby_client_ccache,target=/ccache,type=volume",
+    "source=addon_tiny_lobby_client_scons_cache,target=/scons-cache,type=volume"
+  ],
+  "features": {},
+  "postCreateCommand": "seed-caches.sh || true"
+}
