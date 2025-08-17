@@ -81,8 +81,9 @@ os.system("ls -l bin/")
 env_tiny_lobby = env_modules.Clone()
 suffix = get_sufix_before()
 if env["platform"] == "ios":
-    env_tiny_lobby.Append(LIBPATH=["#modules/tiny_lobby/bin", "#modules/tiny_lobby/godot-cpp/bin"])
-    env_tiny_lobby.Append(LIBS=[f"libtiny_lobby{suffix}", f"libgodot-cpp{suffix}"])
+    tiny_path = f"#modules/tiny_lobby/bin/libtiny_lobby{suffix}.a"
+    godotcpp_path = f"#modules/tiny_lobby/godot-cpp/bin/libgodot-cpp{suffix}.a"
+    env.Append(LIBS=[env.File(tiny_path), env.File(godotcpp_path)])
 elif env["platform"] != "windows" or env.get("use_mingw", False):
     env.Append(LIBPATH=["#modules/tiny_lobby/bin", "#modules/tiny_lobby/godot-cpp/bin"])
     env.Append(LIBS=[f"tiny_lobby{suffix}", f"godot-cpp{suffix}"])
