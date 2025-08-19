@@ -131,8 +131,9 @@ protected:
                          &LeaderboardsClient::set_http_prefix);
     ClassDB::bind_method(D_METHOD("get_http_prefix"),
                          &LeaderboardsClient::get_http_prefix);
-    ClassDB::bind_method(D_METHOD("request_leaderboard", "leaderboard_id", "start", "size"),
-                         &LeaderboardsClient::request_leaderboard, DEFVAL(0), DEFVAL(10));
+    ClassDB::bind_method(
+        D_METHOD("request_leaderboard", "leaderboard_id", "start", "size"),
+        &LeaderboardsClient::request_leaderboard, DEFVAL(0), DEFVAL(10));
     ClassDB::bind_method(
         D_METHOD("request_user_score_and_rank", "leaderboard_id", "user_id"),
         &LeaderboardsClient::request_user_score_and_rank);
@@ -231,7 +232,8 @@ public:
   }
   String get_override_discord_path() const { return override_discord_path; }
 
-  Ref<LeaderboardResponse> request_leaderboard(String leaderboard_id, int start, int size) {
+  Ref<LeaderboardResponse> request_leaderboard(String leaderboard_id, int start,
+                                               int size) {
     if (game_id.is_empty()) {
       Ref<LeaderboardResponse> response;
       response.instantiate();
@@ -242,8 +244,8 @@ public:
       return response;
     }
     String url = http_prefix + server_url + "/game/" + game_id +
-                 "/leaderboard/" + leaderboard_id + "?start=" + String::num(start) +
-                 "&size=" + String::num(size);
+                 "/leaderboard/" + leaderboard_id +
+                 "?start=" + String::num(start) + "&size=" + String::num(size);
     emit_signal("log_updated", "request_leaderboard",
                 "Requesting leaderboard: " + url);
     request = memnew(HTTPRequest);
