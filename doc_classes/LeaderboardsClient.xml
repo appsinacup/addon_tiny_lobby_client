@@ -12,8 +12,10 @@
 		<method name="request_leaderboard">
 			<return type="LeaderboardResponse" />
 			<param index="0" name="leaderboard_id" type="String" />
+			<param index="1" name="start" type="int" default="0" />
+			<param index="2" name="size" type="int" default="10" />
 			<description>
-				Requests the leaderboard data for the given leaderboard ID.
+				Requests the leaderboard data for the given leaderboard ID. For pagination use the [param start] and [param size] parameters.
 				Returns a [LeaderboardResponse] object that has a [signal LeaderboardResponse.finished] signal that is emitted when finished.
 			</description>
 		</method>

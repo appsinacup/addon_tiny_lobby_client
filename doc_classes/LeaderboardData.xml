@@ -18,8 +18,8 @@
 		<member name="timestamp" type="String" setter="set_timestamp" getter="get_timestamp" default="&quot;&quot;">
 			The timestamp of the score in the leaderboard.
 		</member>
-		<member name="user_id" type="String" setter="set_user_id" getter="get_user_id" default="&quot;&quot;">
-			The user ID of the user in the leaderboard. It corresponds to the peer id from the lobby.
+		<member name="user_name" type="String" setter="set_user_name" getter="get_user_name" default="&quot;&quot;">
+			The name of the user in the leaderboard. It corresponds to the n user data.
 		</member>
 	</members>
 </class>

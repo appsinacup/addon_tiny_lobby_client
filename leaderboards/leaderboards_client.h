@@ -16,17 +16,17 @@ using namespace godot;
 
 class LeaderboardData : public RefCounted {
   GDCLASS(LeaderboardData, RefCounted);
-  String user_id;
+  String user_name;
   int score = 0;
   String timestamp;
   int rank = -1;
 
 protected:
   static void _bind_methods() {
-    ClassDB::bind_method(D_METHOD("get_user_id"),
-                         &LeaderboardData::get_user_id);
-    ClassDB::bind_method(D_METHOD("set_user_id", "user_id"),
-                         &LeaderboardData::set_user_id);
+    ClassDB::bind_method(D_METHOD("get_user_name"),
+                         &LeaderboardData::get_user_name);
+    ClassDB::bind_method(D_METHOD("set_user_name", "user_name"),
+                         &LeaderboardData::set_user_name);
     ClassDB::bind_method(D_METHOD("get_score"), &LeaderboardData::get_score);
     ClassDB::bind_method(D_METHOD("set_score", "score"),
                          &LeaderboardData::set_score);
@@ -37,8 +37,8 @@ protected:
     ClassDB::bind_method(D_METHOD("get_rank"), &LeaderboardData::get_rank);
     ClassDB::bind_method(D_METHOD("set_rank", "rank"),
                          &LeaderboardData::set_rank);
-    ADD_PROPERTY(PropertyInfo(Variant::STRING, "user_id"), "set_user_id",
-                 "get_user_id");
+    ADD_PROPERTY(PropertyInfo(Variant::STRING, "user_name"), "set_user_name",
+                 "get_user_name");
     ADD_PROPERTY(PropertyInfo(Variant::INT, "score"), "set_score", "get_score");
     ADD_PROPERTY(PropertyInfo(Variant::STRING, "timestamp"), "set_timestamp",
                  "get_timestamp");
@@ -46,8 +46,8 @@ protected:
   }
 
 public:
-  void set_user_id(String p_id) { user_id = p_id; }
-  String get_user_id() const { return user_id; }
+  void set_user_name(String p_id) { user_name = p_id; }
+  String get_user_name() const { return user_name; }
   void set_score(int p_score) { score = p_score; }
   int get_score() const { return score; }
   void set_timestamp(String p_ts) { timestamp = p_ts; }
@@ -131,8 +131,8 @@ protected:
                          &LeaderboardsClient::set_http_prefix);
     ClassDB::bind_method(D_METHOD("get_http_prefix"),
                          &LeaderboardsClient::get_http_prefix);
-    ClassDB::bind_method(D_METHOD("request_leaderboard", "leaderboard_id"),
-                         &LeaderboardsClient::request_leaderboard);
+    ClassDB::bind_method(D_METHOD("request_leaderboard", "leaderboard_id", "start", "size"),
+                         &LeaderboardsClient::request_leaderboard, DEFVAL(0), DEFVAL(10));
     ClassDB::bind_method(
         D_METHOD("request_user_score_and_rank", "leaderboard_id", "user_id"),
         &LeaderboardsClient::request_user_score_and_rank);
@@ -168,7 +168,7 @@ public:
         Ref<LeaderboardData> data;
         data.instantiate();
         data->set_rank(entry.get("rank", i + 1));
-        data->set_user_id(entry.get("user_id", ""));
+        data->set_user_name(entry.get("name", ""));
         data->set_score(entry.get("score", 0));
         data->set_timestamp(entry.get("timestamp", ""));
         leaderboard_array.append(data);
@@ -191,7 +191,7 @@ public:
     result->set_leaderboard_data(leaderboard_array);
     String result_str = String::utf8((const char *)p_data.ptr(), p_data.size());
     if (p_code != 200 || result_str == "") {
-      user_data->set_user_id("");
+      user_data->set_user_name("");
       user_data->set_score(0);
       user_data->set_rank(-1);
       user_data->set_timestamp("");
@@ -202,7 +202,7 @@ public:
                         " " + result_str);
     } else {
       Dictionary entry = JSON::parse_string(result_str);
-      user_data->set_user_id(entry.get("user_id", ""));
+      user_data->set_user_name(entry.get("name", ""));
       user_data->set_score(entry.get("score", 0));
       user_data->set_timestamp(entry.get("timestamp", ""));
       user_data->set_rank(entry.get("rank", -1));
@@ -231,7 +231,7 @@ public:
   }
   String get_override_discord_path() const { return override_discord_path; }
 
-  Ref<LeaderboardResponse> request_leaderboard(String leaderboard_id) {
+  Ref<LeaderboardResponse> request_leaderboard(String leaderboard_id, int start, int size) {
     if (game_id.is_empty()) {
       Ref<LeaderboardResponse> response;
       response.instantiate();
@@ -242,7 +242,8 @@ public:
       return response;
     }
     String url = http_prefix + server_url + "/game/" + game_id +
-                 "/leaderboard/" + leaderboard_id;
+                 "/leaderboard/" + leaderboard_id + "?start=" + String::num(start) +
+                 "&size=" + String::num(size);
     emit_signal("log_updated", "request_leaderboard",
                 "Requesting leaderboard: " + url);
     request = memnew(HTTPRequest);
