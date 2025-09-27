@@ -63,6 +63,11 @@ if env["target"] == "editor" or env["platform"] == "windows":
     if env.get("use_mingw", False):
         lib_extension = ".a"
         lib_prefix = "lib"
+    # If lib exists, remove it
+    if os.path.exists(f"bin/{lib_prefix}tiny_lobby{get_sufix_before()}{lib_extension}"):
+        os.remove(f"bin/{lib_prefix}tiny_lobby{get_sufix_before()}{lib_extension}")
+    if os.path.exists(f"godot-cpp/bin/{lib_prefix}godot-cpp{get_sufix_before()}{lib_extension}"):
+        os.remove(f"godot-cpp/bin/{lib_prefix}godot-cpp{get_sufix_before()}{lib_extension}")
     # Rename our lib
     os.rename(
         f"bin/libtiny_lobby{get_sufix_after()}{lib_extension}",
