@@ -1152,7 +1152,7 @@ void ScriptedLobbyClient::_receive_data(const Dictionary &p_dict) {
     // nothing for now
   } else if (command == RESPONSE_DATA_TO) {
     String target_peer_id = data_dict.get("tp", "");
-    bool is_private = data_dict.get("_p", false);
+    bool is_private = data_dict.get("_pr", false);
     Dictionary peer_data_variant = data_dict.get("d", Dictionary());
     if (is_private && target_peer_id == peer->get_id()) {
       // private data, update self
@@ -1170,8 +1170,14 @@ void ScriptedLobbyClient::_receive_data(const Dictionary &p_dict) {
           // public peer data
           updated_peer->set_delta_data(peer_data_variant);
         }
-        emit_signal("received_peer_data", updated_peer->get_data(),
-                    updated_peer, is_private);
+        if (is_private) {
+          // private peer data
+          emit_signal("received_peer_data", peer_data,
+                      updated_peer, is_private);
+        } else {
+          emit_signal("received_peer_data", updated_peer->get_data(),
+                      updated_peer, is_private);
+        }
         break;
       }
     }
