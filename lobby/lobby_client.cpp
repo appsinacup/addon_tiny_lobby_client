@@ -1421,8 +1421,8 @@ void LobbyClient::_receive_data(const Dictionary &p_dict) {
         }
         if (is_private) {
           // private peer data
-          emit_signal("received_peer_data", peer_data,
-                      updated_peer, is_private);
+          emit_signal("received_peer_data", peer_data, updated_peer,
+                      is_private);
         } else {
           emit_signal("received_peer_data", updated_peer->get_data(),
                       updated_peer, is_private);
