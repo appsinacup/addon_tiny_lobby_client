@@ -1,4 +1,7 @@
 def can_build(env, platform):
+	# Disable for double for now
+	if env.get("precision", "single") == "double":
+		return False
 	return True
 
 
