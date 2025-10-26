@@ -25,11 +25,10 @@ def get_addon_target():
 def get_addon_mingw():
     return "yes" if env.get("use_mingw", False) else "no"
 
-# TODO remove when godot-cpp 4.5 is released
-# Replace in godot-cpp android ndk from "23.2.8568313" to "28.1.13356709"
-if env["platform"] == "android":
-    os.system("sed -i 's/23.2.8568313/28.1.13356709/g' godot-cpp/tools/android.py")
 os.system(f"scons static_build=yes platform={get_addon_platform()} target={get_addon_target()} arch={env['arch']} precision={env['precision']} threads={get_addon_threads()} dev_build={get_addon_devbuild()} use_llvm={get_addon_llvm()} lto={env['lto']} use_mingw={get_addon_mingw()}")
+
+# Wait 5 seconds for file system to sync (Windows CI/CD workaround)
+time.sleep(5)
 
 def get_sufix_before():
     suffix = f".{get_addon_platform()}.{env['target']}"
