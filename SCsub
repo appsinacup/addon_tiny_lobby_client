@@ -29,9 +29,6 @@ def get_addon_mingw():
 
 os.system(f"scons static_build=yes platform={get_addon_platform()} target={get_addon_target()} arch={env['arch']} precision={env['precision']} threads={get_addon_threads()} dev_build={get_addon_devbuild()} use_llvm={get_addon_llvm()} lto={env['lto']} use_mingw={get_addon_mingw()}")
 
-# Wait 5 seconds for file system to sync (Windows CI/CD workaround)
-time.sleep(5)
-
 def get_sufix_before():
     suffix = f".{get_addon_platform()}.{env['target']}"
     if env["dev_build"]:
@@ -64,21 +61,29 @@ if env["target"] == "editor" or env["platform"] == "windows":
     if env.get("use_mingw", False):
         lib_extension = ".a"
         lib_prefix = "lib"
-    # If lib exists, remove it
-    if os.path.exists(f"bin/{lib_prefix}tiny_lobby{get_sufix_before()}{lib_extension}"):
-        os.remove(f"bin/{lib_prefix}tiny_lobby{get_sufix_before()}{lib_extension}")
-    if os.path.exists(f"godot-cpp/bin/{lib_prefix}godot-cpp{get_sufix_before()}{lib_extension}"):
-        os.remove(f"godot-cpp/bin/{lib_prefix}godot-cpp{get_sufix_before()}{lib_extension}")
-    # Rename our lib
-    os.rename(
-        f"bin/libtiny_lobby{get_sufix_after()}{lib_extension}",
-        f"bin/{lib_prefix}tiny_lobby{get_sufix_before()}{lib_extension}"
-    )
-    # Rename godot-cpp lib
-    os.rename(
-        f"godot-cpp/bin/libgodot-cpp{get_sufix_after()}{lib_extension}",
-        f"godot-cpp/bin/{lib_prefix}godot-cpp{get_sufix_before()}{lib_extension}"
-    )
+    # Build source and target paths
+    source_lib = f"bin/libtiny_lobby{get_sufix_after()}{lib_extension}"
+    target_lib = f"bin/{lib_prefix}tiny_lobby{get_sufix_before()}{lib_extension}"
+    godotcpp_source = f"godot-cpp/bin/libgodot-cpp{get_sufix_after()}{lib_extension}"
+    godotcpp_target = f"godot-cpp/bin/{lib_prefix}godot-cpp{get_sufix_before()}{lib_extension}"
+    
+    # Only rename if source and target are different
+    if source_lib != target_lib:
+        # If target lib exists, remove it
+        if os.path.exists(target_lib):
+            os.remove(target_lib)
+        # Rename our lib
+        if os.path.exists(source_lib):
+            os.rename(source_lib, target_lib)
+    
+    if godotcpp_source != godotcpp_target:
+        # If target lib exists, remove it
+        if os.path.exists(godotcpp_target):
+            os.remove(godotcpp_target)
+        # Rename godot-cpp lib
+        if os.path.exists(godotcpp_source):
+            os.rename(godotcpp_source, godotcpp_target)
+        
         
 # Do an ls on bin folder
 os.system("ls -l bin/")
